@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+{% block head %}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <h1 style="color: #283592;" align="center">A system using hybrid deep neural network for modeling COVID-19 pandemic</h1>
+  <i class="fa fa-letter"></i>
+  <p align="center">Duc Nguyen<sup>(1, <i class="far fa-envelope"></i>)</sup>, Nghia Vo<sup>(2)</sup>, Thinh Nguyen<sup>(1)</sup>, Khuong Nguyen<sup>(1)</sup>, and Tho Quan<sup>(1)</sup></p>
+  <p align="center"><sup>(1)</sup> University of Technology - Viet Nam National University Ho Chi Minh City</p>
+  <p align="center"><sup>(2)</sup> School of Medicine - Viet Nam National University Ho Chi Minh City</p>
+  <p align="center" style="font-family: 'Courier New', monospace;"><sup>(1)</sup> {duc.nguyenquang, ntthinh, nakhuong, qttho}@hcmut.edu.vn</p>
+  <p align="center" style="font-family: 'Courier New', monospace;"><sup>(2)</sup> voquangnghiatnh@gmail.com</p>
+  <p align="center">July 30th, 2020</p>
+
+  <p style="font-size:20px" align="center"><b>ABSTRACT</b></p>
+  <p align="justify">
+    As we have already known, at the beginning of the year 2020, there was one of the largest pandemics all over the world, COVID-19. This is a dangerous epidemic because of spreading quickly and causing a series of deaths. Until now, there are more than 15 million infectious patients in the world with mortality at about five percent. Therefore, <b>researching</b> about COVID-19 is now <b>necessary and important</b> for human beings to decrease its infectious rate and the number of deaths. Besides medical research, an investigation into <b>predicting its infection</b> is also emergent. In this project, we are going to develop <b>a system</b> for forecasting the pandemic’s future using a new combined approach of <b>Variational-LSTM Autoencoder</b> and <b>SIRD</b> (Susceptible - Infectious - Recovered - Deceased) model. With this coherency and the data about infectious, recovered, and deceased cases, the pandemic can be successfully modeled with the number of all cases exactly approximated. This system will serve the health industry, the government, epidemiologists, etc with general information about the pandemic’s progression. It can be also used as a reference for data analysts to predict the state of this pandemic in the future.
+  </p>
+
+  <p style="font-size:30px" align="left"><b>1. Introduction</b></p>
+  <p align="justify">
+  COVID-19 brings many threats, fears, and difficulties in almost all countries around the world <a href="#ref1">[1]</a>. In some developing countries, the lack of technology, testing, and quarantines makes the process of modeling and predicting extremely difficult. While the Government and Minister of Health need exact and reliable references to create appropriate timely plans, there are not many systems that can satisfy their requirements. Therefore, our mission is to develop a system that fully meets the above requirements, is constantly updated and easy to use. With our system, users will have access to the number of infectious, recovered, and deceased cases with high reliability, have an overview of how the pandemic grows, and have a foreseeable future of the pandemic. In order to predict the pandemic future, we are going to use the <b>SIRD model</b> combined with a deep learning approach <b>Variational-LSTM Autoencoder</b> (VAE).
+  </p>
+  <p align="justify">
+  Firstly, the SIRD model <a href="#ref2">[2]</a> is one of the best and most popular options for modeling an epidemic until now. With relevant estimated parameters (𝛽, 𝛾, 𝜇), this SIRD model can predict the future of the epidemic very well <a href="#ref3">[3]</a> <a href="#ref4">[4]</a>.
+  </p>
+  <p align="justify">
+  The only and the most important thing that decides the accuracy of the SIRD model is the <b>R0 parameter</b>. This number has the meaning of the ratio between the infectious (𝛽) and recovered rate (𝛾), which is hard to estimate accurately. The reason for that difficulty is the pandemic's quick spread, long incubation period, no specific vaccine, and people's attitude toward the pandemic. To solve that problem, we integrate the <b>SIRD model</b> into a <b>Variational-LSTM Autoencoder</b> (VAE) <a href="#ref6">[6]</a> as the <b>decoder</b>. The VAE model has 2 parts: encoder and decoder. The <b>encoder</b> is used to find the relation between the input data (infectious, recovered, and deceased cases in previous days) and the SIRD model's parameter. Then the learned parameters are passed with the input data into the decoder to predict the next day cases.
+  </p>
+
+  <p style="font-size:30px" align="left"><b>2. Motivation</b></p>
+  <p align="justify">
+    With this project, we have started <b>without any profit</b>. There are so many types of potential users following the success of this research, such as the Government, the Minister of Health, doctors, drug manufacturers, people who care about this pandemic, etc (<b>Figure 1</b> shows the overview of our system applicable cases). In addition to serving the community, towards science, this project will also partly contribute to the knowledge of humankind and data science as a simple and effective method to predict the progress of an epidemic.
+  </p>
+  <div class="container-fluid" align="center">
+    <img src="{{ url_for('static', filename='images/Fg1.png') }}" height="640" >
+    <p><b>Figure 1:</b> Our system’s applicable cases</p>
+  </div>
+
+  <p style="font-size:30px" align="left"><b>3. Method</b></p>
+  <p align="justify">
+    The SIRD (Susceptible - Infectious - Recovered - Deceased) model is one of the most commonly used past and present isolation models to describe epidemic outbreaks. The model shows four states (Susceptible - Infectious - Recovered - Deceased) for a group of people isolated with the assumption that they will be immune to the disease if they have recovered. The SIRD model is a dynamic system of the following four differential equations:
+  </p>
+  <p align="center">
+    \(dS = \frac{-{\beta}SI}{N}\) (1)
+  </p>
+  <p align="center">
+    {% raw %}\(dI = \frac{{\beta}SI}{N} - {\gamma}I - {\mu}I\)			(2) {% endraw %}
+  </p>
+  <p align="center">
+    \(dR = {\gamma}I\)							(3)
+  </p>
+  <p align="center">
+    \(dD = {\mu}I\)							(4)
+  </p>
+  <p align="justify">
+  therein for each time \(t > t_0 > 0\) with \(t_0\) is the first time when the epidemic is recognized.
+  </p>
+
+  <ul style="margin-left: 50px;">
+    <li>\(S(t)\): The number of susceptible people</li>
+    <li>\(I(t)\): The number of current infectious cases</li>
+    <li>\(R(t)\): The number of recovered people</li>
+    <li>\(D(t)\): The number of deaths</li>
+    <li>\(\beta(t)\): The rate of transmission (transmissions per S-I contact per time)</li>
+    <li>\(\gamma(t)\): The rate of recovery (inverse of the infectious period)</li>
+    <li>\(\mu(t)\): The rate of mortality from the disease (deaths per infectious individual per time)</li>
+  </ul>
+
+  <p align="justify">
+    As described in the Introduction section, our model is a combination of <b>Variational-LSTM Autoencoder</b> (VAE) and <b>SIRD</b>. For a detailed description, the model’s architecture is shown in <b>Figure 2</b>. At first, the input layer takes the number of susceptible, infectious, recovered, and deceased cases in 10 days. After that, we calculate the increase or decrease cases by day (performed in lambda_1 layer). Then these results are passed through two LSTM layers for learning continuous features <a href="#ref7">[7]</a>. Then, with the features learned, they will go through three Fully-connected layers for learning how to map those features into three parameters (𝛽, 𝛾, 𝜇) of the SIRD model. Finally, the three parameters learned from the dense_3 layer with the data of the input_1 layer are passed into the SIRD model in the last layer. In the last layer, we solved the SIRD model with the <b>Euler method</b> <a href="#ref5">[5]</a> because it’s the easiest but most efficient way for approximating differential equations (The formulas for approximating the SIRD model with step \(h = 1\) are listed in (4), (5), (6), and (7)). The output of our model is also the same as the input but after one day. Also, we have added two Dropout layers after flattening LSTM output and between the first two Fully-connected layers to decrease the ratio of over-fitting <a href="#ref8">[8]</a>.
+  </p>
+
+  <p align="center">
+    {% raw %}\(S_{i+1} = S_i + \frac{-{\beta}S_iI_i}{N}\)					(5){% endraw %}
+  </p>
+  <p align="center">
+    {% raw %}\(I_{i+1} = I_i + \frac{{\beta}S_iI_i}{N} - {\gamma}I_i - {\mu}I_i\)				(6){% endraw %}
+  </p>
+  <p align="center">
+    \(R_{i+1} = R_i + {\gamma}I_i\)					(7)
+  </p>
+  <p align="center">
+    \(D_{i+1} = D_i + {\mu}I_i\)					(8)
+  </p>
+
+  <p align="justify">
+    In the training process, after the input data goes through all layers of our model, we will calculate the <b>Mean Squared Error</b> (shown in formula (8)) between the output and the real data (loss function). Then we use Adam optimizer to update our model’s weights.
+  </p>
+  <p align="center">
+    \(MSE = \frac{1}{n}\sum_{i=1}^{n} (Y_i - \hat{Y}_i)^2\)				(9)
+  </p>
+  <br>
+
+  <div class="container-fluid" align="center">
+    <img src="{{ url_for('static', filename='images/Fg2.png') }}" width="480" >
+    <p><b>Figure 2</b>: Model architecture</p>
+  </div>
+
+  <p style="font-size:30px" align="left"><b>4. Experiment</b></p>
+  <p align="justify">
+  The reason why we choose this method (combining VAE and SIRD model) is that it is simple, accurate, and reliable enough to estimate cases in the near future. We will explain the details to prove our model effective and efficient in this section.
+  </p>
+
+  <p align="justify">
+  In the evaluation process, we use the dataset provided by the <b>Johns Hopkins University</b> Center for Systems Science and Engineering (JHU CSSE) <a href="#ref9">[9]</a>. This dataset is collected from <b>January 2020</b> until <b>now</b> from various sources such as the World Health Organization (WHO), European Centre for Disease Prevention and Control (ECDC), US CDC, etc <a href="#ref9">[9]</a>. Also, this dataset contains <b>the daily number</b> of total infectious, recovered, and deceased cases in <b>all countries</b> around the world.
+  </p>
+
+  <p align="justify">
+  In our experiment, we use the data from <b>January 2020</b> to the end of <b>June 2020</b> as the model-training data and the <b>July 2020</b> data for the testing period. As presented in the above section, we need input four values Susceptible, Infectious, Recovered, and Deceased, but with the above dataset, we only have total infectious (including recovered and deceased cases), recovered, and deceased cases. Therefore, we need to have a total population of the world and recalculate all the required model’s inputs. These below formulas will show how to calculate the inputs from the dataset:
+  </p>
+
+  <p align="center">
+    \(Input_{Susceptible} = Total Population - Total Infectious\)			(10)
+  </p>
+  <p align="center">
+    \(Input_{Infectious} = Total Infectious - Recovered - Deceased\)		(11)
+  </p>
+  <p align="center">
+    \(Input_{Recovered} = Recovered\)							(12)
+  </p>
+  <p align="center">
+    \(Input_{Deceased} = Deceased\)							(13)
+  </p>
+
+  <p align="justify">
+    The inputs of our model are then normalized into <b>percentages</b> by dividing all data for the total population for decreasing the long-range when computing.
+  </p>
+
+  <p align="justify">
+    Our proposed model has achieved fairly accurate initial results compared to real data. <b>Table 1</b> shows the <b>Mean Squared Error</b> and the <b>Mean Absolute Error</b> of total infectious cases between the training set and the testing set. We also visualize our testing results (predicting the pandemic cases in July 2020). <b>Figure 3</b> shows the comparison of infectious cases by day while <b>Figure 4</b> shows one of the total infectious (including recovered and deceased) cases. Also, we have used this model to forecast the next year’s states of COVID-19 pandemic starting from the same day as the original dataset, and <b>Figure 5</b> shows the result.
+  </p>
+
+  <p align="justify">
+    Looking around the world, there are so many effective models provided for the same purpose as ours. Among those models, there are some ones achieve state-of-the-art accuracy and as a result, they are <b>strongly complex</b> and need <b>more detailed input data</b> (they need testing, quarantines, and so on), which will result in an unsuitable situation when using them in developing countries where modern technology is not reachable. In our experiment, we only use very basic information (infectious, recovered, and deceased cases) but successfully predict the pandemic's near future. In <b>Table 2</b>, we have shown the comparison result of predicting total infectious cases in <b>3 days (April 07th - 09th)</b> between our proposed model and a state-of-the-art model (the result of the SOTA model is taken from their publication which is <b>proposed in <a href="#ref6">[6]</a></b>).  That SOTA model is also using <b>Variational-LSTM Autoencoder</b> but in a complex form with <b>Attention LSTM</b> layers and <b>Graph</b> modeling. Therefore, this below comparison result is pieces of evidence proving our model’s effectiveness, efficiency, and reliability.
+  </p>
+
+  <p align="justify">
+    We are currently in the process of completing the scientific basis and scientific reports for this project. At the same time, we are also developing a website to deploy the model to help potential users easily access and use it. We believe that with our effort, this project can be done in the next 1 to 2 months.
+  </p>
+
+  <div class="container">
+    <p align="center"><b>Table 1:</b> Evaluation result</p>
+      <table class="table table-striped table-inverse table-hover" id="dataTable" width="100%">
+          <thead class="thead-inverse">
+              <tr>
+                  <th scope="col" style="text-align:center">Metric</th>
+                  <th scope="col" style="text-align:center">Training set</th>
+                  <th scope="col" style="text-align:center">Evaluation set</th>
+              </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" style="text-align:left">Mean squared error (%)</th>
+              <td style="text-align:center">\(4,53.10^{-8}\)</td>
+              <td style="text-align:center">\(1,43.10^{-7}\)</td>
+
+            </tr>
+            <tr>
+              <th scope="row" style="text-align:left">Mean absolute error (daily infectious)</th>
+              <td style="text-align:center">\(13144,30\)</td>
+              <td style="text-align:center">\(22092,68\)</td>
+
+            </tr>
+
+          </tbody>
+      </table>
+  </div>
+
+  <div class="container">
+    <p align="center"><b>Table 2:</b> Compare our model with SOTA one</p>
+      <table class="table table-striped table-inverse table-hover" id="dataTable" width="100%">
+          <thead class="thead-inverse">
+              <tr>
+                  <th scope="col" style="text-align:center">Date</th>
+                  <th scope="col" style="text-align:center">Real data</th>
+                  <th scope="col" style="text-align:center">Our model</th>
+                  <th scope="col" style="text-align:center">SOTA model</th>
+              </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" style="text-align:left">07/04/2020</th>
+              <td style="text-align:center">\(1415044\)</td>
+              <td style="text-align:center">\(1383229\)</td>
+              <td style="text-align:center">\(1359941\)</td>
+
+            </tr>
+            <tr>
+              <th scope="row" style="text-align:left">08/04/2020</th>
+              <td style="text-align:center">\(1500144\)</td>
+              <td style="text-align:center">\(1462204\)</td>
+              <td style="text-align:center">\(1425658\)</td>
+
+            </tr>
+
+            <tr>
+              <th scope="row" style="text-align:left">09/04/2020</th>
+              <td style="text-align:center">\(1584486\)</td>
+              <td style="text-align:center">\(1547974\)</td>
+              <td style="text-align:center">\(1491461\)</td>
+
+            </tr>
+
+          </tbody>
+      </table>
+  </div>
+
+  <div class="container-fluid" align="center">
+    <img src="{{ url_for('static', filename='images/Fg3.png') }}" height="640" >
+    <p><b>Figure 3:</b> Compare the number of daily infectious cases between real data and predicted data</p>
+  </div>
+
+  <div class="container-fluid" align="center">
+    <img src="{{ url_for('static', filename='images/Fg4.png') }}" height="640" >
+    <p><b>Figure 4:</b> Compare the number of total infectious cases between real data and predicted data</p>
+  </div>
+
+  <div class="container-fluid" align="center">
+    <img src="{{ url_for('static', filename='images/Fg5.png') }}" height="640" >
+    <p><b>Figure 5:</b> The predicted result of total infectious, recovered and deceased cases in 1 year</p>
+  </div>
+
+  <p style="font-size:30px" align="left"><b>5. Project's benefits</b></p>
+  <p align="justify">
+    With all hope, we believe that the project will bring great benefits to the community and scientific research.
+  </p>
+
+  <p align="justify">
+    On the community side, the project will be able to be used to predict disease progression in countries or territories. Moreover, the leaders of the countries can come up with appropriate strategies to cope with COVID-19. Besides, this model can also be used as a reference channel for hospitals, businesses, residents... to be able to anticipate pandemic risks to them.
+  </p>
+
+  <p align="justify">
+    In science, the project contributes to Data Science a Deep Learning model combined with a simple and effective Dynamical system for disease modeling. The success of this research is going to develop innovative models that can be applied to many different aspects of life.
+  </p>
+
+  <p style="font-size:30px" align="left"><b>6. Resources</b></p>
+
+  <p align="justify">
+    Up to now, we are implementing this project with all the human resources, finance, and available equipment, taking advantage of the free resources from Google to research and trying out experimental models.
+  </p>
+
+  <p align="justify">
+    For the current research team, we have two advisors, Assoc. Prof. Dr. Quan Thanh Tho and Dr. Nguyen An Khuong, who belong to the Faculty of Computer Science of the Ho Chi Minh City University of Technology.
+  </p>
+
+
+  <p style="font-size:30px" align="left"><b>7. Difficulties</b></p>
+
+  <p align="justify">
+    With limited human resources, self-financing budget, and available equipment, we have encountered many difficulties in researching and testing the model. However, we took advantage of all the conditions we had and free resources for Google research to train and test the model. Until now, we continue to use these resources.
+  </p>
+
+  <p align="justify">
+    In the current and future stages, we are finalizing the remaining stages of the proposed system to make the model run online. This requires a server system capable of deploying Deep Learning models in the back-end. However, with the current budget, we cannot rent a server with all the necessary functions as above. Instead, we plan to use the free Amazon Web Service for 1-2 months after the project is completed. In the meantime, we will be looking for some donations to keep the system stable throughout the epidemic until it ends well.
+  </p>
+
+  <p style="font-size:30px" align="left"><b>References</b></p>
+
+  <p align="justify" id="ref1">
+    [1] T. Singhal, “A review of coronavirus disease-2019 (covid-19),” <i>The Indian Journal of Pediatrics</i>, pp. 1-6, 2020.
+  </p>
+
+  <p align="justify" id="ref2">
+    [2] E. B. Postnikov, “Estimation of covid-19 dynamics “on a back-of-envelope”: Does the simplest sir model provide quantitative parameters and predictions?,” <i>Chaos, Solitons & Fractals</i>, vol. 135, p. 109841, 2020.
+  </p>
+
+  <p align="justify" id="ref3">
+    [3] J. Fern´andez-Villaverde and C. I. Jones, “Estimating and simulating a sird model of covid-19 for many countries, states, and cities,” tech. rep., National Bureau of Economic Research, 2020.
+  </p>
+
+  <p align="justify" id="ref4">
+    [4] G. Ellison, “Implications of heterogeneous sir models for analyses of covid-19,” tech. rep., National Bureau of Economic Research, 2020.
+  </p>
+
+  <p align="justify" id="ref5">
+    [5] A. Cromer, “Stable solutions using the euler approximation,” <i>American Journal of Physics</i>, vol. 49, no. 5, pp. 455-459, 1981.
+    </p>
+
+  <p align="justify" id="ref6">
+    [6] M. R. Ibrahim, J. Haworth, A. Lipani, N. Aslam, T. Cheng, and N. Christie, “Variational-lstm autoencoder to forecast the spread of coronavirus across the globe,” <i>medRxiv</i>, 2020.
+  </p>
+
+  <p align="justify" id="ref7">
+    [7] B. Yan, X. Tang, B. Liu, J. Wang, Y. Zhou, G. Zheng, Q. Zou, Y. Lu, and W. Tu, “An improved method of covid-19 case fitting and prediction based on lstm,” <i>arXiv preprint arXiv:2005.03446</i>, 2020.
+  </p>
+
+  <p align="justify" id="ref8">
+    [8] V. K. R. Chimmula and L. Zhang, “Time series forecasting of covid-19 transmission in canada using lstm networks,” <i>Chaos, Solitons & Fractals</i>, p. 109864, 2020.
+  </p>
+
+  <p align="justify" id="ref9">
+    [9] Dong, Ensheng, Hongru Du, and Lauren Gardner. "An interactive web-based dashboard to track COVID-19 in real time." <i>The Lancet infectious diseases 20.5 (2020)</i>: 533-534.
+  </p>
+
+
+</div>
+{% endblock %}

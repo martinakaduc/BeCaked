@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card-deck">
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-12" style="margin-bottom: 30px;">
+          <div class="card">
+              <img class="card-img-top" src="{{ url_for('static', filename='images/nqduc.jpg') }}" alt="NQDuc Image">
+              <div class="card-body">
+                  <h3 class="card-title">Nguyễn Quang Đức</h3>
+                  <h5 class="card-title"><i>Project Leader</i></h5>
+                  <p class="card-text">“Researching is not my passion, it is my life”</p>
+                  <p class="card-text">Phone number: <i>0898 986 370</i></p>
+                  <p class="card-text">Email: <i>duc.nguyenquang@hcmut.edu.vn</i></p>
+              </div>
+          </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 col-sm-12" style="margin-bottom: 30px;">
+          <div class="card">
+              <img class="card-img-top" src="{{ url_for('static', filename='images/vqnghia.jpg') }}" alt="VQNghia Image">
+              <div class="card-body">
+                  <h3 class="card-title">Võ Quang Nghĩa</h3>
+                  <h5 class="card-title"><i>Project Member</i></h5>
+                  <p class="card-text">Phone number: <i>0818 995 112</i></p>
+                  <p class="card-text">Email: <i>voquangnghiaqct@gmail.com</i></p>
+              </div>
+          </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 col-sm-12" style="margin-bottom: 30px;">
+          <div class="card">
+              <img class="card-img-top" src="{{ url_for('static', filename='images/drkhuong.jpg') }}" alt="Dr. Khuong Image">
+              <div class="card-body">
+                  <h3 class="card-title"><b>TS</b> Nguyễn An Khương</h3>
+                  <h5 class="card-title"><i>Advisor</i></h5>
+                  <p class="card-text">Phone number: <i>0973 734 678</i></p>
+                  <p class="card-text">Email: <i>nakhuong@hcmut.edu.vn</i></p>
+              </div>
+          </div>
+      </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-12" style="margin-bottom: 30px;">
+            <div class="card">
+                <img class="card-img-top" src="{{ url_for('static', filename='images/drtho.jpg') }}" alt="Dr. Tho Image">
+                <div class="card-body">
+                    <h3 class="card-title"><b>PGS TS</b> Quản Thành Thơ</h3>
+                    <h5 class="card-title"><i>Advisor</i></h5>
+                    <p class="card-text">Phone number: <i>0919 890 203</i></p>
+                    <p class="card-text">Email: <i>qttho@hcmut.edu.vn</i></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
