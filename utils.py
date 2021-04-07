@@ -35,8 +35,8 @@ def get_predict_by_step(ml_model, data, start, current, end=None, day_lag=10, re
         next_day[1] += next_day[2] + next_day[3]
         predict_data = np.append(predict_data, next_day[1:].reshape((-1, 1)), axis=1)
 
-    if return_param and current >= start:
-        for k in range(current - start):
+    if return_param and current >= start - day_lag:
+        for k in range(current - start + day_lag):
             s = current-k-day_lag
             e = current-k
             return_result = ml_model.predict([data[0][s:e], data[1][s:e], data[2][s:e]], return_param=return_param)

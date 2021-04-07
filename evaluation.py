@@ -41,9 +41,9 @@ if __name__ == '__main__':
             predict_data, list_param_byu = get_predict_by_step(becaked_model, data, args.start_date, args.start_date, end=args.end_date, day_lag=args.day_lag, return_param=True)
 
             if args.plot_prediction:
-                plot(data, predict_data, args.start_date, args.end_date, country="world", idx="")
+                plot(data, predict_data, args.start_date-args.day_lag, args.end_date, country="world", idx="")
             if args.plot_param:
-                plotParam(list_param_byu, args.start_date, args.end_date, country="world")
+                plotParam(list_param_byu, args.start_date-args.day_lag, args.end_date, country="world")
 
     ###################### COUNTRY LEVEL #############################
     if args.level == 1 or args.level == 2:
@@ -71,6 +71,6 @@ if __name__ == '__main__':
                     predict_data, list_param_byu = get_predict_by_step(becaked_model, data, args.start_date, args.start_date + i, end=args.end_date, day_lag=args.day_lag, return_param=True)
 
                     if args.plot_prediction:
-                        plot(data, predict_data, args.start_date, args.end_date, country=country, idx=str(i))
+                        plot(data, predict_data, args.start_date-args.day_lag, args.end_date, country=country, idx=str(i))
                     if args.plot_param:
-                        plotParam(list_param_byu, args.start_date, args.end_date, country=country, idx=str(i))
+                        plotParam(list_param_byu, args.start_date-args.day_lag, args.end_date, country=country, idx=str(i))
