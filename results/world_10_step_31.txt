@@ -1,0 +1,203 @@
+===================== WORLD =====================
+Loading saved model at models/world_10.h5
+Model: "model_1"
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_1 (InputLayer)            (None, 10, 4)        0                                            
+__________________________________________________________________________________________________
+lambda_1 (Lambda)               (None, 9, 4)         0           input_1[0][0]                    
+__________________________________________________________________________________________________
+lstm_1 (LSTM)                   (None, 9, 128)       68096       lambda_1[0][0]                   
+__________________________________________________________________________________________________
+lstm_2 (LSTM)                   (None, 9, 128)       131584      lstm_1[0][0]                     
+__________________________________________________________________________________________________
+flatten_1 (Flatten)             (None, 1152)         0           lstm_2[0][0]                     
+__________________________________________________________________________________________________
+dropout_1 (Dropout)             (None, 1152)         0           flatten_1[0][0]                  
+__________________________________________________________________________________________________
+dense_1 (Dense)                 (None, 256)          295168      dropout_1[0][0]                  
+__________________________________________________________________________________________________
+dropout_2 (Dropout)             (None, 256)          0           dense_1[0][0]                    
+__________________________________________________________________________________________________
+dense_2 (Dense)                 (None, 128)          32896       dropout_2[0][0]                  
+__________________________________________________________________________________________________
+dense_3 (Dense)                 (None, 3)            387         dense_2[0][0]                    
+__________________________________________________________________________________________________
+reshape_1 (Reshape)             (None, 3, 1)         0           dense_3[0][0]                    
+__________________________________________________________________________________________________
+lambda_2 (Lambda)               (None, 10, 4)        0           input_1[0][0]                    
+                                                                 reshape_1[0][0]                  
+==================================================================================================
+Total params: 528,131
+Trainable params: 528,131
+Non-trainable params: 0
+__________________________________________________________________________________________________
+****** Our Model ******
+R2:
+Total infectious: 0.9979068202259709
+Daily infectious 0.9805079823207175
+Recovered:  0.9878478034835119
+Deceased:  0.9890423289453655
+MAE:
+Total infectious: 76549.77602209391
+Daily infectious 70385.2562299467
+Recovered:  145647.81826094663
+Deceased:  4274.318559163998
+RMSE:
+Total infectious: 94186.64004434578
+Daily infectious 85066.58056453819
+Recovered:  154682.48743912886
+Deceased:  5097.378140338365
+MAPE:
+Total infectious: 0.005096309740111337
+Daily infectious 0.012688946477782367
+Recovered:  0.018693512011664408
+Deceased:  0.00676925407159766
+****** ARIMA ******
+R2:
+Total infectious: -2.841610368600331
+Daily infectious -2.3148161565234844
+Recovered:  -3.0776519355314864
+Deceased:  -2.811954483872047
+MAE:
+Total infectious: 3470310.1297781533
+Daily infectious 927019.3470241235
+Recovered:  2461634.082569193
+Deceased:  81656.70018483698
+RMSE:
+Total infectious: 4034992.17716409
+Daily infectious 1109328.8326386397
+Recovered:  2833471.386647359
+Deceased:  95073.9583520756
+MAPE:
+Total infectious: 0.2324336770976106
+Daily infectious 0.38969278025484905
+Recovered:  0.2922192543359306
+Deceased:  0.1324891554004107
+****** Ridge ******
+R2:
+Total infectious: 0.9877713448235917
+Daily infectious 0.3928995811253383
+Recovered:  0.762346560721734
+Deceased:  0.8847349276015439
+MAE:
+Total infectious: 199398.30086512797
+Daily infectious 415700.9567564662
+Recovered:  601026.0785216579
+Deceased:  12527.805655510296
+RMSE:
+Total infectious: 227654.0543078517
+Daily infectious 474745.4856208075
+Recovered:  684046.786739209
+Deceased:  16532.425960354274
+MAPE:
+Total infectious: 0.013466982817880835
+Daily infectious 0.0305242438493827
+Recovered:  0.07195101303376455
+Deceased:  0.01988664994465664
+****** Lasso ******
+R2:
+Total infectious: 0.9990731937084489
+Daily infectious 0.9226978176193569
+Recovered:  0.9665682506086509
+Deceased:  0.5364567835819263
+MAE:
+Total infectious: 42355.07681450152
+Daily infectious 140885.86615254136
+Recovered:  201308.04056703547
+Deceased:  25259.357937899305
+RMSE:
+Total infectious: 62673.0061315891
+Daily infectious 169405.0899234132
+Recovered:  256562.57551452614
+Deceased:  33153.76369333335
+MAPE:
+Total infectious: 0.0011246103649641117
+Daily infectious 0.003500066290991984
+Recovered:  0.01153463302521124
+Deceased:  0.040182757161573844
+****** SVR ******
+R2:
+Total infectious: -18.116171816208546
+Daily infectious -29.017407100490242
+Recovered:  -13.463955564977976
+Deceased:  -46.32486522746121
+MAE:
+Total infectious: 8762322.936151387
+Daily infectious 3282160.985579843
+Recovered:  5148729.670179075
+Deceased:  331432.2803924711
+RMSE:
+Total infectious: 9000911.721534697
+Daily infectious 3338236.9895355203
+Recovered:  5336509.596952612
+Deceased:  334990.44183463743
+MAPE:
+Total infectious: 0.6208477785777855
+Daily infectious 0.7888780449483245
+Recovered:  0.6475430619431441
+Deceased:  0.5585868503364789
+****** Decision Tree Regressor ******
+R2:
+Total infectious: -2.8416095230941316
+Daily infectious -2.3148148892129714
+Recovered:  -3.0776513445196123
+Deceased:  -2.8119523941838147
+MAE:
+Total infectious: 3470309.7419354836
+Daily infectious 927019.1612903225
+Recovered:  2461633.9032258065
+Deceased:  81656.67741935483
+RMSE:
+Total infectious: 4034991.733130109
+Daily infectious 1109328.6205809931
+Recovered:  2833471.181306722
+Deceased:  95073.9322926145
+MAPE:
+Total infectious: 0.23243365098982302
+Daily infectious 0.3896927466947236
+Recovered:  0.29221923301638
+Deceased:  0.132489118348005
+****** Random Forest Regressor ******
+R2:
+Total infectious: -2.996783340196118
+Daily infectious -2.442660505943552
+Recovered:  -3.245447450388194
+Deceased:  -2.953045607761477
+MAE:
+Total infectious: 3563803.191935484
+Daily infectious 952274.4512903217
+Recovered:  2527848.523225806
+Deceased:  83680.21741935483
+RMSE:
+Total infectious: 4115677.5593218594
+Daily infectious 1130518.5065362705
+Recovered:  2891182.391022725
+Deceased:  96817.44895297833
+MAPE:
+Total infectious: 0.23929572322664766
+Daily infectious 0.39887723082306903
+Recovered:  0.30097501783011116
+Deceased:  0.13594112004202455
+****** Gradient Boosting Regressor ******
+R2:
+Total infectious: -2.8459819957637458
+Daily infectious -2.321888658552752
+Recovered:  -3.080407577613636
+Deceased:  -2.822398898136729
+MAE:
+Total infectious: 3472978.6522401194
+Daily infectious 928434.505053212
+Recovered:  2462735.931637473
+Deceased:  81808.2155494347
+RMSE:
+Total infectious: 4037287.3690600223
+Daily infectious 1110511.6357851091
+Recovered:  2834428.6427361835
+Deceased:  95204.11632799728
+MAPE:
+Total infectious: 0.23262953910074435
+Daily infectious 0.3899894360675436
+Recovered:  0.29236495798816375
+Deceased:  0.13274763059967495
