@@ -1,4 +1,4 @@
-# BeCaked: An Explainable AI for COVID-19 Forecasting
+# BeCaked: An Explainable Artificial Intelligence Model For COVID-19 Forecasting
 
 ## How to use
 
