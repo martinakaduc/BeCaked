@@ -147,18 +147,6 @@ def init(run_predict=False, data_folder="./"):
         data_series[2].append(int(res[2]))
         data_series[3].append(int(res[3]))
 
-    i = 0
-    while i < 1000:
-        i += 1
-        res = becaked_model.predict([data_series[0][-10:], data_series[2][-10:], data_series[3][-10:]])[0][-1]
-        if (res[2] < data_series[2][-1] or res[3] < data_series[3][-1]):
-            break
-
-        data_series[0].append(int(res[1] + res[2] + res[3]))
-        data_series[1].append(int(res[1]))
-        data_series[2].append(int(res[2]))
-        data_series[3].append(int(res[3]))
-
     world_series_predict[0] = data_series[0][len(world_series_temp[0])-30:len(world_series_temp[0])+30]
     world_series_predict[1] = data_series[1][len(world_series_temp[0])-30:len(world_series_temp[0])+30]
     world_series_predict[2] = data_series[2][len(world_series_temp[0])-30:len(world_series_temp[0])+30]
@@ -189,7 +177,7 @@ def update_data():
     print("Updating data!")
     os.system("rm -rf COVID-19/csse_covid_19_data/csse_covid_19_time_series")
     os.system("svn checkout --force https://github.com/CSSEGISandData/COVID-19/trunk/csse_covid_19_data/csse_covid_19_time_series COVID-19/csse_covid_19_data/csse_covid_19_time_series")
-    time.sleep(15)
+    time.sleep(30)
     init(run_predict=True)
 
 if __name__ == "__main__":
