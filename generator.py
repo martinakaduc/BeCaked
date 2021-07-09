@@ -1,6 +1,6 @@
 from __future__ import division
 import numpy as np
-from keras.utils import Sequence
+from tensorflow.keras.utils import Sequence
 
 class DataGenerator(Sequence):
     """Generates data for Keras
