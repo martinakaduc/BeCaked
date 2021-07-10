@@ -1,8 +1,9 @@
 from __future__ import division
 import numpy as np
 import tensorflow as tf
+import tensorflow.keras as keras
 from tensorflow.keras.models import Sequential, Model, load_model
-from tensorflow.keras.layers import Input, LSTM, Dense, Activation, Concatenate, Add, Subtract, Multiply, Lambda, Reshape, Flatten, Dropout
+from tensorflow.keras.layers import Input, LSTM, Dense, Lambda, Reshape, Flatten, Dropout, GRU, BatchNormalization
 import tensorflow.keras.backend as K
 from tensorflow.keras.optimizers import RMSprop, Adam, SGD
 from tensorflow.keras.callbacks import LearningRateScheduler, ModelCheckpoint, EarlyStopping
@@ -177,19 +178,23 @@ class BeCakedModel():
         inputs = Input(shape=(day_lag, 4)) # S, I, R, D
 
         acce = Lambda(case_diff)(inputs)
-        enc_out, enc_state = tf.keras.layers.GRU(256,
+        enc_in, _ = GRU(256,
                           # Return the sequence and state
                           return_sequences=True,
                           return_state=True,
                           recurrent_initializer='glorot_uniform')(acce)
+        enc_out, enc_state = GRU(512,
+                          # Return the sequence and state
+                          return_sequences=True,
+                          return_state=True,
+                          recurrent_initializer='glorot_uniform')(enc_in)
 
-        att_out = SelfAttention(NUMBER_OF_HYPER_PARAM, 256)(enc_out)
-        att_out = Dense(128, activation="tanh")(att_out)
+        att_out = SelfAttention(1, 1024)(enc_out)
+        att_out = Flatten()(att_out)
+        att_out = Dense(512, activation="tanh")(att_out)
+        att_out = Dense(256, activation="tanh")(att_out)
 
-        beta = Dense(1, activation="linear")(att_out[:, 0])
-        gamma = Dense(1, activation="linear")(att_out[:, 1])
-        mu = Dense(1, activation="linear")(att_out[:, 2])
-        params = tf.concat([beta, gamma, mu], axis=-1)
+        params = Dense(3, activation="linear")(att_out)
 
         y_pred = Lambda(SIRD_layer)([inputs, params])
 
@@ -214,13 +219,13 @@ class BeCakedModel():
 
         lr_schedule = LearningRateScheduler(scheduler)
         optimizer = Adam(learning_rate=1e-6)
-        checkpoint = ModelCheckpoint(os.path.join('./ckpt', 'ckpt_%s_%d_{epoch:06d}.h5'%(name, self.day_lag)), period=5, save_best_only=True)
+        checkpoint = ModelCheckpoint(os.path.join('./ckpt', 'ckpt_%s_%d_{epoch:06d}.h5'%(name, self.day_lag)), period=10)
         early_stop = EarlyStopping(monitor="loss", patience=10)
 
         self.model.compile(optimizer=optimizer, loss="mean_squared_error", metrics=['mean_absolute_error'])
         self.model.fit_generator(generator=data_generator, epochs=epochs, callbacks=[lr_schedule, checkpoint, early_stop])
 
-        self.model.save_weights("%s_%d.h5"%(name, self.day_lag))
+        self.model.save_weights("models/%s_%d.h5"%(name, self.day_lag))
 
     def evaluate(self, confirmed, recovered, deaths):
         S = (self.initN - confirmed) * 100 / self.initN
@@ -273,7 +278,8 @@ if __name__ == '__main__':
     becaked_model = BeCakedModel()
     start = 161
     end = 223
+    data = data_loader.get_data_world_series()
 
-    ml_model.train(data[0][0:start], data[1][0:start], data[2][0:start], epochs=500)
+    becaked_model.train(data[0][:start], data[1][:start], data[2][:start], epochs=500)
 
-    print(ml_model.evaluate(data[0][start-10:end], data[1][start-10:end], data[2][start-10:end]))
+    print(becaked_model.evaluate(data[0][start-10:end], data[1][start-10:end], data[2][start-10:end]))
