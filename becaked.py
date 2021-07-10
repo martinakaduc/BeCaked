@@ -3,11 +3,11 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
 from tensorflow.keras.models import Sequential, Model, load_model
-from tensorflow.keras.layers import Input, LSTM, Dense, Lambda, Reshape, Flatten, Dropout, GRU, BatchNormalization
+from tensorflow.keras.layers import Input, LSTM, Dense, Lambda, Reshape, Flatten, Dropout, GRU, BatchNormalization, Dot, Concatenate, Activation
 import tensorflow.keras.backend as K
 from tensorflow.keras.optimizers import RMSprop, Adam, SGD
 from tensorflow.keras.callbacks import LearningRateScheduler, ModelCheckpoint, EarlyStopping
-from keras.layers import Layer
+from tensorflow.keras.layers import Layer
 import os
 from data_utils import *
 from utils import *
@@ -16,91 +16,42 @@ from generator import *
 DAYS = 10
 NUMBER_OF_HYPER_PARAM = 3
 
-class SelfAttention(Layer):
-    def __init__(self,
-                 aspect_size,
-                 hidden_dim,
-                 penalty=1.0,
-                 return_attention=False,
-                 kernel_initializer='glorot_uniform',
-                 kernel_regularizer=None,
-                 kernel_constraint=None,
-                 **kwargs):
-        self.aspect_size = aspect_size
-        self.hidden_dim = hidden_dim
-        self.penalty = penalty
-        self.kernel_initializer = keras.initializers.get(kernel_initializer)
-        self.kernel_regularizer = keras.regularizers.get(kernel_regularizer)
-        self.kernel_constraint = keras.constraints.get(kernel_constraint)
-        self.return_attention = return_attention
-        super(SelfAttention, self).__init__(**kwargs)
+class Attention(Layer):
+    def __init__(self, units=128, **kwargs):
+        self.units = units
+        super().__init__(**kwargs)
 
-    def build(self, input_shape):
-        # input_shape: (None, Sequence_size, Sequence_hidden_dim)
-        assert len(input_shape) >= 3
-        batch_size, sequence_size, sequence_hidden_dim = input_shape
-
-        self.Ws1 = self.add_weight(shape=(self.hidden_dim, sequence_hidden_dim),
-                                      initializer=self.kernel_initializer,
-                                      name='SelfAttention-Ws1',
-                                      regularizer=self.kernel_regularizer,
-                                      constraint=self.kernel_constraint)
-
-        self.Ws2 = self.add_weight(shape=(self.aspect_size, self.hidden_dim),
-                                      initializer=self.kernel_initializer,
-                                      name='SelfAttention-Ws2',
-                                      regularizer=self.kernel_regularizer,
-                                      constraint=self.kernel_constraint)
-
-        super(SelfAttention, self).build(input_shape)
-
-    def call(self, inputs):
-        batch_size = K.cast(K.shape(inputs)[0], K.floatx())
-        inputs_t = K.permute_dimensions(inputs, (1,2,0)) # H.T
-        d1 = K.tanh(K.permute_dimensions(K.dot(self.Ws1, inputs_t), (2,0,1))) # d1 = tanh(dot(Ws1, H.T))
-        d1 = K.permute_dimensions(d1, (2,1,0))
-        A = K.softmax(K.permute_dimensions(K.dot(self.Ws2, d1), (2,0,1))) # A = softmax(dot(Ws2, d1))
-        H = K.permute_dimensions(inputs, (0,2,1))
-        outputs = K.batch_dot(A, H, axes=2) # M = AH
-
-        A_t = K.permute_dimensions(A, (0,2,1))
-        I = K.eye(self.aspect_size)
-        P = K.square(self._frobenius_norm(K.batch_dot(A, A_t) - I)) # P = (frobenius_norm(dot(A, A.T) - I))**2
-        self.add_loss(self.penalty*(P/batch_size))
-
-        if self.return_attention:
-            return [outputs, A]
-        else:
-            return outputs
-
-    def compute_output_shape(self, input_shape):
-        assert input_shape and len(input_shape) >= 3
-        assert input_shape[-1]
-        batch_size, sequence_size, sequence_hidden_dim = input_shape
-        output_shape = tuple([batch_size, self.aspect_size, sequence_hidden_dim])
-
-        if self.return_attention:
-            attention_shape = tuple([batch_size, self.aspect_size, sequence_size])
-            return [output_shape, attention_shape]
-        else: return output_shape
-
+    def __call__(self, inputs):
+        """
+        Many-to-one attention mechanism for Keras.
+        @param inputs: 3D tensor with shape (batch_size, time_steps, input_dim).
+        @return: 2D tensor with shape (batch_size, 128)
+        @author: felixhao28, philipperemy.
+        """
+        hidden_states = inputs
+        hidden_size = int(hidden_states.shape[2])
+        # Inside dense layer
+        #              hidden_states            dot               W            =>           score_first_part
+        # (batch_size, time_steps, hidden_size) dot (hidden_size, hidden_size) => (batch_size, time_steps, hidden_size)
+        # W is the trainable weight matrix of attention Luong's multiplicative style score
+        score_first_part = Dense(hidden_size, use_bias=False, name='attention_score_vec')(hidden_states)
+        #            score_first_part           dot        last_hidden_state     => attention_weights
+        # (batch_size, time_steps, hidden_size) dot   (batch_size, hidden_size)  => (batch_size, time_steps)
+        h_t = Lambda(lambda x: x[:, -1, :], output_shape=(hidden_size,), name='last_hidden_state')(hidden_states)
+        score = Dot(axes=[1, 2], name='attention_score')([h_t, score_first_part])
+        attention_weights = Activation('softmax', name='attention_weight')(score)
+        # (batch_size, time_steps, hidden_size) dot (batch_size, time_steps) => (batch_size, hidden_size)
+        context_vector = Dot(axes=[1, 1], name='context_vector')([hidden_states, attention_weights])
+        pre_activation = Concatenate(name='attention_output')([context_vector, h_t])
+        attention_vector = Dense(self.units, use_bias=False, activation='tanh', name='attention_vector')(pre_activation)
+        return attention_vector
 
     def get_config(self):
-        config = {
-            'aspect_size': self.aspect_size,
-            'hidden_dim': self.hidden_dim,
-            'penalty':self.penalty,
-            'return_attention': self.return_attention,
-            'kernel_initializer': initializers.serialize(self.kernel_initializer),
-            'kernel_regularizer': regularizers.serialize(self.kernel_regularizer),
-            'kernel_constraint': constraints.serialize(self.kernel_constraint)
-        }
-        base_config = super(SelfAttention, self).get_config()
-        return dict(list(base_config.items()) + list(config.items()))
+        return {'units': self.units}
 
-    def _frobenius_norm(self, inputs):
-        outputs = K.sqrt(K.sum(K.square(inputs)))
-        return outputs
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 def SIRD_layer(tensors):
     input_raw, x = tensors
@@ -189,7 +140,7 @@ class BeCakedModel():
                           return_state=True,
                           recurrent_initializer='glorot_uniform')(enc_in)
 
-        att_out = SelfAttention(1, 1024)(enc_out)
+        att_out = Attention(1024)(enc_out)
         att_out = Flatten()(att_out)
         att_out = Dense(512, activation="tanh")(att_out)
         att_out = Dense(256, activation="tanh")(att_out)
