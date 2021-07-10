@@ -134,15 +134,14 @@ class BeCakedModel():
                           return_sequences=True,
                           return_state=True,
                           recurrent_initializer='glorot_uniform')(acce)
-        enc_out, enc_state = GRU(512,
+        enc_out, enc_state = GRU(256,
                           # Return the sequence and state
                           return_sequences=True,
                           return_state=True,
                           recurrent_initializer='glorot_uniform')(enc_in)
 
-        att_out = Attention(1024)(enc_out)
+        att_out = Attention(512)(enc_out)
         att_out = Flatten()(att_out)
-        att_out = Dense(512, activation="tanh")(att_out)
         att_out = Dense(256, activation="tanh")(att_out)
 
         params = Dense(3, activation="linear")(att_out)
