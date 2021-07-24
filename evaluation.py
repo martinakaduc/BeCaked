@@ -31,7 +31,7 @@ if __name__ == '__main__':
     if not os.path.exists(args.image_folder):
         os.makedirs(args.image_folder)
 
-    data_loader = DataLoader(args.ward)
+    data_loader = DataLoader(ward_name=args.ward)
 
     if args.level == 0 or args.level == 2:
         print("===================== WORLD =====================")
