@@ -16,7 +16,7 @@ class DataLoader():
         self.deaths = self.deaths_obj[ward_name].to_numpy()
         self.recovered = self.recovered_obj[ward_name].to_numpy()
         self.beta = np.zeros_like(self.infectious,dtype=self.infectious.dtype)
-        self.N = self.N_obj.[ward_name].to_numpy()
+        self.N = self.N_obj[ward_name].to_numpy()
 
         self.total_day = len(self.infectious)
         print(self.infectious_obj.Date.to_list()[-1])
