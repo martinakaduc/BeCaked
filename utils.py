@@ -15,7 +15,7 @@ from sklearn.preprocessing import StandardScaler
 from datetime import datetime, timedelta
 import matplotlib.ticker as plticker
 
-def get_list_date(start=datetime(2021,6,29) + timedelta(10), length=50):
+def get_list_date(start=datetime(2021,7,9) + timedelta(10), length=50):
     temp = [(start + timedelta(days=i)).strftime("%d\n/%m") for i in range(length)]
     return temp
 
@@ -76,9 +76,9 @@ def get_predict_result_1(ml_model, data, start, current, end=None, day_lag=10, r
             return_result = ml_model.predict([data[0][s:e], data[1][s:e], data[2][s:e], data[3][s:e], data[4][s:e]], return_param=return_param)
             next_day, param_byu = return_result
             list_param_byu.insert(0, param_byu[0])
-    
+
     return predict_data, np.array(list_param_byu)
-        
+
 
 
 
@@ -206,7 +206,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
 
     # predict_plot = predict_data[1][start:]
     # ax7.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predict")
-    
+
     # real_plot = data[1][start:end]
     # ax7.plot(list(range(start, end)), real_plot, label="Actual")
 
@@ -240,7 +240,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
 
     # predict_plot = predict_data[0][start:]
     # ax8.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predict")
-    
+
     # real_plot = data[0][start:end]
     # ax8.plot(list(range(start, end)), real_plot, label="Actual")
 
@@ -274,7 +274,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
 
     predict_plot = predict_data[1][start:]
     ax1.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predicted")
-    
+
     real_plot = data[1][start:end]
     ax1.plot(list(range(start, end)), real_plot, label="Actual")
 
@@ -384,7 +384,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
 
     # real_plot = data[0][start:end]
     # ax6.plot(list(range(start, end)), real_plot, label="Actual")
-    
+
     # # length = end-start
     # length = len(predict_plot)
     # x = np.arange(start,start+len(predict_plot))

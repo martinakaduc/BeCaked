@@ -20,6 +20,7 @@ if __name__ == '__main__':
     parser.add_argument('--plot_prediction', help='Wheather to plot prediction.', type=bool, default=False)
     parser.add_argument('--plot_param', help='Wheather to plot parameters.', type=bool, default=False)
     parser.add_argument('--image_folder', help='Where to save plotted pictures.', type=str, default="./images")
+    parser.add_argument('--ward', help='Ward name', type=str, default="HCM")
     parser.add_argument('--cuda', help='Enable cuda', type=int, default=0)
     parser.add_argument('--img_note', help='figname', type=str, default="")
     args = parser.parse_args()
@@ -30,16 +31,16 @@ if __name__ == '__main__':
     if not os.path.exists(args.image_folder):
         os.makedirs(args.image_folder)
 
-    data_loader = DataLoader()
+    data_loader = DataLoader(args.ward)
 
     if args.level == 0 or args.level == 2:
         print("===================== WORLD =====================")
-        becaked_model = BeCakedModel(day_lag=args.day_lag)
+        becaked_model = BeCakedModel(population=data_loader.N, day_lag=args.day_lag)
         data = data_loader.get_data_world_series()
         print(len(data[0]))
         if not os.path.exists("models/%s_%d.h5" % ("world", args.day_lag)):
             print("Model does not exist. Trying to train...")
-            becaked_model.train(data[0][args.start_train_date:args.end_train_date], data[1][args.start_train_date:args.end_train_date], data[2][args.start_train_date:args.end_train_date], data[3][args.start_train_date:args.end_train_date], data[4][args.start_train_date:args.end_train_date], data[5][args.start_train_date:args.end_train_date], epochs=500)
+            becaked_model.train(data[0][args.start_train_date:args.end_train_date], data[1][args.start_train_date:args.end_train_date], data[2][args.start_train_date:args.end_train_date], data[3][args.start_train_date:args.end_train_date], data[4][args.start_train_date:args.end_train_date], data[5][args.start_train_date:args.end_train_date], epochs=1000)
 
         if args.run_comparison:
             get_all_compare(data, becaked_model, args.start_date, args.end_date, step=args.step, day_lag=args.day_lag)

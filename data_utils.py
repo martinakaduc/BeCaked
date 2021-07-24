@@ -4,19 +4,19 @@ import pandas as pd
 import os
 
 class DataLoader():
-    def __init__(self, folder="COVID-19/HCM/"):
+    def __init__(self, folder="COVID-19/HCM/", ward_name="HCM"):
         self.infectious_obj = pd.read_excel(os.path.join(folder, "SEIRD_data_12_7_2021.xlsx"), sheet_name="Infectious")
         self.deaths_obj = pd.read_excel(os.path.join(folder, "SEIRD_data_12_7_2021.xlsx"), sheet_name="Deaths")
         self.recovered_obj = pd.read_excel(os.path.join(folder, "SEIRD_data_12_7_2021.xlsx"), sheet_name="Recovered")
         self.exposed_obj = pd.read_excel(os.path.join(folder, "SEIRD_data_12_7_2021.xlsx"), sheet_name="Exposed")
         self.N_obj = pd.read_excel(os.path.join(folder, "SEIRD_data_12_7_2021.xlsx"), sheet_name="Population")
 
-        self.exposed = self.exposed_obj.HCM.to_numpy()
-        self.infectious = self.infectious_obj.HCM.to_numpy()
-        self.deaths = self.deaths_obj.HCM.to_numpy()
-        self.recovered = self.recovered_obj.HCM.to_numpy()
+        self.exposed = self.exposed_obj[ward_name].to_numpy()
+        self.infectious = self.infectious_obj[ward_name].to_numpy()
+        self.deaths = self.deaths_obj[ward_name].to_numpy()
+        self.recovered = self.recovered_obj[ward_name].to_numpy()
         self.beta = np.zeros_like(self.infectious,dtype=self.infectious.dtype)
-        self.N = self.N_obj.HCM.to_numpy()
+        self.N = self.N_obj.[ward_name].to_numpy()
 
         self.total_day = len(self.infectious)
         print(self.infectious_obj.Date.to_list()[-1])

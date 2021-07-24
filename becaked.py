@@ -60,7 +60,7 @@ def SIRD_layer(tensors):
     input_raw, x = tensors
     #input_raw: [S,E,I,R,D,beta]
     #x: [gamma,muy,eta,xi,theta,sigma,beta_bar]
- 
+
 
     # S = S - beta*S*E + xi*R - theta*S
     S = tf.add(
@@ -73,7 +73,7 @@ def SIRD_layer(tensors):
                     tf.multiply(x[:,4],input_raw[:,:,0])
                     )
             )
-    
+
 
     # E = E + beta*S*E - eta*E
     E = tf.add(
@@ -132,7 +132,7 @@ def SIRD_layer(tensors):
         input_raw[:,:,0],
         tf.add(input_raw[:,:,1],input_raw[:,:,3])
     )
-    
+
     out = tf.stack([S, E, I, R, D, beta, N], axis=-1)
     return out
 
@@ -183,11 +183,10 @@ class BeCakedModel():
         att_out = Flatten()(att_out)
 
         dn_1 = Dense(num_hidden, activation="tanh")(att_out)
-        dl_1 = Dense(num_hidden, activation="linear")(att_out)
-        d1 = Concatenate()([dn_1, dl_1])
-        
+        # dl_1 = Dense(num_hidden, activation="linear")(att_out)
+        # d1 = Concatenate()([dn_1, dl_1])
 
-        params = Dense(NUMBER_OF_HYPER_PARAM, activation="relu")(dn_1)  # gamma, muy, eta, xi, theta, sigma, beta_bar
+        params = Dense(NUMBER_OF_HYPER_PARAM, activation="tanh")(dn_1)  # gamma, muy, eta, xi, theta, sigma, beta_bar
 
         y_pred = Lambda(SIRD_layer)([inputs, params])
 
@@ -227,7 +226,7 @@ class BeCakedModel():
 
         self.model.compile(optimizer=optimizer, loss=self.my_mean_squared_error, metrics=['mean_absolute_error'])
         self.model.fit_generator(generator=data_generator, epochs=epochs, callbacks=[lr_schedule, checkpoint, early_stop], verbose=0)
-        
+
         # self.model.save_weights("models/%s_%d.h5"%(name, self.day_lag))
 
     def evaluate(self, exposed, infectious, recovered, deaths):
