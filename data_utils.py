@@ -4,27 +4,25 @@ import pandas as pd
 import os
 
 class DataLoader():
-    def __init__(self, folder="COVID-19/csse_covid_19_data/csse_covid_19_time_series/"):
-        self.confirmed_obj = pd.read_csv(os.path.join(folder, "time_series_covid19_confirmed_global.csv"))
-        self.deaths_obj = pd.read_csv(os.path.join(folder, "time_series_covid19_deaths_global.csv"))
-        self.recovered_obj = pd.read_csv(os.path.join(folder, "time_series_covid19_recovered_global.csv"))
+    def __init__(self, folder="COVID-19/HCM/"):
+        self.infectious_obj = pd.read_excel(os.path.join(folder, "SEIRD_data_12_7_2021.xlsx"), sheet_name="Infectious")
+        self.deaths_obj = pd.read_excel(os.path.join(folder, "SEIRD_data_12_7_2021.xlsx"), sheet_name="Deaths")
+        self.recovered_obj = pd.read_excel(os.path.join(folder, "SEIRD_data_12_7_2021.xlsx"), sheet_name="Recovered")
+        self.exposed_obj = pd.read_excel(os.path.join(folder, "SEIRD_data_12_7_2021.xlsx"), sheet_name="Exposed")
+        self.N_obj = pd.read_excel(os.path.join(folder, "SEIRD_data_12_7_2021.xlsx"), sheet_name="Population")
 
-        self.confirmed = [sum(self.confirmed_obj[key]) for key in self.confirmed_obj.keys()[4:]]
-        self.deaths = [sum(self.deaths_obj[key]) for key in self.deaths_obj.keys()[4:]]
-        self.recovered = [sum(self.recovered_obj[key]) for key in self.recovered_obj.keys()[4:]]
-        self.total_day = len(self.confirmed_obj.keys()) - 4
+        self.exposed = self.exposed_obj.HCM.to_numpy()
+        self.infectious = self.infectious_obj.HCM.to_numpy()
+        self.deaths = self.deaths_obj.HCM.to_numpy()
+        self.recovered = self.recovered_obj.HCM.to_numpy()
+        self.beta = np.zeros_like(self.infectious,dtype=self.infectious.dtype)
+        self.N = self.N_obj.HCM.to_numpy()
 
-        countries_temp = self.confirmed_obj.values[:,:4]
-        self.countries = [list(set([x[1] for x in countries_temp])), []]
-
-        for x in self.countries[0]:
-            list_loc = np.where(countries_temp == x)[0]
-            lat_long = countries_temp[list_loc][:,-2:]
-            mean_loc = np.nanmean(lat_long, axis=0)
-            self.countries[1].append(mean_loc.tolist())
+        self.total_day = len(self.infectious)
+        print(self.infectious_obj.Date.to_list()[-1])
 
     def get_data_world_series(self):
-        return np.array([np.array(self.confirmed), np.array(self.recovered), np.array(self.deaths)], dtype=np.float64)
+        return np.array([self.exposed, self.infectious, self.recovered, self.deaths, self.beta, self.N], dtype=np.float64)
 
     def get_data_countries_series(self):
         confirmed = {x:np.zeros((self.total_day,), dtype=int) for x in self.countries[0]}
@@ -78,5 +76,5 @@ class DataLoader():
         return self.countries
 
     def get_current_day(self):
-        day_time= self.confirmed_obj.keys()[-1].split('/')
+        day_time= self.infectious_obj.iloc[len(self.infectious_obj) - 1]
         return '%s-%s-%s' % ('20'+day_time[2], '%.2d'%int(day_time[0]), day_time[1])

@@ -3,6 +3,9 @@ from data_utils import DataLoader
 from utils import *
 import argparse
 
+float_formatter = "{:.6f}".format
+np.set_printoptions(formatter={'float_kind':float_formatter})
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--level', help='0: world; 1: countries; 2: both', type=int, default=0)
@@ -10,11 +13,15 @@ if __name__ == '__main__':
     parser.add_argument('--step', help='The number of forecasting step.', type=int, default=1)
     parser.add_argument('--start_date', help='The start day from which to make prediction.', type=int, default=161)
     parser.add_argument('--end_date', help='The end date of prediction.', type=int, default=192)
+    parser.add_argument('--start_train_date', help='The start date of trainning set.', type=int, default=0)
+    parser.add_argument('--end_train_date', help='The end date of trainning set.', type=int, default=53)
+    parser.add_argument('--infer_date', help='The end date of inference.', type=int, default=10)
     parser.add_argument('--run_comparison', help='Wheather to compare model.', type=bool, default=False)
     parser.add_argument('--plot_prediction', help='Wheather to plot prediction.', type=bool, default=False)
     parser.add_argument('--plot_param', help='Wheather to plot parameters.', type=bool, default=False)
     parser.add_argument('--image_folder', help='Where to save plotted pictures.', type=str, default="./images")
     parser.add_argument('--cuda', help='Enable cuda', type=int, default=0)
+    parser.add_argument('--img_note', help='figname', type=str, default="")
     args = parser.parse_args()
 
     if args.cuda == 0:
@@ -29,19 +36,25 @@ if __name__ == '__main__':
         print("===================== WORLD =====================")
         becaked_model = BeCakedModel(day_lag=args.day_lag)
         data = data_loader.get_data_world_series()
-
+        print(len(data[0]))
         if not os.path.exists("models/%s_%d.h5" % ("world", args.day_lag)):
             print("Model does not exist. Trying to train...")
-            becaked_model.train(data[0][:args.start_date], data[1][:args.start_date], data[2][:args.start_date], epochs=500)
+            becaked_model.train(data[0][args.start_train_date:args.end_train_date], data[1][args.start_train_date:args.end_train_date], data[2][args.start_train_date:args.end_train_date], data[3][args.start_train_date:args.end_train_date], data[4][args.start_train_date:args.end_train_date], data[5][args.start_train_date:args.end_train_date], epochs=500)
 
         if args.run_comparison:
             get_all_compare(data, becaked_model, args.start_date, args.end_date, step=args.step, day_lag=args.day_lag)
 
         if args.plot_prediction or args.plot_param:
-            predict_data, list_param_byu = get_predict_by_step(becaked_model, data, args.start_date, args.start_date, end=args.end_date, day_lag=args.day_lag, return_param=True)
+            predict_data_0, list_param_byu_0 = get_predict_result_1(becaked_model, data, args.start_date, args.end_date, end=args.end_date, day_lag=args.day_lag, return_param=True)
+            predict_data_1, list_param_byu_1 = get_predict_by_step(becaked_model, data, args.end_date, args.end_date, end=args.end_date + args.infer_date, day_lag=args.day_lag, return_param=True)
 
+            predict_data = np.append(predict_data_0,predict_data_1[:,args.end_date:],axis=1)
+            list_param_byu = np.append(list_param_byu_0, list_param_byu_1[args.end_date:], axis=0)
+
+            # print(predict_data[1])
+            print(list_param_byu)
             if args.plot_prediction:
-                plot(data, predict_data, args.start_date-args.day_lag, args.end_date, country="world", idx="")
+                plot(data, predict_data, args.start_date-args.day_lag, args.end_date, country="world", idx=args.img_note)
             if args.plot_param:
                 plotParam(list_param_byu, args.start_date-args.day_lag, args.end_date, country="world")
 
