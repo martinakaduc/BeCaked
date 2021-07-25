@@ -55,7 +55,7 @@ if __name__ == '__main__':
             # print(predict_data[1])
             print(list_param_byu)
             if args.plot_prediction:
-                plot(data, predict_data, args.start_date-args.day_lag, args.end_date, country="world", idx=args.img_note)
+                plot(data, predict_data, args.start_date-args.day_lag, args.end_date, country=args.ward, idx=args.img_note)
             if args.plot_param:
                 plotParam(list_param_byu, args.start_date-args.day_lag, args.end_date, country="world")
 

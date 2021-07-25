@@ -15,7 +15,7 @@ from sklearn.preprocessing import StandardScaler
 from datetime import datetime, timedelta
 import matplotlib.ticker as plticker
 
-def get_list_date(start=datetime(2021,7,9) + timedelta(10), length=50):
+def get_list_date(start=datetime(2021,6,26), length=50):
     temp = [(start + timedelta(days=i)).strftime("%d\n/%m") for i in range(length)]
     return temp
 
@@ -268,7 +268,8 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     #################################################
 
     fig, ax1 = plt.subplots(1,1)
-    fig.suptitle('CT16: 9/7/2021\nDaily Infectious')
+    fig.suptitle('CT16: 9/7/2021 - Daily Infectious')
+    ax1.set_title(country)
     ax1.set_xlabel("Days")
     ax1.set_ylabel("Cases")
 
@@ -282,20 +283,20 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     print(*[str(x) + '\t' + str(y) for x,y in zip(real_plot,predict_plot[:len(real_plot)])][10:],sep='\n')
     print(predict_plot[len(real_plot):])
 
-    # length = end-start
-    length = len(predict_plot)
-    x = np.arange(start,start+length)
-    xticks = get_list_date(length=length)
+    # length = end-start + 10
+    length = len(predict_plot) + 4
+    x = np.arange(start,start+length)[::2]
+    xticks = get_list_date(length=length)[::2]
     ax1.set(xticks=x, xticklabels=xticks)
-    loc = plticker.MultipleLocator(base=length//12) # this locator puts ticks at regular intervals
+    loc = plticker.MultipleLocator(base=2) # this locator puts ticks at regular intervals
     ax1.xaxis.set_major_locator(loc)
 
     plt.legend()
-    if country:
-        if not os.path.exists('images/%s'%country):
-            os.makedirs('images/%s'%country)
+    # if country:
+    #     if not os.path.exists('images/%s'%country):
+    #         os.makedirs('images/%s'%country)
 
-        country += "/"
+    #     country += "/"
 
     plt.savefig('/content/drive/MyDrive/Becaked/images/plot_daily_infectious%s.png'%(idx))
     plt.close()
