@@ -268,16 +268,16 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     #################################################
 
     fig, ax1 = plt.subplots(1,1)
-    fig.suptitle('CT16: 9/7/2021 - Daily Infectious')
+    fig.suptitle('Dự báo ca nhiễm theo ngày')
     ax1.set_title(country)
-    ax1.set_xlabel("Days")
-    ax1.set_ylabel("Cases")
+    ax1.set_xlabel("Ngày")
+    ax1.set_ylabel("Ca nhiễm")
 
     predict_plot = predict_data[1][start:]
-    ax1.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predicted")
+    ax1.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
     real_plot = data[1][start:end]
-    ax1.plot(list(range(start, end)), real_plot, label="Actual")
+    ax1.plot(list(range(start, end)), real_plot, label="Thực tế")
 
     print('Actual\tPredicted')
     print(*[str(x) + '\t' + str(y) for x,y in zip(real_plot,predict_plot[:len(real_plot)])][10:],sep='\n')
