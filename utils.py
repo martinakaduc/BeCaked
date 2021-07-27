@@ -292,13 +292,13 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     ax1.xaxis.set_major_locator(loc)
 
     plt.legend()
-    # if country:
-    #     if not os.path.exists('images/%s'%country):
-    #         os.makedirs('images/%s'%country)
+    if country:
+        if not os.path.exists('images/%s'%country):
+            os.makedirs('images/%s'%country)
 
-    #     country += "/"
+        country += "/"
 
-    plt.savefig('/content/drive/MyDrive/Becaked/images/plot_daily_infectious%s.png'%(idx))
+    plt.savefig('images/%splot_daily_infectious%s.png'%(country,idx))
     plt.close()
 
     # #################################################
