@@ -225,7 +225,7 @@ class BeCakedModel():
         early_stop = EarlyStopping(monitor="loss", patience=50)
 
         self.model.compile(optimizer=optimizer, loss=self.my_mean_squared_error, metrics=['mean_absolute_error'])
-        self.model.fit(generator=data_generator, epochs=epochs, callbacks=[lr_schedule, checkpoint, early_stop], verbose=0)
+        self.model.fit(data_generator, epochs=epochs, callbacks=[lr_schedule, checkpoint, early_stop], verbose=0)
 
         # self.model.save_weights("models/%s_%d.h5"%(name, self.day_lag))
 
