@@ -221,11 +221,11 @@ class BeCakedModel():
 
         lr_schedule = LearningRateScheduler(scheduler)
         optimizer = Adam(learning_rate=1e-5)
-        checkpoint = ModelCheckpoint(os.path.join('./ckpt', 'ckpt_%s_%d_{epoch:06d}.h5'%(name, self.day_lag)), period=10)
+        checkpoint = ModelCheckpoint(os.path.join('./ckpt', 'ckpt_%s_%d_{epoch:06d}.h5'%(name, self.day_lag)), save_freq=10)
         early_stop = EarlyStopping(monitor="loss", patience=50)
 
         self.model.compile(optimizer=optimizer, loss=self.my_mean_squared_error, metrics=['mean_absolute_error'])
-        self.model.fit_generator(generator=data_generator, epochs=epochs, callbacks=[lr_schedule, checkpoint, early_stop], verbose=0)
+        self.model.fit(generator=data_generator, epochs=epochs, callbacks=[lr_schedule, checkpoint, early_stop], verbose=0)
 
         # self.model.save_weights("models/%s_%d.h5"%(name, self.day_lag))
 
