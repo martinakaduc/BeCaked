@@ -19,10 +19,6 @@ DAYS = 10
 NUMBER_OF_HYPER_PARAM = 7
 NUM_HIDDEN = 128
 
-gpus = tf.config.experimental.list_physical_devices('GPU')
-for i in range(len(gpus)):
-    tf.config.experimental.set_memory_growth(gpus[i], True)
-
 class Attention(Layer):
     def __init__(self, units=128, **kwargs):
         self.units = units
