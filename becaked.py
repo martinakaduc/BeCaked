@@ -22,7 +22,7 @@ NUM_HIDDEN = 128
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True  # don't pre-allocate memory; allocate as-needed
 config.gpu_options.per_process_gpu_memory_fraction = 0.5  # limit memory to be allocated
-tf.set_session(tf.Session(config=config))
+keras.backend.set_session(tf.Session(config=config))
 
 class Attention(Layer):
     def __init__(self, units=128, **kwargs):
