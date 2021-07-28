@@ -1,5 +1,5 @@
 #!/bin/bash
-export TIMES=61
+export TIMES=62
 
 echo "QUAN 1"
 for i in {1..30}
