@@ -1,0 +1,9 @@
+name: becaked
+dependencies:
+- pip
+- python=3.8
+- anaconda
+- tensorflow=2.5.0
+- scikit-learn
+- statsmodels
+- numpy=1.19.5
