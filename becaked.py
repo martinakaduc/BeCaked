@@ -180,13 +180,11 @@ class BeCakedModel():
                           recurrent_initializer='glorot_uniform')(enc_in, initial_state=enc_state)
 
         att_out = Attention(2*num_hidden)(enc_out)
-        att_out = Flatten()(att_out)
 
         dn_1 = Dense(num_hidden, activation="tanh")(att_out)
-        # dl_1 = Dense(num_hidden, activation="linear")(att_out)
-        # d1 = Concatenate()([dn_1, dl_1])
 
         params = Dense(NUMBER_OF_HYPER_PARAM, activation="tanh")(dn_1)  # gamma, muy, eta, xi, theta, sigma, beta_bar
+        params = Reshape((NUMBER_OF_HYPER_PARAM, 1))(params)
 
         y_pred = Lambda(SIRD_layer)([inputs, params])
 
