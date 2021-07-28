@@ -1,5 +1,6 @@
 from becaked import BeCakedModel
 from data_utils import DataLoader
+import tensorflow as tf
 from utils import *
 import argparse
 
@@ -22,11 +23,17 @@ if __name__ == '__main__':
     parser.add_argument('--image_folder', help='Where to save plotted pictures.', type=str, default="./images")
     parser.add_argument('--ward', help='Ward name', type=str, default="HCM")
     parser.add_argument('--cuda', help='Enable cuda', type=int, default=0)
+    parser.add_argument('--limit_gpu', help='Limit GPU', type=int, default=1)
     parser.add_argument('--img_note', help='figname', type=str, default="")
     args = parser.parse_args()
 
     if args.cuda == 0:
         os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+    else if args.limit_gpu == 1:
+        config = tf.compat.v1.ConfigProto()
+        config.gpu_options.allow_growth = True  # don't pre-allocate memory; allocate as-needed
+        config.gpu_options.per_process_gpu_memory_fraction = 0.33  # limit memory to be allocated
+        tf.keras.backend.set_session(tf.compat.v1.Session(config=config))
 
     if not os.path.exists(args.image_folder):
         os.makedirs(args.image_folder)
