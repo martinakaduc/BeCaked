@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     if args.cuda == 0:
         os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-    else if args.limit_gpu == 1:
+    elif args.limit_gpu == 1:
         config = tf.compat.v1.ConfigProto()
         config.gpu_options.allow_growth = True  # don't pre-allocate memory; allocate as-needed
         config.gpu_options.per_process_gpu_memory_fraction = 0.33  # limit memory to be allocated
