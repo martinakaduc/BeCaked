@@ -325,37 +325,59 @@ def plot(data, predict_data, start, end, country="world", idx=""):
 
     # #################################################
 
-    # fig3, ax3 = plt.subplots(1,1)
-    # fig3.suptitle('Comparison of actual and predicted recovered cases')
-    # ax3.set_xlabel("Days")
-    # ax3.set_ylabel("Cases")
+    fig3, ax3 = plt.subplots(1,1)
+    fig3.suptitle('Dự báo ca hồi phục tích lũy')
+    ax3.set_title(country)
+    ax3.set_xlabel("Ngày")
+    ax3.set_ylabel("Ca nhiễm")
 
-    # real_plot = data[2][start:end]
-    # ax3.plot(list(range(start, end)), data[2][start:end], label="Actual recovered")
+    predict_plot = predict_data[2][start:]
+    ax3.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
-    # predict_plot = predict_data[2][start:end]
-    # ax3.plot(list(range(start, end)), predict_data[2][start:end], label="Predicted recovered")
+    real_plot = data[2][start:end]
+    ax3.plot(list(range(start, end)), real_plot, label="Thực tế")
 
-    # plt.legend()
-    # plt.savefig('images/%splot_recovered%s.png'%(country,idx))
-    # plt.close()
+    # length = end-start + 10
+    length = len(predict_plot) + 4
 
-    # #################################################
+    x = np.arange(start,start+length)
+    xticks = get_list_date(length=length)
 
-    # fig4, ax4 = plt.subplots(1,1)
-    # fig4.suptitle('Comparison of actual and predicted deceased cases')
-    # ax4.set_xlabel("Days")
-    # ax4.set_ylabel("Cases")
+    ax3.set(xticks=x, xticklabels=xticks)
+    loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
+    ax3.xaxis.set_major_locator(loc)
 
-    # real_plot = data[3][start:end]
-    # ax4.plot(list(range(start, end)), data[3][start:end], label="Actual deceased")
+    plt.legend()
+    plt.savefig('images/%splot_recovered%s.png'%(country,idx))
+    plt.close()
 
-    # predict_plot = predict_data[3][start:end]
-    # ax4.plot(list(range(start, end)), predict_data[3][start:end], label="Predicted deceased")
+    #################################################
 
-    # plt.legend()
-    # plt.savefig('images/%splot_deceased%s.png'%(country,idx))
-    # plt.close()
+    fig4, ax4 = plt.subplots(1,1)
+    fig4.suptitle('Dự báo ca tử vong tích lũy')
+    ax4.set_title(country)
+    ax4.set_xlabel("Ngày")
+    ax4.set_ylabel("Ca nhiễm")
+
+    predict_plot = predict_data[3][start:]
+    ax4.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
+
+    real_plot = data[3][start:end]
+    ax4.plot(list(range(start, end)), real_plot, label="Thực tế")
+
+    # length = end-start + 10
+    length = len(predict_plot) + 4
+
+    x = np.arange(start,start+length)
+    xticks = get_list_date(length=length)
+
+    ax4.set(xticks=x, xticklabels=xticks)
+    loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
+    ax4.xaxis.set_major_locator(loc)
+
+    plt.legend()
+    plt.savefig('images/%splot_deceased%s.png'%(country,idx))
+    plt.close()
 
     # ##################################################
     # fig5, ax5 = plt.subplots(1,1)
