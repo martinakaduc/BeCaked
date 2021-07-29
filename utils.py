@@ -286,8 +286,8 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     # length = end-start + 10
     length = len(predict_plot) + 10
 
-    x = np.arange(start,start+length)[::5]
-    xticks = get_list_date(length=length)[::5]
+    x = np.arange(start,start+length)
+    xticks = get_list_date(length=length)
 
     ax1.set(xticks=x, xticklabels=xticks)
     loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
@@ -340,8 +340,8 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     # length = end-start + 10
     length = len(predict_plot) + 10
 
-    x = np.arange(start,start+length)[::5]
-    xticks = get_list_date(length=length)[::5]
+    x = np.arange(start,start+length)
+    xticks = get_list_date(length=length)
 
     ax3.set(xticks=x, xticklabels=xticks)
     loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
@@ -368,8 +368,8 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     # length = end-start + 10
     length = len(predict_plot) + 10
 
-    x = np.arange(start,start+length)[::5]
-    xticks = get_list_date(length=length)[::5]
+    x = np.arange(start,start+length)
+    xticks = get_list_date(length=length)
 
     ax4.set(xticks=x, xticklabels=xticks)
     loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
