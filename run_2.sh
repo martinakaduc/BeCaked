@@ -4,7 +4,7 @@ export TIMES=63
 echo "QUAN 11"
 for i in {1..40}
   do
-    python evaluation.py  --level 0 --day_lag 10 --start_date 43 --end_date $TIMES --plot_prediction 1 --infer_date 7 --start_train_date 0 --end_train_date $TIMES --cuda 1 --ward "QUAN 11" --img_note _QUAN_12_$i
+    python evaluation.py  --level 0 --day_lag 10 --start_date 43 --end_date $TIMES --plot_prediction 1 --infer_date 7 --start_train_date 0 --end_train_date $TIMES --cuda 1 --ward "QUAN 11" --img_note _QUAN_11_$i
     echo '\n'
   done
 

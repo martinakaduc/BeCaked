@@ -15,7 +15,7 @@ from sklearn.preprocessing import StandardScaler
 from datetime import datetime, timedelta
 import matplotlib.ticker as plticker
 
-def get_list_date(start=datetime(2021,6,26), length=50):
+def get_list_date(start=datetime(2021,6,24), length=50):
     temp = [(start + timedelta(days=i)).strftime("%d\n/%m") for i in range(length)]
     return temp
 
@@ -284,10 +284,10 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     print(predict_plot[len(real_plot):])
 
     # length = end-start + 10
-    length = len(predict_plot) + 4
+    length = len(predict_plot) + 10
 
-    x = np.arange(start,start+length)
-    xticks = get_list_date(length=length)
+    x = np.arange(start,start+length)[::5]
+    xticks = get_list_date(length=length)[::5]
 
     ax1.set(xticks=x, xticklabels=xticks)
     loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
@@ -338,10 +338,10 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     ax3.plot(list(range(start, end)), real_plot, label="Thực tế")
 
     # length = end-start + 10
-    length = len(predict_plot) + 4
+    length = len(predict_plot) + 10
 
-    x = np.arange(start,start+length)
-    xticks = get_list_date(length=length)
+    x = np.arange(start,start+length)[::5]
+    xticks = get_list_date(length=length)[::5]
 
     ax3.set(xticks=x, xticklabels=xticks)
     loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
@@ -366,10 +366,10 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     ax4.plot(list(range(start, end)), real_plot, label="Thực tế")
 
     # length = end-start + 10
-    length = len(predict_plot) + 4
+    length = len(predict_plot) + 10
 
-    x = np.arange(start,start+length)
-    xticks = get_list_date(length=length)
+    x = np.arange(start,start+length)[::5]
+    xticks = get_list_date(length=length)[::5]
 
     ax4.set(xticks=x, xticklabels=xticks)
     loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
