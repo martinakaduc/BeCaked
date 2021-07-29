@@ -184,6 +184,7 @@ class BeCakedModel():
         dn_1 = Dense(num_hidden, activation="tanh")(att_out)
 
         params = Dense(NUMBER_OF_HYPER_PARAM, activation="relu")(dn_1)  # gamma, muy, eta, xi, theta, sigma, beta_bar
+
         params = Reshape((NUMBER_OF_HYPER_PARAM, 1))(params)
 
         y_pred = Lambda(SIRD_layer)([inputs, params])
@@ -257,6 +258,7 @@ class BeCakedModel():
 
         result = self.model.predict(input_x)
         result = np.array(result, dtype=np.float64)
+        result[result<0] = 0
 
         if return_param:
             param_byu = self.estimator_model.predict(input_x)
