@@ -222,6 +222,7 @@ class BeCakedModel():
         optimizer = Adam(learning_rate=1e-5)
         # checkpoint = ModelCheckpoint(os.path.join('./ckpt', 'ckpt_%s_%d_{epoch:06d}.h5'%(name, self.day_lag)), save_freq=10)
         early_stop = EarlyStopping(monitor="loss", patience=50)
+        optimizer = tf.train.experimental.enable_mixed_precision_graph_rewrite(optimizer)
 
         self.model.compile(optimizer=optimizer, loss=self.my_mean_squared_error, metrics=['mean_absolute_error'])
         self.model.fit(data_generator, epochs=epochs, callbacks=[lr_schedule, early_stop], verbose=0)
