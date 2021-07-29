@@ -2,6 +2,7 @@ import os
 import matplotlib as mpl
 from matplotlib import pyplot as plt
 import numpy as np
+from numpy.lib.type_check import real
 import pandas as pd
 import math
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
@@ -12,6 +13,12 @@ from sklearn.tree import *
 from sklearn.ensemble import *
 from sklearn.preprocessing import StandardScaler
 from datetime import datetime, timedelta
+import matplotlib.ticker as plticker
+
+def get_list_date(start=datetime(2021,6,26), length=50):
+    temp = [(start + timedelta(days=i)).strftime("%d\n/%m") for i in range(length)]
+    return temp
+
 
 def update_data():
     os.system("cd COVID-19 && git pull origin master")
@@ -24,7 +31,7 @@ def get_predict_by_step(ml_model, data, start, current, end=None, day_lag=10, re
     list_param_byu = []
 
     for day in range(predict_data.shape[1]-day_lag, end-day_lag):
-        return_result = ml_model.predict([predict_data[0][day:day+day_lag], predict_data[1][day:day+day_lag], predict_data[2][day:day+day_lag]], return_param=return_param)
+        return_result = ml_model.predict([predict_data[0][day:day+day_lag], predict_data[1][day:day+day_lag], predict_data[2][day:day+day_lag], predict_data[3][day:day+day_lag], predict_data[4][day:day+day_lag]], return_param=return_param)
         if return_param:
             next_day, param_byu = return_result
             list_param_byu.append(param_byu[0])
@@ -39,11 +46,41 @@ def get_predict_by_step(ml_model, data, start, current, end=None, day_lag=10, re
         for k in range(current - start + day_lag):
             s = current-k-day_lag
             e = current-k
-            return_result = ml_model.predict([data[0][s:e], data[1][s:e], data[2][s:e]], return_param=return_param)
+            return_result = ml_model.predict([data[0][s:e], data[1][s:e], data[2][s:e], data[3][s:e], data[4][s:e]], return_param=return_param)
             next_day, param_byu = return_result
             list_param_byu.insert(0, param_byu[0])
 
-    return predict_data, list_param_byu
+    return predict_data, np.array(list_param_byu)
+
+def get_predict_result_1(ml_model, data, start, current, end=None, day_lag=10, return_param=False):
+    """"Predict with real data"""
+    predict_data = data[:,:start]
+    list_param_byu = []
+    if current + day_lag < end: raise Exception("Invalid end_date")
+    for day in range(start-day_lag,end-day_lag):
+        return_result = ml_model.predict([data[0][day:day+day_lag], data[1][day:day+day_lag], data[2][day:day+day_lag], data[3][day:day+day_lag], data[4][day:day+day_lag]], return_param=return_param)
+        if return_param:
+            next_day, param_byu = return_result
+            list_param_byu.append(param_byu[0])
+        else:
+            next_day = return_result
+        # print(next_day)
+        # raise Exception("haiz")
+        next_day = next_day[0][-1]
+        predict_data = np.append(predict_data, next_day[1:].reshape((-1,1)), axis=1)
+
+    if return_param and current >= start - day_lag:
+        for k in range(current - start + day_lag):
+            s = current-k-day_lag
+            e = current-k
+            return_result = ml_model.predict([data[0][s:e], data[1][s:e], data[2][s:e], data[3][s:e], data[4][s:e]], return_param=return_param)
+            next_day, param_byu = return_result
+            list_param_byu.insert(0, param_byu[0])
+
+    return predict_data, np.array(list_param_byu)
+
+
+
 
 def get_predict_result(ml_model, data, start, end=None, step=31, day_lag=10):
     predict_data = data[:,:start]
@@ -162,16 +199,97 @@ def plotParam(list_param_byu, start, end, country="world", idx=""):
     plt.close()
 
 def plot(data, predict_data, start, end, country="world", idx=""):
+    # fig7, ax7 = plt.subplots(1,1)
+    # fig7.suptitle('CT16: 9/7/2021\nDaily Infectious')
+    # ax7.set_xlabel("Days")
+    # ax7.set_ylabel("Cases")
+
+    # predict_plot = predict_data[1][start:]
+    # ax7.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predict")
+
+    # real_plot = data[1][start:end]
+    # ax7.plot(list(range(start, end)), real_plot, label="Actual")
+
+    # # print(real_plot)
+    # print(predict_plot)
+
+    # # length = end-start
+    # length = len(predict_plot)
+    # x = np.arange(start,start+len(predict_plot))
+    # xticks = get_list_date(length=length+9)[9:] #18/7  - 9/7 = 9
+    # ax7.set(xticks=x, xticklabels=xticks)
+    # loc = plticker.MultipleLocator(base=length//12) # this locator puts ticks at regular intervals
+    # ax7.xaxis.set_major_locator(loc)
+
+    # plt.legend()
+    # if country:
+    #     if not os.path.exists('images/%s'%country):
+    #         os.makedirs('images/%s'%country)
+
+    #     country += "/"
+
+    # plt.savefig('images/%splot_daily_infectious%s.png'%(country,idx))
+    # plt.close()
+
+    # #################################################
+
+    # fig8, ax8 = plt.subplots(1,1)
+    # fig8.suptitle('CT16: 9/7/2021\nDaily Exposed')
+    # ax8.set_xlabel("Days")
+    # ax8.set_ylabel("Cases")
+
+    # predict_plot = predict_data[0][start:]
+    # ax8.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predict")
+
+    # real_plot = data[0][start:end]
+    # ax8.plot(list(range(start, end)), real_plot, label="Actual")
+
+    # # print(real_plot)
+    # print(predict_plot)
+
+    # # length = end-start
+    # length = len(predict_plot)
+    # x = np.arange(start,start+len(predict_plot))
+    # xticks = get_list_date(length=length+9)[9:] #18/7  - 9/7 = 9
+    # ax8.set(xticks=x, xticklabels=xticks)
+    # loc = plticker.MultipleLocator(base=length//12) # this locator puts ticks at regular intervals
+    # ax8.xaxis.set_major_locator(loc)
+
+    # plt.legend()
+    # if country:
+    #     if not os.path.exists('images/%s'%country):
+    #         os.makedirs('images/%s'%country)
+
+    #     country += "/"
+
+    # plt.savefig('images/%splot_daily_exposed%s.png'%(country,idx))
+    # plt.close()
+
+    #################################################
+
     fig, ax1 = plt.subplots(1,1)
-    fig.suptitle('Comparison of real and predicted daily infectious cases')
-    ax1.set_xlabel("Days")
-    ax1.set_ylabel("People")
+    fig.suptitle('Dự báo ca nhiễm theo ngày')
+    ax1.set_title(country)
+    ax1.set_xlabel("Ngày")
+    ax1.set_ylabel("Ca nhiễm")
 
-    real_plot = data[0][start:end] - data[1][start:end] - data[2][start:end]
-    ax1.plot(list(range(start, end)), real_plot, label="Real daily infectious")
+    predict_plot = predict_data[1][start:]
+    ax1.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
-    predict_plot = predict_data[0][start:end] - predict_data[1][start:end] - predict_data[2][start:end]
-    ax1.plot(list(range(start, end)), predict_plot, label="Predicted daily infectious")
+    real_plot = data[1][start:end]
+    ax1.plot(list(range(start, end)), real_plot, label="Thực tế")
+
+    print('Actual\tPredicted')
+    print(*[str(x) + '\t' + str(y) for x,y in zip(real_plot,predict_plot[:len(real_plot)])][10:],sep='\n')
+    print(predict_plot[len(real_plot):])
+
+    # length = end-start + 10
+    length = len(predict_plot) + 4
+    x = np.arange(start,start+length)
+    xticks = get_list_date(length=length)
+    ax1.set(xticks=x, xticklabels=xticks)
+    loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
+    ax1.xaxis.set_major_locator(loc)
 
     plt.legend()
     if country:
@@ -183,56 +301,109 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     plt.savefig('images/%splot_daily_infectious%s.png'%(country,idx))
     plt.close()
 
-    #################################################
+    # #################################################
 
-    fig2, ax2 = plt.subplots(1,1)
-    fig2.suptitle('Comparison of real and predicted total infectious cases')
-    ax2.set_xlabel("Days")
-    ax2.set_ylabel("People")
+    # fig2, ax2 = plt.subplots(1,1)
+    # fig2.suptitle('Comparison of actual and predicted total infectious cases')
+    # ax2.set_xlabel("Days")
+    # ax2.set_ylabel("Cases")
 
-    real_plot = data[0][start:end]
-    ax2.plot(list(range(start, end)), real_plot, label="Real total infectious")
+    # real_plot = data[1][start:end]
+    # for i in range(1,len(real_plot)): real_plot[i] += real_plot[i-1]
 
-    predict_plot = predict_data[0][start:end]
-    ax2.plot(list(range(start, end)), predict_plot, label="Predicted total infectious")
+    # ax2.plot(list(range(start, end)), real_plot, label="Actual total infectious")
 
-    plt.legend()
-    plt.savefig('images/%splot_total_infectious%s.png'%(country,idx))
-    plt.close()
+    # predict_plot = predict_data[1][start:end]
+    # for i in range(1,len(predict_plot)): predict_plot[i] += predict_plot[i-1]
+    # ax2.plot(list(range(start, end)), predict_plot, label="Predicted total infectious")
 
-    #################################################
+    # plt.legend()
+    # plt.savefig('images/%splot_total_infectious%s.png'%(country,idx))
+    # plt.close()
 
-    fig3, ax3 = plt.subplots(1,1)
-    fig3.suptitle('Comparison of real and predicted recovered cases')
-    ax3.set_xlabel("Days")
-    ax3.set_ylabel("People")
+    # #################################################
 
-    real_plot = data[1][start:end]
-    ax3.plot(list(range(start, end)), data[1][start:end], label="Real recovered")
+    # fig3, ax3 = plt.subplots(1,1)
+    # fig3.suptitle('Comparison of actual and predicted recovered cases')
+    # ax3.set_xlabel("Days")
+    # ax3.set_ylabel("Cases")
 
-    predict_plot = predict_data[1][start:end]
-    ax3.plot(list(range(start, end)), predict_data[1][start:end], label="Predicted recovered")
+    # real_plot = data[2][start:end]
+    # ax3.plot(list(range(start, end)), data[2][start:end], label="Actual recovered")
 
-    plt.legend()
-    plt.savefig('images/%splot_recovered%s.png'%(country,idx))
-    plt.close()
+    # predict_plot = predict_data[2][start:end]
+    # ax3.plot(list(range(start, end)), predict_data[2][start:end], label="Predicted recovered")
 
-    #################################################
+    # plt.legend()
+    # plt.savefig('images/%splot_recovered%s.png'%(country,idx))
+    # plt.close()
 
-    fig4, ax4 = plt.subplots(1,1)
-    fig4.suptitle('Comparison of real and predicted deceased cases')
-    ax4.set_xlabel("Days")
-    ax4.set_ylabel("People")
+    # #################################################
 
-    real_plot = data[2][start:end]
-    ax4.plot(list(range(start, end)), data[2][start:end], label="Real deceased")
+    # fig4, ax4 = plt.subplots(1,1)
+    # fig4.suptitle('Comparison of actual and predicted deceased cases')
+    # ax4.set_xlabel("Days")
+    # ax4.set_ylabel("Cases")
 
-    predict_plot = predict_data[2][start:end]
-    ax4.plot(list(range(start, end)), predict_data[2][start:end], label="Predicted deceased")
+    # real_plot = data[3][start:end]
+    # ax4.plot(list(range(start, end)), data[3][start:end], label="Actual deceased")
 
-    plt.legend()
-    plt.savefig('images/%splot_deceased%s.png'%(country,idx))
-    plt.close()
+    # predict_plot = predict_data[3][start:end]
+    # ax4.plot(list(range(start, end)), predict_data[3][start:end], label="Predicted deceased")
+
+    # plt.legend()
+    # plt.savefig('images/%splot_deceased%s.png'%(country,idx))
+    # plt.close()
+
+    # ##################################################
+    # fig5, ax5 = plt.subplots(1,1)
+    # fig5.suptitle('Comparison of actual and predicted total exposed cases')
+    # ax5.set_xlabel("Days")
+    # ax5.set_ylabel("Cases")
+
+    # real_plot = data[0][start:end]
+    # for i in range(1,len(real_plot)): real_plot[i] += real_plot[i-1]
+
+    # ax5.plot(list(range(start, end)), real_plot, label="Actual total exposed")
+
+    # predict_plot = predict_data[0][start:end]
+    # for i in range(1,len(predict_plot)): predict_plot[i] += predict_plot[i-1]
+    # ax5.plot(list(range(start, end)), predict_plot, label="Predicted total exposed")
+
+    # plt.legend()
+    # plt.savefig('images/%splot_total_exposed%s.png'%(country,idx))
+    # plt.close()
+
+    # #####################################################
+    # fig6, ax6 = plt.subplots(1,1)
+    # fig6.suptitle('CT16: 9/7/2021\nDaily Exposed')
+    # ax6.set_xlabel("Days")
+    # ax6.set_ylabel("Cases")
+
+    # predict_plot = predict_data[0][start:]
+    # ax6.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predict")
+
+    # real_plot = data[0][start:end]
+    # ax6.plot(list(range(start, end)), real_plot, label="Actual")
+
+    # # length = end-start
+    # length = len(predict_plot)
+    # x = np.arange(start,start+len(predict_plot))
+    # xticks = get_list_date(length=length)
+    # ax6.set(xticks=x, xticklabels=xticks)
+    # loc = plticker.MultipleLocator(base=length//12) # this locator puts ticks at regular intervals
+    # ax6.xaxis.set_major_locator(loc)
+    # # ax6.set_xticklabels(labels=xticks, rotation = (-90), fontsize = 10, va='bottom', ha='left')
+
+    # plt.legend()
+    # if country:
+    #     if not os.path.exists('images/%s'%country):
+    #         os.makedirs('images/%s'%country)
+
+    #     country += "/"
+
+    # plt.savefig('images/%splot_daily_exposed%s.png'%(country,idx))
+    # plt.close()
 
 def get_all_compare(data, ml_model, start, end, step=1, day_lag=10):
     print("****** Our Model ******")

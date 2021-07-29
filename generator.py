@@ -1,6 +1,6 @@
 from __future__ import division
 import numpy as np
-from keras.utils import Sequence
+from tensorflow.keras.utils import Sequence
 
 class DataGenerator(Sequence):
     """Generates data for Keras
@@ -16,7 +16,7 @@ class DataGenerator(Sequence):
         """Denotes the number of batches per epoch
         :return: number of batches per epoch
         """
-        return int(np.floor((len(self.data) - self.data_len) / self.batch_size))
+        return int((len(self.data) - self.data_len) / self.batch_size) + 1
 
     def __getitem__(self, index):
         """Generate one batch of data
@@ -29,7 +29,7 @@ class DataGenerator(Sequence):
         # Generate data
         X = self._generate_X(indexes)
 
-        return X[:,:self.data_len], X[:,1:]
+        return X[:,:self.data_len], X[:,1:] #ignore N in label
 
     def on_epoch_end(self):
         """Updates indexes after each epoch
@@ -42,7 +42,7 @@ class DataGenerator(Sequence):
         :return: batch of images
         """
         # Initialization
-        X = np.empty((self.batch_size, self.data_len+1, 4))
+        X = np.empty((self.batch_size, self.data_len+1, 7))
 
         # Generate data
         for i, ID in enumerate(list_index):
