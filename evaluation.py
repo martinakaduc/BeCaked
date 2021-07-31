@@ -32,8 +32,8 @@ if __name__ == '__main__':
     elif args.limit_gpu == 1:
         config = tf.compat.v1.ConfigProto()
         config.gpu_options.allow_growth = True  # don't pre-allocate memory; allocate as-needed
-        config.gpu_options.per_process_gpu_memory_fraction = 0.33  # limit memory to be allocated
-        tf.keras.backend.set_session(tf.compat.v1.Session(config=config))
+        # config.gpu_options.per_process_gpu_memory_fraction = 0.5  # limit memory to be allocated
+        # tf.keras.backend.set_session(tf.compat.v1.Session(config=config))
 
     if not os.path.exists(args.image_folder):
         os.makedirs(args.image_folder)
@@ -44,23 +44,36 @@ if __name__ == '__main__':
         print("===================== WORLD =====================")
         becaked_model = BeCakedModel(population=data_loader.N, day_lag=args.day_lag)
         data = data_loader.get_data_world_series()
-        print(len(data[0]))
+
         if not os.path.exists("models/%s_%d.h5" % ("world", args.day_lag)):
             print("Model does not exist. Trying to train...")
-            becaked_model.train(data[0][args.start_train_date:args.end_train_date], data[1][args.start_train_date:args.end_train_date], data[2][args.start_train_date:args.end_train_date], data[3][args.start_train_date:args.end_train_date], data[4][args.start_train_date:args.end_train_date], data[5][args.start_train_date:args.end_train_date], epochs=1000)
+            becaked_model.train(data[0][args.start_train_date:args.end_train_date],
+                                data[1][args.start_train_date:args.end_train_date],
+                                data[2][args.start_train_date:args.end_train_date],
+                                data[3][args.start_train_date:args.end_train_date],
+                                data[4][args.start_train_date:args.end_train_date],
+                                data[5][args.start_train_date:args.end_train_date],
+                                epochs=1000)
 
         if args.run_comparison:
             get_all_compare(data, becaked_model, args.start_date, args.end_date, step=args.step, day_lag=args.day_lag)
 
         if args.plot_prediction or args.plot_param:
-            predict_data_0, list_param_byu_0 = get_predict_result_1(becaked_model, data, args.start_date, args.end_date, end=args.end_date, day_lag=args.day_lag, return_param=True)
-            predict_data_1, list_param_byu_1 = get_predict_by_step(becaked_model, data, args.end_date, args.end_date, end=args.end_date + args.infer_date, day_lag=args.day_lag, return_param=True)
+            predict_data_0, list_param_byu_0 = get_predict_result_1(becaked_model, data,
+                                                                    args.start_date, args.end_date-5,
+                                                                    end=args.end_date-5, day_lag=args.day_lag,
+                                                                    return_param=True)
 
-            predict_data = np.append(predict_data_0,predict_data_1[:,args.end_date:],axis=1)
-            list_param_byu = np.append(list_param_byu_0, list_param_byu_1[args.end_date:], axis=0)
+            predict_data_1, list_param_byu_1 = get_predict_by_step(becaked_model, data,
+                                                                    args.end_date, args.end_date-5,
+                                                                    end=args.end_date + args.infer_date,
+                                                                    day_lag=args.day_lag, return_param=True)
 
-            # print(predict_data[1])
-            print(list_param_byu)
+            predict_data = np.append(predict_data_0,predict_data_1[:,args.end_date-5:],axis=1)
+            list_param_byu = np.append(list_param_byu_0, list_param_byu_1[args.end_date-5:], axis=0)
+
+            # print(predict_data)
+            # print(list_param_byu)
             if args.plot_prediction:
                 plot(data, predict_data, args.start_date-args.day_lag, args.end_date, country=args.ward, idx=args.img_note)
             if args.plot_param:

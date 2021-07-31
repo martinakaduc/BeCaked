@@ -58,15 +58,20 @@ class Attention(Layer):
 
 def SIRD_layer(tensors):
     input_raw, x = tensors
-    #input_raw: [S,E,I,R,D,beta]
+    #input_raw: [S,E,I,R,D,beta,N]
     #x: [gamma,muy,eta,xi,theta,sigma,beta_bar]
 
+    rand = tf.random.normal([1,DAYS],0,1)
+    beta = tf.add(
+        x[:,6],
+        tf.multiply(x[:,5],rand)
+    )
 
     # S = S - beta*S*E + xi*R - theta*S
     S = tf.add(
                 tf.subtract(
                     input_raw[:,:,0],
-                    tf.multiply(tf.multiply(x[:,6],input_raw[:,:,0]),input_raw[:,:,1])
+                    tf.multiply(tf.multiply(beta,input_raw[:,:,0]),input_raw[:,:,1])
                     ),
                 tf.subtract(
                     tf.multiply(x[:,3],input_raw[:,:,3]),
@@ -114,24 +119,9 @@ def SIRD_layer(tensors):
     # beta = beta - theta*(beta - beta_bar) + sigma*dW/dt
     # dW/dt ~ N(0,1)
 
-    rand = tf.random.normal([1,DAYS],0,1)
-    beta = tf.subtract(
-        input_raw[:,:,5],
-        tf.subtract(
-            tf.multiply(
-                x[:,4],
-                tf.subtract(input_raw[:,:,5], x[:,6])
-            ),
-            tf.multiply(x[:,5],rand)
-        )
-    )
-
     # beta = tf.sigmoid(tf.multiply(input_raw[:,:,5], x[:,6]))
 
-    N = tf.add(
-        input_raw[:,:,0],
-        tf.add(input_raw[:,:,1],input_raw[:,:,3])
-    )
+    N = input_raw[:,:,-1]
 
     out = tf.stack([S, E, I, R, D, beta, N], axis=-1)
     return out
@@ -196,7 +186,7 @@ class BeCakedModel():
     def my_mean_squared_error(self,y_true, y_pred):
         #ignore beta
         mse = MeanSquaredError()
-        return mse(y_true[:,:,2:5],y_pred[:,:,2:5])
+        return mse(y_true[:,:,:5],y_pred[:,:,:5])
 
     def train(self, exposed, infectious, recovered, deaths, beta, N, epochs=1000, name="world"):
         self.update_population(N[-1])
@@ -213,7 +203,7 @@ class BeCakedModel():
         data_generator = DataGenerator(data, data_len=self.day_lag, batch_size=1)
 
         def scheduler(epoch, lr):
-            if epoch > 0 and epoch % 100 == 0:
+            if epoch > 0 and epoch % 32 == 0:
                 return lr*0.9
             else:
                 return lr
@@ -221,11 +211,11 @@ class BeCakedModel():
         lr_schedule = LearningRateScheduler(scheduler)
         optimizer = Adam(learning_rate=1e-5)
         # checkpoint = ModelCheckpoint(os.path.join('./ckpt', 'ckpt_%s_%d_{epoch:06d}.h5'%(name, self.day_lag)), save_freq=10)
-        early_stop = EarlyStopping(monitor="loss", patience=50)
+        early_stop = EarlyStopping(monitor="loss", patience=16)
         # optimizer = tf.train.experimental.enable_mixed_precision_graph_rewrite(optimizer)
 
         self.model.compile(optimizer=optimizer, loss=self.my_mean_squared_error, metrics=['mean_absolute_error'])
-        self.model.fit(data_generator, epochs=epochs, callbacks=[lr_schedule, early_stop], verbose=0)
+        self.model.fit(data_generator, epochs=epochs, callbacks=[lr_schedule, early_stop])
 
         # self.model.save_weights("models/%s_%d.h5"%(name, self.day_lag))
 
