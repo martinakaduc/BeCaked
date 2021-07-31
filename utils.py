@@ -239,7 +239,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     predict_plot = predict_plot[1:] - predict_plot[:-1]
     ax1.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
-    real_plot = data[1][start-1:end] + data[1][start-1:end] + data[2][start-1:end]
+    real_plot = data[1][start-1:end] + data[2][start-1:end] + data[3][start-1:end]
     real_plot = real_plot[1:] - real_plot[:-1]
     ax1.plot(list(range(start, end)), real_plot, label="Thực tế")
 
