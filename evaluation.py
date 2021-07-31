@@ -33,7 +33,7 @@ if __name__ == '__main__':
         config = tf.compat.v1.ConfigProto()
         config.gpu_options.allow_growth = True  # don't pre-allocate memory; allocate as-needed
         # config.gpu_options.per_process_gpu_memory_fraction = 0.5  # limit memory to be allocated
-        # tf.keras.backend.set_session(tf.compat.v1.Session(config=config))
+        tf.keras.backend.set_session(tf.compat.v1.Session(config=config))
 
     if not os.path.exists(args.image_folder):
         os.makedirs(args.image_folder)
