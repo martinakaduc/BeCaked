@@ -59,7 +59,7 @@ class Attention(Layer):
 def SIRD_layer(tensors):
     input_raw, x = tensors
     #input_raw: [S,E,I,R,D,beta,N]
-    #x: [gamma,muy,eta,xi,theta,sigma,beta_bar]
+    #x: [gamma,mu,eta,xi,theta,sigma,beta_bar]
 
     rand = tf.random.normal([1,DAYS],0,1)
     beta = tf.add(
@@ -74,8 +74,8 @@ def SIRD_layer(tensors):
                     tf.multiply(tf.multiply(beta,input_raw[:,:,0]),input_raw[:,:,1])
                     ),
                 tf.subtract(
-                    tf.multiply(x[:,3],input_raw[:,:,3]),
-                    tf.multiply(x[:,4],input_raw[:,:,0])
+                    tf.multiply(x[:,3],input_raw[:,:,3]), # xi*R
+                    tf.multiply(x[:,4],input_raw[:,:,0]) # theta*S
                     )
             )
 
@@ -85,7 +85,7 @@ def SIRD_layer(tensors):
             input_raw[:,:,1],
             tf.subtract(
                 tf.multiply(tf.multiply(x[:,6],input_raw[:,:,0]),input_raw[:,:,1]),
-                tf.multiply(x[:,2],input_raw[:,:,1])
+                tf.multiply(x[:,2],input_raw[:,:,1]) # eta*E
             )
         )
 
@@ -94,10 +94,10 @@ def SIRD_layer(tensors):
         tf.add(input_raw[:,:,2],tf.multiply(x[:,4],input_raw[:,:,0])),
         tf.subtract(
             tf.subtract(
-                tf.multiply(x[:,2],input_raw[:,:,1]),
-                tf.multiply(x[:,0],input_raw[:,:,2])
+                tf.multiply(x[:,2],input_raw[:,:,1]), # eta*E
+                tf.multiply(x[:,0],input_raw[:,:,2]) # gamma*I
                 ),
-            tf.multiply(x[:,1],input_raw[:,:,2]),
+            tf.multiply(x[:,1],input_raw[:,:,2]), # mu*I
         )
     )
 
@@ -105,15 +105,15 @@ def SIRD_layer(tensors):
     R = tf.add(
         input_raw[:,:,3],
         tf.subtract(
-            tf.multiply(x[:,0],input_raw[:,:,2]),
-            tf.multiply(x[:,3],input_raw[:,:,3])
+            tf.multiply(x[:,0],input_raw[:,:,2]), # gamma*I
+            tf.multiply(x[:,3],input_raw[:,:,3]) # xi*R
         )
     )
 
-    # D = D + muy*I
+    # D = D + mu*I
     D = tf.add(
         input_raw[:,:,4],
-        tf.multiply(x[:,1],input_raw[:,:,2])
+        tf.multiply(x[:,1],input_raw[:,:,2]) # mu*I
     )
 
     # beta = beta - theta*(beta - beta_bar) + sigma*dW/dt
@@ -158,8 +158,8 @@ class BeCakedModel():
         inputs = Input(shape=(day_lag, 7)) # S, E, I, R, D, beta, N
 
         acce = Lambda(case_diff)(inputs[:,:,:-2])
-        lstm = LSTM(128, return_sequences=True)(acce)
-        lstm, state_h, state_c = LSTM(128, return_sequences=True, return_state=True)(lstm)
+        lstm = LSTM(128, return_sequences=True, dropout=0.5, recurrent_dropout=0.5)(acce)
+        lstm, state_h, state_c = LSTM(256, return_sequences=True, return_state=True, dropout=0.5, recurrent_dropout=0.5)(lstm)
 
         score = Dot(-1)([lstm, state_h])
         softmax = Softmax()(score)
@@ -171,6 +171,8 @@ class BeCakedModel():
         concat = Dropout(0.5)(concat)
 
         dense = Dense(512, activation='relu')(concat)
+        dense = Dropout(0.5)(dense)
+        dense = Dense(256, activation='relu')(concat)
         dense = Dropout(0.5)(dense)
         dense = Dense(128, activation='relu')(dense)
         dense = Dropout(0.5)(dense)
@@ -250,7 +252,7 @@ class BeCakedModel():
 
         result = self.model.predict(input_x)
         result = np.array(result, dtype=np.float64)
-        result[result<0] = 0
+        result = np.abs(result)
 
         if return_param:
             param_byu = self.estimator_model.predict(input_x)
