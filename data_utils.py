@@ -22,7 +22,7 @@ class DataLoader():
 
         self.total_day = len(self.infectious)
         print(self.infectious_obj.Date.to_list()[-1])
-    
+
     def modify(self):
         Ie_acc,Is_acc,R_acc,D_acc = self.exposed.copy(), self.infectious.copy(), self.recovered.copy(), self.deaths.copy()
         for i in range(1,len(self.exposed)):
@@ -32,17 +32,18 @@ class DataLoader():
             D_acc[i] += D_acc[i-1]
 
         I_acc = Is_acc + Ie_acc
-        E_acc = Ie_acc[5:]
-        I_acc = I_acc[:-5]
-        E = E_acc - I_acc + Is_acc[5:]
-        R = R_acc[:-5]
-        D = D_acc[:-5]
+        # E_acc = Ie_acc[5:]
+        # I_acc = I_acc[:-5]
+        E = Ie_acc[5:] - Ie_acc[:-5]
+        E = np.append(E, np.zeros((5,)))
+        R = R_acc
+        D = D_acc
         I = I_acc - R - D
         N = self.N[0] * np.ones_like(I)
         # S = self.N[0] - I - E - R - D
 
         self.exposed,self.infectious,self.recovered,self.deaths,self.N = E,I,R,D,N
-        print(E,I,R,D,sep='\n')
+        # print(E,I,R,D,sep='\n')
 
     def get_data_world_series(self):
         return np.array([self.exposed, self.infectious, self.recovered, self.deaths, self.beta, self.N], dtype=np.float64)
