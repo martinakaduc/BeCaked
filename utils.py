@@ -253,12 +253,13 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     x = np.arange(start, start+length)
     xticks = get_list_date(length=length)
 
-    ax1.set(xticks=x[::5], xticklabels=xticks[::5])
+    ax1.set(xticks=x, xticklabels=xticks)
     loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
     ax1.xaxis.set_major_locator(loc)
 
     plt.legend()
     plt.savefig('images/' + country + idx + '/plot_daily_infectious.png')
+    plt.savefig('images/' + country + f'plot_daily_infectious_{idx}.png')
     plt.close()
 
     write_file('images/' + country + idx + '/daily_infectious.csv', xticks[3:], predict_plot)
@@ -282,12 +283,13 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     x = np.arange(start, start+length)
     xticks = get_list_date(length=length)
 
-    ax3.set(xticks=x[::5], xticklabels=xticks[::5])
+    ax3.set(xticks=x, xticklabels=xticks)
     loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
     ax3.xaxis.set_major_locator(loc)
 
     plt.legend()
     plt.savefig('images/' + country + idx + '/plot_total_recovered.png')
+    plt.savefig('images/' + country + f'plot_total_recovered_{idx}.png')
     plt.close()
 
     write_file('images/' + country + idx + '/total_recovered.csv', xticks[3:], predict_plot)
@@ -311,12 +313,13 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     x = np.arange(start, start+length)
     xticks = get_list_date(length=length)
 
-    ax4.set(xticks=x[::5], xticklabels=xticks[::5])
+    ax4.set(xticks=x, xticklabels=xticks)
     loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
     ax4.xaxis.set_major_locator(loc)
 
     plt.legend()
     plt.savefig('images/' + country + idx + '/plot_total_deceased.png')
+    plt.savefig('images/' + country + f'plot_total_deceased_{idx}.png')
     plt.close()
 
     write_file('images/' + country + idx + '/total_deceased.csv', xticks[3:], predict_plot)
@@ -340,12 +343,13 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     x = np.arange(start, start+length)
     xticks = get_list_date(length=length)
 
-    ax5.set(xticks=x[::5], xticklabels=xticks[::5])
+    ax5.set(xticks=x, xticklabels=xticks)
     loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
     ax5.xaxis.set_major_locator(loc)
 
     plt.legend()
     plt.savefig('images/' + country + idx + '/plot_remaining_F0.png')
+    plt.savefig('images/' + country + f'plot_remaining_F0_{idx}.png')
     plt.close()
 
     write_file('images/' + country + idx + '/total_remaining_F0.csv', xticks[3:], predict_plot)
