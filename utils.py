@@ -259,7 +259,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     plt.savefig('images/' + country + idx + '/plot_daily_infectious.png')
     plt.close()
 
-    write_file('images/' + country + idx + '/daily_infectious.csv', xticks, predict_plot)
+    write_file('images/' + country + idx + '/daily_infectious.csv', xticks[3:], predict_plot)
 
     #################################################
 
@@ -288,7 +288,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     plt.savefig('images/' + country + idx + '/plot_total_recovered.png')
     plt.close()
 
-    write_file('images/' + country + idx + '/total_recovered.csv', xticks, predict_plot)
+    write_file('images/' + country + idx + '/total_recovered.csv', xticks[3:], predict_plot)
 
     #################################################
 
