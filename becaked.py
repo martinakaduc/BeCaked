@@ -3,10 +3,10 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
 from tensorflow.keras.models import Sequential, Model, load_model
-from tensorflow.keras.layers import Input, LSTM, Dense, Lambda, Reshape, Flatten, Dropout, GRU, BatchNormalization, Dot, Concatenate, Activation
+from tensorflow.keras.layers import *
 import tensorflow.keras.backend as K
-from tensorflow.keras.optimizers import RMSprop, Adam, SGD
-from tensorflow.keras.callbacks import LearningRateScheduler, ModelCheckpoint, EarlyStopping
+from tensorflow.keras.optimizers import*
+from tensorflow.keras.callbacks import *
 from tensorflow.keras.layers import Layer
 from tensorflow.keras.losses import MeanSquaredError
 from tensorflow.keras import initializers
@@ -158,23 +158,24 @@ class BeCakedModel():
         inputs = Input(shape=(day_lag, 7)) # S, E, I, R, D, beta, N
 
         acce = Lambda(case_diff)(inputs[:,:,:-2])
-        enc_in, enc_state = GRU(num_hidden,
-                          # Return the sequence and state
-                          return_sequences=True,
-                          return_state=True,
-                          recurrent_initializer='glorot_uniform')(acce)
-        enc_out, _ = GRU(num_hidden,
-                          # Return the sequence and state
-                          return_sequences=True,
-                          return_state=True,
-                          recurrent_initializer='glorot_uniform')(enc_in, initial_state=enc_state)
+        lstm = LSTM(128, return_sequences=True)(acce)
+        lstm, state_h, state_c = LSTM(128, return_sequences=True, return_state=True)(lstm)
 
-        att_out = Attention(2*num_hidden)(enc_out)
+        score = Dot(-1)([lstm, state_h])
+        softmax = Softmax()(score)
+        sm_reshape = Reshape(target_shape=(-1, 1,))(softmax)
+        mul = Multiply()([lstm, sm_reshape])
+        context = Lambda(lambda x: K.sum(x, axis=-1), output_shape=lambda s: (s[0], s[1]))(mul)
 
-        dn_1 = Dense(num_hidden, activation="tanh")(att_out)
+        concat = Concatenate()([context, state_h])
+        concat = Dropout(0.5)(concat)
 
-        params = Dense(NUMBER_OF_HYPER_PARAM, activation="relu")(dn_1)  # gamma, muy, eta, xi, theta, sigma, beta_bar
+        dense = Dense(512, activation='relu')(concat)
+        dense = Dropout(0.5)(dense)
+        dense = Dense(128, activation='relu')(dense)
+        dense = Dropout(0.5)(dense)
 
+        params = Dense(NUMBER_OF_HYPER_PARAM, activation='tanh')(dense)
         params = Reshape((NUMBER_OF_HYPER_PARAM, 1))(params)
 
         y_pred = Lambda(SIRD_layer)([inputs, params])
@@ -200,7 +201,7 @@ class BeCakedModel():
         beta = np.ones_like(D)
         data = np.dstack([S, E, I, R, D, beta, N])[0]
 
-        data_generator = DataGenerator(data, data_len=self.day_lag, batch_size=1)
+        data_generator = DataGenerator(data, data_len=self.day_lag, batch_size=4)
 
         def scheduler(epoch, lr):
             if epoch > 0 and epoch % 32 == 0:
@@ -209,9 +210,9 @@ class BeCakedModel():
                 return lr
 
         lr_schedule = LearningRateScheduler(scheduler)
-        optimizer = Adam(learning_rate=1e-5)
+        optimizer = RMSprop()
         # checkpoint = ModelCheckpoint(os.path.join('./ckpt', 'ckpt_%s_%d_{epoch:06d}.h5'%(name, self.day_lag)), save_freq=10)
-        early_stop = EarlyStopping(monitor="loss", patience=16)
+        early_stop = EarlyStopping(monitor="loss", patience=10)
         # optimizer = tf.train.experimental.enable_mixed_precision_graph_rewrite(optimizer)
 
         self.model.compile(optimizer=optimizer, loss=self.my_mean_squared_error, metrics=['mean_absolute_error'])
