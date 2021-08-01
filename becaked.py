@@ -19,49 +19,15 @@ DAYS = 10
 NUMBER_OF_HYPER_PARAM = 7
 NUM_HIDDEN = 128
 
-class Attention(Layer):
-    def __init__(self, units=128, **kwargs):
-        self.units = units
-        super().__init__(**kwargs)
-
-    def __call__(self, inputs):
-        """
-        Many-to-one attention mechanism for Keras.
-        @param inputs: 3D tensor with shape (batch_size, time_steps, input_dim).
-        @return: 2D tensor with shape (batch_size, 128)
-        @author: felixhao28, philipperemy.
-        """
-        hidden_states = inputs
-        hidden_size = int(hidden_states.shape[2])
-        # Inside dense layer
-        #              hidden_states            dot               W            =>           score_first_part
-        # (batch_size, time_steps, hidden_size) dot (hidden_size, hidden_size) => (batch_size, time_steps, hidden_size)
-        # W is the trainable weight matrix of attention Luong's multiplicative style score
-        score_first_part = Dense(hidden_size, use_bias=False, name='attention_score_vec')(hidden_states)
-        #            score_first_part           dot        last_hidden_state     => attention_weights
-        # (batch_size, time_steps, hidden_size) dot   (batch_size, hidden_size)  => (batch_size, time_steps)
-        h_t = Lambda(lambda x: x[:, -1, :], output_shape=(hidden_size,), name='last_hidden_state')(hidden_states)
-        score = Dot(axes=[1, 2], name='attention_score')([h_t, score_first_part])
-        attention_weights = Activation('softmax', name='attention_weight')(score)
-        # (batch_size, time_steps, hidden_size) dot (batch_size, time_steps) => (batch_size, hidden_size)
-        context_vector = Dot(axes=[1, 1], name='context_vector')([hidden_states, attention_weights])
-        pre_activation = Concatenate(name='attention_output')([context_vector, h_t])
-        attention_vector = Dense(self.units, use_bias=False, activation='tanh', name='attention_vector')(pre_activation)
-        return attention_vector
-
-    def get_config(self):
-        return {'units': self.units}
-
-    @classmethod
-    def from_config(cls, config):
-        return cls(**config)
+def abs_params(params):
+    x = tf.math.abs(params)
+    return x
 
 def SIRD_layer(tensors):
     input_raw, x = tensors
     #input_raw: [S,E,I,R,D,beta,N]
     #x: [gamma,mu,eta,xi,theta,sigma,beta_bar]
-
-    rand = tf.random.normal([1,DAYS],-1,1,seed=42)
+    rand = tf.random.normal((1,DAYS), 0, x[:,6], seed=42)
     beta = tf.add(
         x[:,6],
         tf.multiply(x[:,5],rand)
@@ -126,6 +92,69 @@ def SIRD_layer(tensors):
     out = tf.stack([S, E, I, R, D, beta, N], axis=-1)
     return out
 
+def SIRD_layer_predict(tensors):
+    input_raw, x = tensors
+    #input_raw: [S,E,I,R,D,beta,N]
+    #x: [gamma,mu,eta,xi,theta,sigma,beta_bar]
+    beta = tf.multiply(x[:,6], tf.ones((1, DAYS)))
+
+    # S = S - beta*S*E + xi*R - theta*S
+    S = tf.add(
+                tf.subtract(
+                    input_raw[:,:,0],
+                    tf.multiply(tf.multiply(beta,input_raw[:,:,0]),input_raw[:,:,1])
+                    ),
+                tf.subtract(
+                    tf.multiply(x[:,3],input_raw[:,:,3]), # xi*R
+                    tf.multiply(x[:,4],input_raw[:,:,0]) # theta*S
+                    )
+            )
+
+
+    # E = E + beta*S*E - eta*E
+    E = tf.add(
+            input_raw[:,:,1],
+            tf.subtract(
+                tf.multiply(tf.multiply(beta,input_raw[:,:,0]),input_raw[:,:,1]),
+                tf.multiply(x[:,2],input_raw[:,:,1]) # eta*E
+            )
+        )
+
+    # I = I + eta*E - gamma*I - muy*I + theta*S
+    I = tf.add(
+        tf.add(input_raw[:,:,2],tf.multiply(x[:,4],input_raw[:,:,0])),
+        tf.subtract(
+            tf.subtract(
+                tf.multiply(x[:,2],input_raw[:,:,1]), # eta*E
+                tf.multiply(x[:,0],input_raw[:,:,2]) # gamma*I
+                ),
+            tf.multiply(x[:,1],input_raw[:,:,2]), # mu*I
+        )
+    )
+
+    # R = R + gamma*I - xi*R
+    R = tf.add(
+        input_raw[:,:,3],
+        tf.subtract(
+            tf.multiply(x[:,0],input_raw[:,:,2]), # gamma*I
+            tf.multiply(x[:,3],input_raw[:,:,3]) # xi*R
+        )
+    )
+
+    # D = D + mu*I
+    D = tf.add(
+        input_raw[:,:,4],
+        tf.multiply(x[:,1],input_raw[:,:,2]) # mu*I
+    )
+
+    # beta = beta - theta*(beta - beta_bar) + sigma*dW/dt
+    # dW/dt ~ N(0,1)
+
+    N = input_raw[:,:,-1]
+
+    out = tf.stack([S, E, I, R, D, beta, N], axis=-1)
+    return out
+
 def case_diff(tensor):
     return tf.subtract(tensor[:,1:], tensor[:,:-1])
 
@@ -134,6 +163,7 @@ class BeCakedModel():
         self.initN = population
         self.day_lag = day_lag
         self.model = self.build_model(day_lag)
+        self.predict_model = None
 
         # if os.path.exists("models/world_%d.h5"%day_lag):
             # self.load_weights("models/world_%d.h5"%day_lag)
@@ -178,6 +208,7 @@ class BeCakedModel():
         dense = Dropout(0.5)(dense)
 
         params = Dense(NUMBER_OF_HYPER_PARAM, activation='tanh')(dense)
+        params = Lambda(abs_params)(params)
         params = Reshape((NUMBER_OF_HYPER_PARAM, 1))(params)
 
         y_pred = Lambda(SIRD_layer)([inputs, params])
@@ -221,6 +252,8 @@ class BeCakedModel():
         self.model.fit(data_generator, epochs=epochs, callbacks=[lr_schedule, early_stop])
 
         # self.model.save_weights("models/%s_%d.h5"%(name, self.day_lag))
+        y_pred_no_rand = Lambda(SIRD_layer_predict)([self.model.input, self.model.layers[-2].output])
+        self.predict_model = Model(inputs=self.model.input, outputs=y_pred_no_rand)
 
     def evaluate(self, exposed, infectious, recovered, deaths):
         S = (self.initN - exposed - infectious - recovered - deaths) * 100 / self.initN
@@ -232,7 +265,7 @@ class BeCakedModel():
         data = np.dstack([S, E, I, R, D, beta])[0]
 
         data_generator = DataGenerator(data, data_len=self.day_lag, batch_size=1)
-        return self.model.evaluate_generator(data_generator, verbose=1)
+        return self.predict_model.evaluate_generator(data_generator, verbose=1)
 
     def predict(self, x, return_param=False):
         #x : [E,I,R,D]
@@ -248,7 +281,7 @@ class BeCakedModel():
         beta = np.ones_like(D)
         input_x = np.dstack([S, E, I, R, D, beta,N])
 
-        result = self.model.predict(input_x)
+        result = self.predict_model.predict(input_x)
         result = np.array(result, dtype=np.float64)
         result = result*self.initN/scale_factor
 

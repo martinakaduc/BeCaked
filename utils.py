@@ -43,7 +43,6 @@ def get_predict_by_step(ml_model, data, start, current, end=None, day_lag=10, re
             next_day = return_result
 
         next_day = next_day[0][-1]
-        next_day[1] += next_day[2] + next_day[3]
         predict_data = np.append(predict_data, next_day[1:].reshape((-1, 1)), axis=1)
 
     if return_param and current >= start - day_lag:
@@ -97,9 +96,6 @@ def get_predict_result_1(ml_model, data, start, current, end=None, day_lag=10, r
             list_param_byu.insert(0, param_byu[0])
 
     return predict_data, np.array(list_param_byu)
-
-
-
 
 def get_predict_result(ml_model, data, start, end=None, step=31, day_lag=10):
     predict_data = data[:,:start]
