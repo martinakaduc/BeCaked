@@ -61,7 +61,7 @@ def SIRD_layer(tensors):
     #input_raw: [S,E,I,R,D,beta,N]
     #x: [gamma,mu,eta,xi,theta,sigma,beta_bar]
 
-    rand = tf.random.normal([1,DAYS],0,1)
+    rand = tf.random.normal([1,DAYS],-1,1,seed=42)
     beta = tf.add(
         x[:,6],
         tf.multiply(x[:,5],rand)
@@ -84,7 +84,7 @@ def SIRD_layer(tensors):
     E = tf.add(
             input_raw[:,:,1],
             tf.subtract(
-                tf.multiply(tf.multiply(x[:,6],input_raw[:,:,0]),input_raw[:,:,1]),
+                tf.multiply(tf.multiply(beta,input_raw[:,:,0]),input_raw[:,:,1]),
                 tf.multiply(x[:,2],input_raw[:,:,1]) # eta*E
             )
         )
@@ -194,11 +194,11 @@ class BeCakedModel():
     def train(self, exposed, infectious, recovered, deaths, beta, N, epochs=1000, name="world"):
         self.update_population(N[-1])
 
-        S = (N - exposed - infectious - recovered - deaths) * 100 / N
-        E = (exposed) * 100 / N
-        I = (infectious) * 100 / N
-        R = (recovered) * 100 / N
-        D = (deaths) * 100 / N
+        S = (self.initN - exposed - infectious - recovered - deaths) * 100 / self.initN
+        E = (exposed) * 100 / self.initN
+        I = (infectious) * 100 / self.initN
+        R = (recovered) * 100 / self.initN
+        D = (deaths) * 100 / self.initN
         N = np.ones_like(S)*100.
         beta = np.ones_like(D)
         data = np.dstack([S, E, I, R, D, beta, N])[0]
@@ -236,29 +236,27 @@ class BeCakedModel():
 
     def predict(self, x, return_param=False):
         #x : [E,I,R,D]
-        input_x = np.empty((1, self.day_lag, 5))
-        x = np.array(x)
+        x = np.array(x, dtype=np.float64)
         scale_factor = 100
 
-        S = ((self.initN - x[0] - x[1] - x[2] - x[3]) / self.initN) * scale_factor
-        E = (x[0] / self.initN) * scale_factor
-        I = (x[1] / self.initN) * scale_factor
-        R = (x[2] / self.initN) * scale_factor
-        D = (x[3] / self.initN) * scale_factor
+        S = (self.initN - x[0] - x[1] - x[2] - x[3])  * scale_factor / self.initN
+        E = (x[0]) * scale_factor / self.initN
+        I = (x[1]) * scale_factor / self.initN
+        R = (x[2]) * scale_factor / self.initN
+        D = (x[3]) * scale_factor / self.initN
         N = np.ones_like(S)*100.
         beta = np.ones_like(D)
-
-        input_x = np.absolute(np.dstack([S, E, I, R, D, beta,N]))
+        input_x = np.dstack([S, E, I, R, D, beta,N])
 
         result = self.model.predict(input_x)
         result = np.array(result, dtype=np.float64)
-        result = np.abs(result)
+        result = result*self.initN/scale_factor
 
         if return_param:
             param_byu = self.estimator_model.predict(input_x)
-            return (result/scale_factor)*self.initN, param_byu
+            return result, param_byu
 
-        return (result/scale_factor)*self.initN
+        return result
 
     def predict_estimator(self, x):
         input_x = np.empty((1, self.day_lag, 4))

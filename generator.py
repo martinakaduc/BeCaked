@@ -42,7 +42,7 @@ class DataGenerator(Sequence):
         :return: batch of images
         """
         # Initialization
-        X = np.empty((self.batch_size, self.data_len+1, 7))
+        X = np.empty((self.batch_size, self.data_len+1, 7), dtype=np.float64)
 
         # Generate data
         for i, ID in enumerate(list_index):
