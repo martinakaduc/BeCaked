@@ -15,7 +15,7 @@ from sklearn.preprocessing import StandardScaler
 from datetime import datetime, timedelta
 import matplotlib.ticker as plticker
 
-def get_list_date(start=datetime(2021,6,26), length=50):
+def get_list_date(start=datetime(2021,6,21), length=50):
     temp = [(start + timedelta(days=i)).strftime("%d/%m") for i in range(length)]
     return temp
 
@@ -179,29 +179,50 @@ def get_compare_metric(data, predict_data, start, end):
 
 def plotParam(list_param_byu, start, end, country="world", idx=""):
     list_param_byu = np.array(list_param_byu)
-    figure, axes = plt.subplots(nrows=3, ncols=1, sharex=True)
+    figure, axes = plt.subplots(nrows=6, ncols=1, sharex=True)
 
     axes.ravel()[2].set_xlabel("Days")
 
-    axes.ravel()[0].plot(list(range(start, end)), list_param_byu[:, 0], label="beta", color="red")
+    axes.ravel()[0].plot(list(range(start, end)), list_param_byu[start:end, 6], label="beta", color="red")
     axes.ravel()[0].set_title(r"$\beta$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
                                              'fontweight': mpl.rcParams['axes.titleweight'],
                                              'color': 'red',
                                              'verticalalignment': 'baseline',
                                              'horizontalalignment': 'center'})
 
-    axes.ravel()[1].plot(list(range(start, end)), list_param_byu[:, 1], label="gamma", color="blue")
-    axes.ravel()[1].set_title(r"$\gamma$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
+    axes.ravel()[1].plot(list(range(start, end)), list_param_byu[start:end, 2], label="eta", color="orange")
+    axes.ravel()[1].set_title(r"$\beta$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
+                                             'fontweight': mpl.rcParams['axes.titleweight'],
+                                             'color': 'orange',
+                                             'verticalalignment': 'baseline',
+                                             'horizontalalignment': 'center'})
+
+    axes.ravel()[2].plot(list(range(start, end)), list_param_byu[start:end, 4], label="beta", color="pink")
+    axes.ravel()[2].set_title(r"$\beta$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
+                                             'fontweight': mpl.rcParams['axes.titleweight'],
+                                             'color': 'pink',
+                                             'verticalalignment': 'baseline',
+                                             'horizontalalignment': 'center'})
+
+    axes.ravel()[3].plot(list(range(start, end)), list_param_byu[start:end, 0], label="gamma", color="blue")
+    axes.ravel()[3].set_title(r"$\gamma$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
                                              'fontweight': mpl.rcParams['axes.titleweight'],
                                              'color': 'blue',
                                              'verticalalignment': 'baseline',
                                              'horizontalalignment': 'center'})
 
 
-    axes.ravel()[2].plot(list(range(start, end)), list_param_byu[:, 2], label="muy", color="gray")
-    axes.ravel()[2].set_title(r"$\mu$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
+    axes.ravel()[4].plot(list(range(start, end)), list_param_byu[start:end, 1], label="mu", color="gray")
+    axes.ravel()[4].set_title(r"$\mu$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
                                              'fontweight': mpl.rcParams['axes.titleweight'],
                                              'color': 'gray',
+                                             'verticalalignment': 'baseline',
+                                             'horizontalalignment': 'center'})
+
+    axes.ravel()[5].plot(list(range(start, end)), list_param_byu[start:end, 3], label="xi", color="green")
+    axes.ravel()[5].set_title(r"$\mu$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
+                                             'fontweight': mpl.rcParams['axes.titleweight'],
+                                             'color': 'green',
                                              'verticalalignment': 'baseline',
                                              'horizontalalignment': 'center'})
 
@@ -225,18 +246,16 @@ def plot(data, predict_data, start, end, country="world", idx=""):
 
     #################################################
 
-    fig, ax1 = plt.subplots(1,1)
-    fig.suptitle('Dự báo ca nhiễm theo ngày')
+    fig, ax1 = plt.subplots(figsize=(16,9))
+    fig.suptitle('Dự báo tổng ca đang nhiễm bệnh theo ngày')
     ax1.set_title(country)
     ax1.set_xlabel("Ngày")
     ax1.set_ylabel("Ca nhiễm")
 
-    predict_plot = predict_data[1][start-1:] + predict_data[2][start-1:] + predict_data[3][start-1:]
-    predict_plot = predict_plot[1:] - predict_plot[:-1]
+    predict_plot = predict_data[1][start:]
     ax1.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
-    real_plot = data[1][start-1:end] + data[2][start-1:end] + data[3][start-1:end]
-    real_plot = real_plot[1:] - real_plot[:-1]
+    real_plot = data[1][start:end]
     ax1.plot(list(range(start, end)), real_plot, label="Thực tế")
 
     print('Actual\tPredicted')
@@ -244,7 +263,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     print('Next days')
     print(predict_plot[len(real_plot):])
 
-    length = len(predict_plot) + 5
+    length = len(predict_plot) + 10
 
     x = np.arange(start, start+length)
     xticks = get_list_date(length=length)
@@ -257,11 +276,11 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     plt.savefig('images/' + country + idx + '/plot_daily_infectious.png')
     plt.close()
 
-    write_file('images/' + country + idx + '/daily_infectious.csv', xticks[3:], predict_plot)
+    write_file('images/' + country + idx + '/daily_infectious.csv', xticks[3:], predict_plot, real_plot)
 
     #################################################
 
-    fig3, ax3 = plt.subplots(1,1)
+    fig3, ax3 = plt.subplots(figsize=(16,9))
     fig3.suptitle('Dự báo ca hồi phục tích lũy')
     ax3.set_title(country)
     ax3.set_xlabel("Ngày")
@@ -273,7 +292,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     real_plot = data[2][start:end]
     ax3.plot(list(range(start, end)), real_plot, label="Thực tế")
 
-    length = len(predict_plot) + 5
+    length = len(predict_plot) + 10
 
     x = np.arange(start, start+length)
     xticks = get_list_date(length=length)
@@ -286,11 +305,11 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     plt.savefig('images/' + country + idx + '/plot_total_recovered.png')
     plt.close()
 
-    write_file('images/' + country + idx + '/total_recovered.csv', xticks[3:], predict_plot)
+    write_file('images/' + country + idx + '/total_recovered.csv', xticks[3:], predict_plot, real_plot)
 
     #################################################
 
-    fig4, ax4 = plt.subplots(1,1)
+    fig4, ax4 = plt.subplots(figsize=(16,9))
     fig4.suptitle('Dự báo ca tử vong tích lũy')
     ax4.set_title(country)
     ax4.set_xlabel("Ngày")
@@ -302,7 +321,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     real_plot = data[3][start:end]
     ax4.plot(list(range(start, end)), real_plot, label="Thực tế")
 
-    length = len(predict_plot) + 5
+    length = len(predict_plot) + 10
 
     x = np.arange(start, start+length)
     xticks = get_list_date(length=length)
@@ -315,11 +334,11 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     plt.savefig('images/' + country + idx + '/plot_total_deceased.png')
     plt.close()
 
-    write_file('images/' + country + idx + '/total_deceased.csv', xticks[3:], predict_plot)
+    write_file('images/' + country + idx + '/total_deceased.csv', xticks[3:], predict_plot, real_plot)
 
     #################################################
 
-    fig5, ax5 = plt.subplots(1,1)
+    fig5, ax5 = plt.subplots(figsize=(16,9))
     fig5.suptitle('Dự báo số F0 ngoài cộng đồng chưa phát hiện')
     ax5.set_title(country)
     ax5.set_xlabel("Ngày")
@@ -331,7 +350,7 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     # real_plot = data[0][start:end]
     # ax5.plot(list(range(start, end)), real_plot, label="Thực tế")
 
-    length = len(predict_plot) + 5
+    length = len(predict_plot) + 10
 
     x = np.arange(start, start+length)
     xticks = get_list_date(length=length)
@@ -344,13 +363,17 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     plt.savefig('images/' + country + idx + '/plot_remaining_F0.png')
     plt.close()
 
-    write_file('images/' + country + idx + '/total_remaining_F0.csv', xticks[3:], predict_plot)
+    write_file('images/' + country + idx + '/total_remaining_F0.csv', xticks[3:], predict_plot, real_plot)
 
-def write_file(filename, days, predict_plot):
+def write_file(filename, days, predict_plot, real_plot):
+
     with open(filename, "w", encoding="utf-8") as f:
-        f.write("Date,Predict\n")
-        for day, number in zip(days, predict_plot):
-            f.write("%s,%d\n" % (day, int(number)))
+        f.write("Date,Real,Predict\n")
+        for day, real, predict in zip(days, real_plot, predict_plot):
+            f.write("%s,%d,%d\n" % (day, int(real), int(predict)))
+
+        for day, predict in zip(days[len(real_plot):], predict_plot[len(real_plot):]):
+            f.write("%s,,%d\n" % (day, int(predict)))
 
 def get_all_compare(data, ml_model, start, end, step=1, day_lag=10):
     print("****** Our Model ******")
