@@ -1,6 +1,6 @@
 #!/bin/bash
-export TIMES=67
-export END_TRAIN=62
+export TIMES=68
+export END_TRAIN=63
 
 echo "THU DUC"
 for i in {1..50}
