@@ -1,6 +1,6 @@
 #!/bin/bash
-export TIMES=70
-export END_TRAIN=65
+export TIMES=71
+export END_TRAIN=66
 
 echo "QUAN 11"
 for i in {1..50}
