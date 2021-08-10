@@ -75,7 +75,7 @@ if __name__ == '__main__':
             # print(predict_data)
             # print(list_param_byu)
             if args.plot_prediction:
-                plot(data, predict_data, args.start_date-args.day_lag, args.end_date, country=args.ward, idx=args.img_note)
+                plot(data, predict_data, list_param_byu, args.start_date-args.day_lag, args.end_date, country=args.ward, idx=args.img_note)
             if args.plot_param:
                 plotParam(list_param_byu, args.start_date-args.day_lag, args.end_date, country="world")
 
@@ -105,6 +105,6 @@ if __name__ == '__main__':
                     predict_data, list_param_byu = get_predict_by_step(becaked_model, data, args.start_date, args.start_date + i, end=args.end_date, day_lag=args.day_lag, return_param=True)
 
                     if args.plot_prediction:
-                        plot(data, predict_data, args.start_date-args.day_lag, args.end_date, country=country, idx=str(i))
+                        plot(data, predict_data, list_param_byu, args.start_date-args.day_lag, args.end_date, country=country, idx=str(i))
                     if args.plot_param:
                         plotParam(list_param_byu, args.start_date-args.day_lag, args.end_date, country=country, idx=str(i))
