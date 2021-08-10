@@ -1,5 +1,6 @@
 from becaked import BeCakedModel
 from data_utils import DataLoader
+import tensorflow as tf
 from utils import *
 import argparse
 
@@ -20,41 +21,56 @@ if __name__ == '__main__':
     parser.add_argument('--plot_prediction', help='Wheather to plot prediction.', type=bool, default=False)
     parser.add_argument('--plot_param', help='Wheather to plot parameters.', type=bool, default=False)
     parser.add_argument('--image_folder', help='Where to save plotted pictures.', type=str, default="./images")
+    parser.add_argument('--ward', help='Ward name', type=str, default="HCM")
     parser.add_argument('--cuda', help='Enable cuda', type=int, default=0)
+    parser.add_argument('--limit_gpu', help='Limit GPU', type=int, default=1)
     parser.add_argument('--img_note', help='figname', type=str, default="")
     args = parser.parse_args()
 
-    if args.cuda == 0:
-        os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+    os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+        
 
     if not os.path.exists(args.image_folder):
         os.makedirs(args.image_folder)
 
-    data_loader = DataLoader()
+    data_loader = DataLoader(ward_name=args.ward)
 
     if args.level == 0 or args.level == 2:
         print("===================== WORLD =====================")
-        becaked_model = BeCakedModel(day_lag=args.day_lag)
+        becaked_model = BeCakedModel(population=data_loader.N, day_lag=args.day_lag)
         data = data_loader.get_data_world_series()
-        print(len(data[0]))
+
         if not os.path.exists("models/%s_%d.h5" % ("world", args.day_lag)):
             print("Model does not exist. Trying to train...")
-            becaked_model.train(data[0][args.start_train_date:args.end_train_date], data[1][args.start_train_date:args.end_train_date], data[2][args.start_train_date:args.end_train_date], data[3][args.start_train_date:args.end_train_date], data[4][args.start_train_date:args.end_train_date], data[5][args.start_train_date:args.end_train_date], epochs=500)
+            becaked_model.train(data[0][args.start_train_date:args.end_train_date],
+                                data[1][args.start_train_date:args.end_train_date],
+                                data[2][args.start_train_date:args.end_train_date],
+                                data[3][args.start_train_date:args.end_train_date],
+                                data[4][args.start_train_date:args.end_train_date],
+                                data[5][args.start_train_date:args.end_train_date],
+                                epochs=1000)
 
         if args.run_comparison:
             get_all_compare(data, becaked_model, args.start_date, args.end_date, step=args.step, day_lag=args.day_lag)
 
         if args.plot_prediction or args.plot_param:
-            predict_data_0, list_param_byu_0 = get_predict_result_1(becaked_model, data, args.start_date, args.end_date, end=args.end_date, day_lag=args.day_lag, return_param=True)
-            predict_data_1, list_param_byu_1 = get_predict_by_step(becaked_model, data, args.end_date, args.end_date, end=args.end_date + args.infer_date, day_lag=args.day_lag, return_param=True)
+            predict_data_0, list_param_byu_0 = get_predict_result_1(becaked_model, data,
+                                                                    args.start_date, args.end_date-5,
+                                                                    end=args.end_date-5, day_lag=args.day_lag,
+                                                                    return_param=True)
 
-            predict_data = np.append(predict_data_0,predict_data_1[:,args.end_date:],axis=1)
-            list_param_byu = np.append(list_param_byu_0, list_param_byu_1[args.end_date:], axis=0)
+            predict_data_1, list_param_byu_1 = get_predict_by_step(becaked_model, data,
+                                                                    args.end_date, args.end_date-5,
+                                                                    end=args.end_date + args.infer_date,
+                                                                    day_lag=args.day_lag, return_param=True)
 
-            # print(predict_data[1])
-            print(list_param_byu)
+            predict_data = np.append(predict_data_0,predict_data_1[:,args.end_date-5:],axis=1)
+            list_param_byu = np.append(list_param_byu_0, list_param_byu_1[args.end_date-5:], axis=0)
+
+            # print(predict_data)
+            # print(list_param_byu)
             if args.plot_prediction:
-                plot(data, predict_data, args.start_date-args.day_lag, args.end_date, country="world", idx=args.img_note)
+                plot(data, predict_data, list_param_byu, args.start_date-args.day_lag, args.end_date, country=args.ward, idx=args.img_note)
             if args.plot_param:
                 plotParam(list_param_byu, args.start_date-args.day_lag, args.end_date, country="world")
 

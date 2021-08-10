@@ -15,10 +15,9 @@ from sklearn.preprocessing import StandardScaler
 from datetime import datetime, timedelta
 import matplotlib.ticker as plticker
 
-def get_list_date(start=datetime(2021,6,29) + timedelta(10), length=50):
-    temp = [(start + timedelta(days=i)).strftime("%d\n/%m") for i in range(length)]
+def get_list_date(start=datetime(2021,6,21), length=50):
+    temp = [(start + timedelta(days=i)).strftime("%d/%m") for i in range(length)]
     return temp
-
 
 def update_data():
     os.system("cd COVID-19 && git pull origin master")
@@ -31,7 +30,12 @@ def get_predict_by_step(ml_model, data, start, current, end=None, day_lag=10, re
     list_param_byu = []
 
     for day in range(predict_data.shape[1]-day_lag, end-day_lag):
-        return_result = ml_model.predict([predict_data[0][day:day+day_lag], predict_data[1][day:day+day_lag], predict_data[2][day:day+day_lag], predict_data[3][day:day+day_lag], predict_data[4][day:day+day_lag]], return_param=return_param)
+        return_result = ml_model.predict([predict_data[0][day:day+day_lag],
+                                          predict_data[1][day:day+day_lag],
+                                          predict_data[2][day:day+day_lag],
+                                          predict_data[3][day:day+day_lag],
+                                          predict_data[4][day:day+day_lag]],
+                                          return_param=return_param)
         if return_param:
             next_day, param_byu = return_result
             list_param_byu.append(param_byu[0])
@@ -39,14 +43,18 @@ def get_predict_by_step(ml_model, data, start, current, end=None, day_lag=10, re
             next_day = return_result
 
         next_day = next_day[0][-1]
-        next_day[1] += next_day[2] + next_day[3]
         predict_data = np.append(predict_data, next_day[1:].reshape((-1, 1)), axis=1)
 
     if return_param and current >= start - day_lag:
         for k in range(current - start + day_lag):
             s = current-k-day_lag
             e = current-k
-            return_result = ml_model.predict([data[0][s:e], data[1][s:e], data[2][s:e], data[3][s:e], data[4][s:e]], return_param=return_param)
+            return_result = ml_model.predict([data[0][s:e],
+                                              data[1][s:e],
+                                              data[2][s:e],
+                                              data[3][s:e],
+                                              data[4][s:e]],
+                                              return_param=return_param)
             next_day, param_byu = return_result
             list_param_byu.insert(0, param_byu[0])
 
@@ -58,7 +66,12 @@ def get_predict_result_1(ml_model, data, start, current, end=None, day_lag=10, r
     list_param_byu = []
     if current + day_lag < end: raise Exception("Invalid end_date")
     for day in range(start-day_lag,end-day_lag):
-        return_result = ml_model.predict([data[0][day:day+day_lag], data[1][day:day+day_lag], data[2][day:day+day_lag], data[3][day:day+day_lag], data[4][day:day+day_lag]], return_param=return_param)
+        return_result = ml_model.predict([data[0][day:day+day_lag],
+                                          data[1][day:day+day_lag],
+                                          data[2][day:day+day_lag],
+                                          data[3][day:day+day_lag],
+                                          data[4][day:day+day_lag]],
+                                          return_param=return_param)
         if return_param:
             next_day, param_byu = return_result
             list_param_byu.append(param_byu[0])
@@ -73,14 +86,16 @@ def get_predict_result_1(ml_model, data, start, current, end=None, day_lag=10, r
         for k in range(current - start + day_lag):
             s = current-k-day_lag
             e = current-k
-            return_result = ml_model.predict([data[0][s:e], data[1][s:e], data[2][s:e], data[3][s:e], data[4][s:e]], return_param=return_param)
+            return_result = ml_model.predict([data[0][s:e],
+                                              data[1][s:e],
+                                              data[2][s:e],
+                                              data[3][s:e],
+                                              data[4][s:e]],
+                                              return_param=return_param)
             next_day, param_byu = return_result
             list_param_byu.insert(0, param_byu[0])
-    
+
     return predict_data, np.array(list_param_byu)
-        
-
-
 
 def get_predict_result(ml_model, data, start, end=None, step=31, day_lag=10):
     predict_data = data[:,:start]
@@ -164,29 +179,50 @@ def get_compare_metric(data, predict_data, start, end):
 
 def plotParam(list_param_byu, start, end, country="world", idx=""):
     list_param_byu = np.array(list_param_byu)
-    figure, axes = plt.subplots(nrows=3, ncols=1, sharex=True)
+    figure, axes = plt.subplots(nrows=6, ncols=1, sharex=True)
 
     axes.ravel()[2].set_xlabel("Days")
 
-    axes.ravel()[0].plot(list(range(start, end)), list_param_byu[:, 0], label="beta", color="red")
+    axes.ravel()[0].plot(list(range(start, end)), list_param_byu[start:end, 6], label="beta", color="red")
     axes.ravel()[0].set_title(r"$\beta$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
                                              'fontweight': mpl.rcParams['axes.titleweight'],
                                              'color': 'red',
                                              'verticalalignment': 'baseline',
                                              'horizontalalignment': 'center'})
 
-    axes.ravel()[1].plot(list(range(start, end)), list_param_byu[:, 1], label="gamma", color="blue")
-    axes.ravel()[1].set_title(r"$\gamma$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
+    axes.ravel()[1].plot(list(range(start, end)), list_param_byu[start:end, 2], label="eta", color="orange")
+    axes.ravel()[1].set_title(r"$\beta$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
+                                             'fontweight': mpl.rcParams['axes.titleweight'],
+                                             'color': 'orange',
+                                             'verticalalignment': 'baseline',
+                                             'horizontalalignment': 'center'})
+
+    axes.ravel()[2].plot(list(range(start, end)), list_param_byu[start:end, 4], label="beta", color="pink")
+    axes.ravel()[2].set_title(r"$\beta$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
+                                             'fontweight': mpl.rcParams['axes.titleweight'],
+                                             'color': 'pink',
+                                             'verticalalignment': 'baseline',
+                                             'horizontalalignment': 'center'})
+
+    axes.ravel()[3].plot(list(range(start, end)), list_param_byu[start:end, 0], label="gamma", color="blue")
+    axes.ravel()[3].set_title(r"$\gamma$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
                                              'fontweight': mpl.rcParams['axes.titleweight'],
                                              'color': 'blue',
                                              'verticalalignment': 'baseline',
                                              'horizontalalignment': 'center'})
 
 
-    axes.ravel()[2].plot(list(range(start, end)), list_param_byu[:, 2], label="muy", color="gray")
-    axes.ravel()[2].set_title(r"$\mu$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
+    axes.ravel()[4].plot(list(range(start, end)), list_param_byu[start:end, 1], label="mu", color="gray")
+    axes.ravel()[4].set_title(r"$\mu$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
                                              'fontweight': mpl.rcParams['axes.titleweight'],
                                              'color': 'gray',
+                                             'verticalalignment': 'baseline',
+                                             'horizontalalignment': 'center'})
+
+    axes.ravel()[5].plot(list(range(start, end)), list_param_byu[start:end, 3], label="xi", color="green")
+    axes.ravel()[5].set_title(r"$\mu$", fontdict={'fontsize': mpl.rcParams['axes.titlesize'],
+                                             'fontweight': mpl.rcParams['axes.titleweight'],
+                                             'color': 'green',
                                              'verticalalignment': 'baseline',
                                              'horizontalalignment': 'center'})
 
@@ -198,211 +234,163 @@ def plotParam(list_param_byu, start, end, country="world", idx=""):
     plt.savefig('images/%splot_param%s.png'%(country,idx))
     plt.close()
 
-def plot(data, predict_data, start, end, country="world", idx=""):
-    # fig7, ax7 = plt.subplots(1,1)
-    # fig7.suptitle('CT16: 9/7/2021\nDaily Infectious')
-    # ax7.set_xlabel("Days")
-    # ax7.set_ylabel("Cases")
-
-    # predict_plot = predict_data[1][start:]
-    # ax7.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predict")
-    
-    # real_plot = data[1][start:end]
-    # ax7.plot(list(range(start, end)), real_plot, label="Actual")
-
-    # # print(real_plot)
-    # print(predict_plot)
-
-    # # length = end-start
-    # length = len(predict_plot)
-    # x = np.arange(start,start+len(predict_plot))
-    # xticks = get_list_date(length=length+9)[9:] #18/7  - 9/7 = 9
-    # ax7.set(xticks=x, xticklabels=xticks)
-    # loc = plticker.MultipleLocator(base=length//12) # this locator puts ticks at regular intervals
-    # ax7.xaxis.set_major_locator(loc)
-
-    # plt.legend()
-    # if country:
-    #     if not os.path.exists('images/%s'%country):
-    #         os.makedirs('images/%s'%country)
-
-    #     country += "/"
-
-    # plt.savefig('images/%splot_daily_infectious%s.png'%(country,idx))
-    # plt.close()
-
-    # #################################################
-
-    # fig8, ax8 = plt.subplots(1,1)
-    # fig8.suptitle('CT16: 9/7/2021\nDaily Exposed')
-    # ax8.set_xlabel("Days")
-    # ax8.set_ylabel("Cases")
-
-    # predict_plot = predict_data[0][start:]
-    # ax8.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predict")
-    
-    # real_plot = data[0][start:end]
-    # ax8.plot(list(range(start, end)), real_plot, label="Actual")
-
-    # # print(real_plot)
-    # print(predict_plot)
-
-    # # length = end-start
-    # length = len(predict_plot)
-    # x = np.arange(start,start+len(predict_plot))
-    # xticks = get_list_date(length=length+9)[9:] #18/7  - 9/7 = 9
-    # ax8.set(xticks=x, xticklabels=xticks)
-    # loc = plticker.MultipleLocator(base=length//12) # this locator puts ticks at regular intervals
-    # ax8.xaxis.set_major_locator(loc)
-
-    # plt.legend()
-    # if country:
-    #     if not os.path.exists('images/%s'%country):
-    #         os.makedirs('images/%s'%country)
-
-    #     country += "/"
-
-    # plt.savefig('images/%splot_daily_exposed%s.png'%(country,idx))
-    # plt.close()
-
-    #################################################
-
-    fig, ax1 = plt.subplots(1,1)
-    fig.suptitle('CT16: 9/7/2021\nDaily Infectious')
-    ax1.set_xlabel("Days")
-    ax1.set_ylabel("Cases")
-
-    predict_plot = predict_data[1][start:]
-    ax1.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predicted")
-    
-    real_plot = data[1][start:end]
-    ax1.plot(list(range(start, end)), real_plot, label="Actual")
-
-    print('Actual\tPredicted')
-    print(*[str(x) + '\t' + str(y) for x,y in zip(real_plot,predict_plot[:len(real_plot)])][10:],sep='\n')
-    print(predict_plot[len(real_plot):])
-
-    # length = end-start
-    length = len(predict_plot)
-    x = np.arange(start,start+length)
-    xticks = get_list_date(length=length)
-    ax1.set(xticks=x, xticklabels=xticks)
-    loc = plticker.MultipleLocator(base=length//12) # this locator puts ticks at regular intervals
-    ax1.xaxis.set_major_locator(loc)
-
-    plt.legend()
+def plot(data, predict_data, params, start, end, country="world", idx=""):
     if country:
         if not os.path.exists('images/%s'%country):
             os.makedirs('images/%s'%country)
 
         country += "/"
 
-    plt.savefig('/content/drive/MyDrive/Becaked/images/plot_daily_infectious%s.png'%(idx))
+    if not os.path.exists('images/%s%s'%(country,idx)):
+        os.makedirs('images/%s%s'%(country,idx))
+
+    #################################################
+
+    fig, ax1 = plt.subplots(figsize=(16,9))
+    fig.suptitle('Dự báo tổng ca đang nhiễm bệnh theo ngày')
+    ax1.set_title(country)
+    ax1.set_xlabel("Ngày")
+    ax1.set_ylabel("Ca nhiễm")
+
+    I_n_pred = predict_data[1][start:]
+    R_n_pred = predict_data[2][start:]
+    D_n_pred = predict_data[3][start:]
+    xi_pred = params[3][start:]
+    temp = D_n_pred.copy()
+    for i in range(1,len(temp)): temp[i] = temp[i-1]
+    temp[0] = 0
+
+    I_acc_pred = I_n_pred + R_n_pred + D_n_pred + xi_pred*temp
+    predict_plot = I_acc_pred.copy()
+    for i in range(len(predict_plot)-1,1,-1): predict_plot[i] -= predict_plot[i-1]
+
+    ax1.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
+
+    I_n_true = data[1][start:end]
+    R_n_true = data[2][start:end]
+    D_n_true = data[3][start:end]
+    I_acc_true = I_n_true + R_n_true + D_n_true
+    real_plot = I_acc_true.copy()
+    for i in range(len(real_plot)-1,1,-1): real_plot[i] -= real_plot[i-1]
+
+    ax1.plot(list(range(start, end)), real_plot, label="Thực tế")
+
+    print('Actual\tPredicted')
+    print(*[str(x) + '\t' + str(y) for x,y in zip(real_plot,predict_plot[:len(real_plot)])][10:],sep='\n')
+    print('Next days')
+    print(predict_plot[len(real_plot):])
+
+    length = len(predict_plot) + 10
+
+    x = np.arange(start, start+length)
+    xticks = get_list_date(length=length)
+
+    ax1.set(xticks=x[::5], xticklabels=xticks[::5])
+    loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
+    ax1.xaxis.set_major_locator(loc)
+
+    plt.legend()
+    plt.savefig('images/' + country + idx + '/plot_daily_infectious.png')
     plt.close()
 
-    # #################################################
+    write_file('images/' + country + idx + '/daily_infectious.csv', xticks[3:], predict_plot, real_plot)
 
-    # fig2, ax2 = plt.subplots(1,1)
-    # fig2.suptitle('Comparison of actual and predicted total infectious cases')
-    # ax2.set_xlabel("Days")
-    # ax2.set_ylabel("Cases")
+    #################################################
 
-    # real_plot = data[1][start:end]
-    # for i in range(1,len(real_plot)): real_plot[i] += real_plot[i-1]
+    fig3, ax3 = plt.subplots(figsize=(16,9))
+    fig3.suptitle('Dự báo ca hồi phục tích lũy')
+    ax3.set_title(country)
+    ax3.set_xlabel("Ngày")
+    ax3.set_ylabel("Ca")
 
-    # ax2.plot(list(range(start, end)), real_plot, label="Actual total infectious")
+    predict_plot = predict_data[2][start:]
+    ax3.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
-    # predict_plot = predict_data[1][start:end]
-    # for i in range(1,len(predict_plot)): predict_plot[i] += predict_plot[i-1]
-    # ax2.plot(list(range(start, end)), predict_plot, label="Predicted total infectious")
+    real_plot = data[2][start:end]
+    ax3.plot(list(range(start, end)), real_plot, label="Thực tế")
 
-    # plt.legend()
-    # plt.savefig('images/%splot_total_infectious%s.png'%(country,idx))
-    # plt.close()
+    length = len(predict_plot) + 10
 
-    # #################################################
+    x = np.arange(start, start+length)
+    xticks = get_list_date(length=length)
 
-    # fig3, ax3 = plt.subplots(1,1)
-    # fig3.suptitle('Comparison of actual and predicted recovered cases')
-    # ax3.set_xlabel("Days")
-    # ax3.set_ylabel("Cases")
+    ax3.set(xticks=x[::5], xticklabels=xticks[::5])
+    loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
+    ax3.xaxis.set_major_locator(loc)
 
-    # real_plot = data[2][start:end]
-    # ax3.plot(list(range(start, end)), data[2][start:end], label="Actual recovered")
+    plt.legend()
+    plt.savefig('images/' + country + idx + '/plot_total_recovered.png')
+    plt.close()
 
-    # predict_plot = predict_data[2][start:end]
-    # ax3.plot(list(range(start, end)), predict_data[2][start:end], label="Predicted recovered")
+    write_file('images/' + country + idx + '/total_recovered.csv', xticks[3:], predict_plot, real_plot)
 
-    # plt.legend()
-    # plt.savefig('images/%splot_recovered%s.png'%(country,idx))
-    # plt.close()
+    #################################################
 
-    # #################################################
+    fig4, ax4 = plt.subplots(figsize=(16,9))
+    fig4.suptitle('Dự báo ca tử vong tích lũy')
+    ax4.set_title(country)
+    ax4.set_xlabel("Ngày")
+    ax4.set_ylabel("Ca")
 
-    # fig4, ax4 = plt.subplots(1,1)
-    # fig4.suptitle('Comparison of actual and predicted deceased cases')
-    # ax4.set_xlabel("Days")
-    # ax4.set_ylabel("Cases")
+    predict_plot = predict_data[3][start:]
+    ax4.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
-    # real_plot = data[3][start:end]
-    # ax4.plot(list(range(start, end)), data[3][start:end], label="Actual deceased")
+    real_plot = data[3][start:end]
+    ax4.plot(list(range(start, end)), real_plot, label="Thực tế")
 
-    # predict_plot = predict_data[3][start:end]
-    # ax4.plot(list(range(start, end)), predict_data[3][start:end], label="Predicted deceased")
+    length = len(predict_plot) + 10
 
-    # plt.legend()
-    # plt.savefig('images/%splot_deceased%s.png'%(country,idx))
-    # plt.close()
+    x = np.arange(start, start+length)
+    xticks = get_list_date(length=length)
 
-    # ##################################################
-    # fig5, ax5 = plt.subplots(1,1)
-    # fig5.suptitle('Comparison of actual and predicted total exposed cases')
-    # ax5.set_xlabel("Days")
-    # ax5.set_ylabel("Cases")
+    ax4.set(xticks=x[::5], xticklabels=xticks[::5])
+    loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
+    ax4.xaxis.set_major_locator(loc)
 
-    # real_plot = data[0][start:end]
-    # for i in range(1,len(real_plot)): real_plot[i] += real_plot[i-1]
+    plt.legend()
+    plt.savefig('images/' + country + idx + '/plot_total_deceased.png')
+    plt.close()
 
-    # ax5.plot(list(range(start, end)), real_plot, label="Actual total exposed")
+    write_file('images/' + country + idx + '/total_deceased.csv', xticks[3:], predict_plot, real_plot)
 
-    # predict_plot = predict_data[0][start:end]
-    # for i in range(1,len(predict_plot)): predict_plot[i] += predict_plot[i-1]
-    # ax5.plot(list(range(start, end)), predict_plot, label="Predicted total exposed")
+    #################################################
 
-    # plt.legend()
-    # plt.savefig('images/%splot_total_exposed%s.png'%(country,idx))
-    # plt.close()
+    fig5, ax5 = plt.subplots(figsize=(16,9))
+    fig5.suptitle('Dự báo số F0 ngoài cộng đồng chưa phát hiện')
+    ax5.set_title(country)
+    ax5.set_xlabel("Ngày")
+    ax5.set_ylabel("Ca")
 
-    # #####################################################
-    # fig6, ax6 = plt.subplots(1,1)
-    # fig6.suptitle('CT16: 9/7/2021\nDaily Exposed')
-    # ax6.set_xlabel("Days")
-    # ax6.set_ylabel("Cases")
-
-    # predict_plot = predict_data[0][start:]
-    # ax6.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Predict")
+    predict_plot = predict_data[0][start:]
+    ax5.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
     # real_plot = data[0][start:end]
-    # ax6.plot(list(range(start, end)), real_plot, label="Actual")
-    
-    # # length = end-start
-    # length = len(predict_plot)
-    # x = np.arange(start,start+len(predict_plot))
-    # xticks = get_list_date(length=length)
-    # ax6.set(xticks=x, xticklabels=xticks)
-    # loc = plticker.MultipleLocator(base=length//12) # this locator puts ticks at regular intervals
-    # ax6.xaxis.set_major_locator(loc)
-    # # ax6.set_xticklabels(labels=xticks, rotation = (-90), fontsize = 10, va='bottom', ha='left')
+    # ax5.plot(list(range(start, end)), real_plot, label="Thực tế")
 
-    # plt.legend()
-    # if country:
-    #     if not os.path.exists('images/%s'%country):
-    #         os.makedirs('images/%s'%country)
+    length = len(predict_plot) + 10
 
-    #     country += "/"
+    x = np.arange(start, start+length)
+    xticks = get_list_date(length=length)
 
-    # plt.savefig('images/%splot_daily_exposed%s.png'%(country,idx))
-    # plt.close()
+    ax5.set(xticks=x[::5], xticklabels=xticks[::5])
+    loc = plticker.MultipleLocator(base=5) # this locator puts ticks at regular intervals
+    ax5.xaxis.set_major_locator(loc)
+
+    plt.legend()
+    plt.savefig('images/' + country + idx + '/plot_remaining_F0.png')
+    plt.close()
+
+    write_file('images/' + country + idx + '/total_remaining_F0.csv', xticks[3:], predict_plot, real_plot)
+
+def write_file(filename, days, predict_plot, real_plot):
+
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write("Date,Real,Predict\n")
+        for day, real, predict in zip(days, real_plot, predict_plot):
+            f.write("%s,%d,%d\n" % (day, int(real), int(predict)))
+
+        for day, predict in zip(days[len(real_plot):], predict_plot[len(real_plot):]):
+            f.write("%s,,%d\n" % (day, int(predict)))
 
 def get_all_compare(data, ml_model, start, end, step=1, day_lag=10):
     print("****** Our Model ******")
