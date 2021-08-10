@@ -234,7 +234,7 @@ def plotParam(list_param_byu, start, end, country="world", idx=""):
     plt.savefig('images/%splot_param%s.png'%(country,idx))
     plt.close()
 
-def plot(data, predict_data, start, end, country="world", idx=""):
+def plot(data, predict_data, params, start, end, country="world", idx=""):
     if country:
         if not os.path.exists('images/%s'%country):
             os.makedirs('images/%s'%country)
@@ -252,10 +252,27 @@ def plot(data, predict_data, start, end, country="world", idx=""):
     ax1.set_xlabel("Ngày")
     ax1.set_ylabel("Ca nhiễm")
 
-    predict_plot = predict_data[1][start:]
+    I_n_pred = predict_data[1][start:]
+    R_n_pred = predict_data[2][start:]
+    D_n_pred = predict_data[3][start:]
+    xi_pred = params[3][start:]
+    temp = D_n_pred.copy()
+    for i in range(1,len(temp)): temp[i] = temp[i-1]
+    temp[0] = 0
+
+    I_acc_pred = I_n_pred + R_n_pred + D_n_pred + xi_pred*temp
+    predict_plot = I_acc_pred.copy()
+    for i in range(len(predict_plot)-1,1,-1): predict_plot[i] -= predict_plot[i-1]
+
     ax1.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
-    real_plot = data[1][start:end]
+    I_n_true = data[1][start:end]
+    R_n_true = data[2][start:end]
+    D_n_true = data[3][start:end]
+    I_acc_true = I_n_true + R_n_true + D_n_true
+    real_plot = I_acc_true.copy()
+    for i in range(len(real_plot)-1,1,-1): real_plot[i] -= real_plot[i-1]
+
     ax1.plot(list(range(start, end)), real_plot, label="Thực tế")
 
     print('Actual\tPredicted')
