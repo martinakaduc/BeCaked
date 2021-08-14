@@ -364,8 +364,8 @@ def plot(data, predict_data, params, start, end, country="world", idx=""):
     predict_plot = predict_data[0][start:]//5
     ax5.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
-    real_plot = data[0][start:end]//5
-    ax5.plot(list(range(start, end)), real_plot, label="Thực tế")
+    real_plot = data[0][start:end-5]//5
+    ax5.plot(list(range(start, end-5)), real_plot, label="Thực tế")
 
     length = len(predict_plot) + 10
 
