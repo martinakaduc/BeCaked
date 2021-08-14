@@ -247,7 +247,7 @@ def plot(data, predict_data, params, start, end, country="world", idx=""):
     #################################################
 
     fig, ax1 = plt.subplots(figsize=(16,9))
-    fig.suptitle('Dự báo tổng ca đang nhiễm bệnh theo ngày')
+    fig.suptitle('Dự báo số ca nhiễm mới theo ngày')
     ax1.set_title(country)
     ax1.set_xlabel("Ngày")
     ax1.set_ylabel("Ca nhiễm")
@@ -257,10 +257,10 @@ def plot(data, predict_data, params, start, end, country="world", idx=""):
     D_n_pred = predict_data[3][start:]
     xi_pred = params[3][start:]
     temp = D_n_pred.copy()
-    for i in range(1,len(temp)): temp[i] = temp[i-1]
+    temp[1:] = temp[:-1]
     temp[0] = 0
 
-    I_acc_pred = I_n_pred + R_n_pred + D_n_pred + xi_pred*temp
+    I_acc_pred = I_n_pred + R_n_pred + D_n_pred + np.mean(xi_pred)*temp
     predict_plot = I_acc_pred.copy()
     for i in range(len(predict_plot)-1,1,-1): predict_plot[i] -= predict_plot[i-1]
 
@@ -293,7 +293,7 @@ def plot(data, predict_data, params, start, end, country="world", idx=""):
     plt.savefig('images/' + country + idx + '/plot_daily_infectious.png')
     plt.close()
 
-    write_file('images/' + country + idx + '/daily_infectious.csv', xticks[3:], predict_plot, real_plot)
+    write_file('images/' + country + idx + '/daily_infectious.csv', xticks[8:], predict_plot, real_plot)
 
     #################################################
 
@@ -322,7 +322,7 @@ def plot(data, predict_data, params, start, end, country="world", idx=""):
     plt.savefig('images/' + country + idx + '/plot_total_recovered.png')
     plt.close()
 
-    write_file('images/' + country + idx + '/total_recovered.csv', xticks[3:], predict_plot, real_plot)
+    write_file('images/' + country + idx + '/total_recovered.csv', xticks[8:], predict_plot, real_plot)
 
     #################################################
 
@@ -351,7 +351,7 @@ def plot(data, predict_data, params, start, end, country="world", idx=""):
     plt.savefig('images/' + country + idx + '/plot_total_deceased.png')
     plt.close()
 
-    write_file('images/' + country + idx + '/total_deceased.csv', xticks[3:], predict_plot, real_plot)
+    write_file('images/' + country + idx + '/total_deceased.csv', xticks[8:], predict_plot, real_plot)
 
     #################################################
 
@@ -361,11 +361,11 @@ def plot(data, predict_data, params, start, end, country="world", idx=""):
     ax5.set_xlabel("Ngày")
     ax5.set_ylabel("Ca")
 
-    predict_plot = predict_data[0][start:]
+    predict_plot = predict_data[0][start:]//5
     ax5.plot(list(range(start, start+len(predict_plot))), predict_plot, label="Dự báo")
 
-    # real_plot = data[0][start:end]
-    # ax5.plot(list(range(start, end)), real_plot, label="Thực tế")
+    real_plot = data[0][start:end]//5
+    ax5.plot(list(range(start, end)), real_plot, label="Thực tế")
 
     length = len(predict_plot) + 10
 
@@ -380,7 +380,7 @@ def plot(data, predict_data, params, start, end, country="world", idx=""):
     plt.savefig('images/' + country + idx + '/plot_remaining_F0.png')
     plt.close()
 
-    write_file('images/' + country + idx + '/total_remaining_F0.csv', xticks[3:], predict_plot, real_plot)
+    write_file('images/' + country + idx + '/total_remaining_F0.csv', xticks[8:], predict_plot, real_plot)
 
 def write_file(filename, days, predict_plot, real_plot):
 
