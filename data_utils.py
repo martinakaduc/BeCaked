@@ -19,6 +19,7 @@ class DataLoader():
         self.N = self.N_obj[ward_name].to_numpy()
 
         self.modify()
+        self.centered_moving_average()
 
         self.total_day = len(self.infectious)
         print(self.infectious_obj.Date.to_list()[-1])
@@ -44,6 +45,23 @@ class DataLoader():
 
         self.exposed,self.infectious,self.recovered,self.deaths,self.N = E,I,R,D,N
         # print(E,I,R,D,sep='\n')
+    
+    def centered_moving_average(self):
+        raw_E,raw_I,raw_R,raw_D = self.exposed.copy(), self.infectious.copy(), self.recovered.copy(), self.deaths.copy()
+        w = 5
+        E,I,R,D = [],[],[],[]
+        for i in range(len(raw_E)):
+            start = i - w//2
+            if start < 0: start = 0
+            end = i + w//2
+            if end >= len(raw_E) - 1: end = len(raw_E) - 1
+
+            E.append(np.average(raw_E[start:end+1]))
+            I.append(np.average(raw_I[start:end+1]))
+            R.append(np.average(raw_R[start:end+1]))
+            D.append(np.average(raw_D[start:end+1]))
+        
+        self.exposed,self.infectious,self.recovered,self.deaths = E,I,R,D
 
     def get_data_world_series(self):
         return np.array([self.exposed, self.infectious, self.recovered, self.deaths, self.beta, self.N], dtype=np.float64)

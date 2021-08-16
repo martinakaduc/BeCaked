@@ -234,6 +234,24 @@ def plotParam(list_param_byu, start, end, country="world", idx=""):
     plt.savefig('images/%splot_param%s.png'%(country,idx))
     plt.close()
 
+def reverse_centered_moving_average(data):
+    raw_E,raw_I,raw_R,raw_D = data[:4]
+    E,I,R,D = [],[],[],[]
+    w = 5
+    for i in range(len(raw_E)):
+        start = i - w//2
+        if start < 0: start = 0
+        end = i + w//2
+        if end >= len(raw_E) - 1: end = len(raw_E) - 1
+
+        length = end-start+1
+        E.append(raw_E*length - sum(raw_E[start:i]) - sum(raw_E[i+1:end+1]))
+        I.append(raw_I*length - sum(raw_I[start:i]) - sum(raw_I[i+1:end+1]))
+        R.append(raw_R*length - sum(raw_R[start:i]) - sum(raw_R[i+1:end+1]))
+        D.append(raw_D*length - sum(raw_D[start:i]) - sum(raw_D[i+1:end+1]))
+    
+    return np.vstack([E,I,R,D])
+
 def plot(data, predict_data, params, start, end, country="world", idx=""):
     if country:
         if not os.path.exists('images/%s'%country):
@@ -245,6 +263,8 @@ def plot(data, predict_data, params, start, end, country="world", idx=""):
         os.makedirs('images/%s%s'%(country,idx))
 
     #################################################
+    # predict_data = reverse_centered_moving_average(predict_data)
+
 
     fig, ax1 = plt.subplots(figsize=(16,9))
     fig.suptitle('Dự báo số ca nhiễm mới theo ngày')
@@ -260,7 +280,7 @@ def plot(data, predict_data, params, start, end, country="world", idx=""):
     temp[1:] = temp[:-1]
     temp[0] = 0
 
-    I_acc_pred = I_n_pred + R_n_pred + D_n_pred + np.mean(xi_pred)*temp
+    I_acc_pred = I_n_pred + R_n_pred + D_n_pred #+ np.mean(xi_pred)*temp
     predict_plot = I_acc_pred.copy()
     for i in range(len(predict_plot)-1,1,-1): predict_plot[i] -= predict_plot[i-1]
 
