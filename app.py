@@ -77,6 +77,10 @@ def contact():
 def googlede2ce4a4cee74360():
     return render_template('googlede2ce4a4cee74360.html')
 
+@app.route("/sitemap", methods=["GET"])
+def sitemap():
+    return render_template("sitemap.xml")
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
