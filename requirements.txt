@@ -5,7 +5,7 @@ markupsafe
 numpy
 matplotlib
 pandas
-apscheduler
 h5py==2.10.0
-waitress
+gunicorn
 sklearn
+statsmodels

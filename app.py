@@ -1,17 +1,14 @@
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask import render_template
 from markupsafe import escape
-from apscheduler.schedulers.background import BackgroundScheduler
 import os
 from datetime import datetime, timedelta
 import argparse
 import pickle
 import time
 import numpy as np
-from waitress import serve
 
 app = Flask(__name__)
-sched = BackgroundScheduler(daemon=True)
 
 @app.route("/hello", methods=["GET"])
 @app.route('/hello/<name>', methods=["GET"])
@@ -180,21 +177,15 @@ def update_data():
     time.sleep(30)
     init(run_predict=True)
 
+def main():
+    run_init = bool(os.environ.get("INIT_DATA", True))
+    data_dir = str(os.environ.get("DATA_DIR", "./web_data"))
+    init(run_init, data_dir)
+
+    return app
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--init_data', help='Wheather run prediction.', type=bool, default=False)
-    parser.add_argument('--data_folder', help='Where to store website data.', type=str, default="./web_data")
-    parser.add_argument('--cuda', help='Enable cuda', type=int, default=0)
-    args = parser.parse_args()
-
-    if args.cuda == 0:
-        os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-
-    init(args.init_data, args.data_folder)
-
-    sched.add_job(update_data, 'interval', hours=6)
-    sched.start()
-
-    port = int(os.environ.get("PORT", 5000))
-    serve(app, host='0.0.0.0', port=port)
-    # app.run(debug=True, host='0.0.0.0', port=port)
+    app = main()
+    print(os.environ.get("CUDA_VISIBLE_DEVICES", 8080))
+    port = int(os.environ.get("PORT", 8080))
+    app.run(debug=True, host='0.0.0.0', port=port)
