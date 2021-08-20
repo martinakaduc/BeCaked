@@ -41,12 +41,12 @@ Optional arguments:
 
 ### Start web app
 
-Edit (.env)[.env] file for following arguments
+Edit [.env](.env) file for following arguments
 ```
 Optional arguments:
-  INIT_DATA             Wheather run prediction.
+  INIT_DATA             Whether run prediction.
   DATA_DIR              Where to store website data.
-  CUDA_VISIBLE_DEVICES  GPU devices
+  CUDA_VISIBLE_DEVICES  GPU device
   PORT                  Deployment port
 ```
 
