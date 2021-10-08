@@ -41,24 +41,18 @@ Optional arguments:
 
 ### Start web app
 
+Edit [.env](.env) file for following arguments
 ```
-python app.py [-h] [--init_data INIT_DATA] [--data_folder DATA_FOLDER]
-              [--cuda CUDA]
-```
-
-```
-optional arguments:
-  -h, --help            show this help message and exit
-  --init_data INIT_DATA
-                        Wheather run prediction.
-  --data_folder DATA_FOLDER
-                        Where to store website data.
-  --cuda CUDA           Enable cuda
+Optional arguments:
+  INIT_DATA             Whether run prediction.
+  DATA_DIR              Where to store website data.
+  CUDA_VISIBLE_DEVICES  GPU device
+  PORT                  Deployment port
 ```
 
-Normally, you can use this below command to start a web server of our application.
+Then run
 ```
-python app.py --init_data True --cuda 1
+bash run_web.sh
 ```
 
 ## Step-by-step reproduce experiments
