@@ -12,7 +12,8 @@ def query_data(db, district, date):
     return db[district].find_one({"_id": date})
 
 def get_latest_data(district='HCM', skip_missing = False):
-    client = MongoClient("mongodb+srv://thesisbecaked:thesisbecaked@thesis.cojlj.mongodb.net")
+    uri = json.load(open('config.json'))['mongodb_read_uri']
+    client = MongoClient(uri)
     db = client['daily-data']
     latest_date = db.auxiliary.find_one({"type": "latest_date"}, {"latest_date": 1})['latest_date']
     if skip_missing:
@@ -27,7 +28,8 @@ def get_latest_data(district='HCM', skip_missing = False):
     return data
     
 def get_daily_latest_statistics():
-    client = MongoClient("mongodb+srv://thesisbecaked:thesisbecaked@thesis.cojlj.mongodb.net")
+    uri = json.load(open('config.json'))['mongodb_read_uri']
+    client = MongoClient(uri)
     db = client['daily-data']
     latest_date = db.auxiliary.find_one({"type": "latest_date"}, {"latest_date": 1})['latest_date']
     tmp = latest_date.split('.')
@@ -35,6 +37,10 @@ def get_daily_latest_statistics():
     pre_date = dt.strptime(f'{date}/{month}/21', '%d/%m/%y') - timedelta(days = 1)
     curr_cum_date = f'{pre_date.month}.{pre_date.day}'
     data = db.cum_data.find_one({"_id": curr_cum_date})
+
+    pre_date = dt.strptime(f'{date}/{month}/21', '%d/%m/%y') - timedelta(days = 2)
+    pre_cum_date = f'{pre_date.month}.{pre_date.day}'
+    pre_data = db.cum_data.find_one({"_id": pre_cum_date})
     skips = ['cum_data', 'auxiliary']
     districts = db.list_collection_names()
     rv = {}
@@ -42,35 +48,41 @@ def get_daily_latest_statistics():
     rv['data'] = {}
     for district in districts:
         if district in skips: continue
-        result = db[district].find_one({"_id": latest_date})
-        I, R, D = None, None, None
-        if result is not None:
-            result = result['data']
-            try:
-                D = result['D']['real'][-1] - result['D']['real'][-2]
-            except:
-                pass
-            try:
-                R = result['R']['real'][-1] - result['R']['real'][-2]
-            except:
-                pass
-            try:
-                I = result['I']['real'][-1]
-            except:
-                pass
+        try:
+            I = data['I'][district] - pre_data['I'][district]
+        except:
+            I = None
+        try:
+            R = data['R'][district] - pre_data['R'][district]
+        except:
+            R = None
+        try:
+            D = data['D'][district] - pre_data['D'][district]
+        except:
+            D = None
+        try:
+            V = data['V'][district] - pre_data['V'][district]
+        except:
+            V = None
         acc_I = data['I'].get(district, None)
         acc_R = data['R'].get(district, None)
         acc_D = data['D'].get(district, None)
+        acc_V = data['V'].get(district, None)
+        acc_C = data['C'].get(district, None)
+        
         rv['data'][district] = {
             'I': {'New': I, 'Total': acc_I},
             'R': {'New': R, 'Total': acc_R},
-            'D': {'New': D, 'Total': acc_D}
+            'D': {'New': D, 'Total': acc_D},
+            'V': {'New': V, 'Total': acc_V}
         }
-    client.close()
+        if district == 'HCM':
+            rv['data'][district]['C'] = {'Total': acc_C}
     return rv
 
 #test
 if __name__ == '__main__':
+    os.system("mkdir -p backup")
     try:
         summary = get_daily_latest_statistics()
 
@@ -85,5 +97,6 @@ if __name__ == '__main__':
                 json.dump(data,json_file)
         with open(backup_summary_path,'w') as json_file:
             json.dump(summary,json_file)
-    except:
+    except Exception as e:
+        print(e)
         pass
