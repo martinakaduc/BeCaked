@@ -1,0 +1,164 @@
+{"_id": "09.09", 
+    "data": {
+        "BINH CHANH":
+            {
+                "I": {"New": 473, "Total": 510},
+                "D": {"New": 311, "Total": 665}, 
+                "R": {"New": 861, "Total": 209}
+            },
+            
+        "BINH TAN":
+            {
+                "I": {"New": 620, "Total": 502},
+                "D": {"New": 593, "Total": 352}, 
+                "R": {"New": 481, "Total": 444}
+            },
+            
+        "BINH THANH":
+            {
+                "I": {"New": 609, "Total": 784},
+                "D": {"New": 435, "Total": 663}, 
+                "R": {"New": 579, "Total": 96}
+            },
+            
+        "CAN GIO":
+            {
+                "I": {"New": 377, "Total": 589},
+                "D": {"New": 331, "Total": 882}, 
+                "R": {"New": 582, "Total": 212}
+            },
+            
+        "CU CHI":
+            {
+                "I": {"New": 478, "Total": 351},
+                "D": {"New": 915, "Total": 202}, 
+                "R": {"New": 656, "Total": 865}
+            },
+            
+        "GO VAP":
+            {
+                "I": {"New": 857, "Total": 954},
+                "D": {"New": 482, "Total": 173}, 
+                "R": {"New": 0, "Total": 501}
+            },
+            
+        "HCM":
+            {
+                "I": {"New": 567, "Total": 490},
+                "D": {"New": 190, "Total": 82}, 
+                "R": {"New": 924, "Total": 747}
+            },
+            
+        "HOC MON":
+            {
+                "I": {"New": 921, "Total": 847},
+                "D": {"New": 397, "Total": 669}, 
+                "R": {"New": 597, "Total": 52}
+            },
+            
+        "NHA BE":
+            {
+                "I": {"New": 6, "Total": 598},
+                "D": {"New": 558, "Total": 165}, 
+                "R": {"New": 310, "Total": 426}
+            },
+            
+        "PHU NHUAN":
+            {
+                "I": {"New": 301, "Total": 551},
+                "D": {"New": 981, "Total": 737}, 
+                "R": {"New": 581, "Total": 701}
+            },
+            
+        "QUAN 1":
+            {
+                "I": {"New": 655, "Total": 708},
+                "D": {"New": 898, "Total": 868}, 
+                "R": {"New": 476, "Total": 906}
+            },
+            
+        "QUAN 3":
+            {
+                "I": {"New": 886, "Total": 609},
+                "D": {"New": 215, "Total": 403}, 
+                "R": {"New": 887, "Total": 783}
+            },
+            
+        "QUAN 4":
+            {
+                "I": {"New": 902, "Total": 591},
+                "D": {"New": 635, "Total": 438}, 
+                "R": {"New": 209, "Total": 847}
+            },
+            
+        "QUAN 5":
+            {
+                "I": {"New": 797, "Total": 531},
+                "D": {"New": 722, "Total": 669}, 
+                "R": {"New": 797, "Total": 176}
+            },
+            
+        "QUAN 6":
+            {
+                "I": {"New": 532, "Total": 685},
+                "D": {"New": 236, "Total": 696}, 
+                "R": {"New": 808, "Total": 430}
+            },
+            
+        "QUAN 7":
+            {
+                "I": {"New": 556, "Total": 334},
+                "D": {"New": 791, "Total": 720}, 
+                "R": {"New": 240, "Total": 856}
+            },
+            
+        "QUAN 8":
+            {
+                "I": {"New": 823, "Total": 1},
+                "D": {"New": 253, "Total": 832}, 
+                "R": {"New": 67, "Total": 245}
+            },
+            
+        "QUAN 10":
+            {
+                "I": {"New": 907, "Total": 95},
+                "D": {"New": 872, "Total": 280}, 
+                "R": {"New": 562, "Total": 359}
+            },
+            
+        "QUAN 11":
+            {
+                "I": {"New": 888, "Total": 993},
+                "D": {"New": 36, "Total": 406}, 
+                "R": {"New": 717, "Total": 947}
+            },
+            
+        "QUAN 12":
+            {
+                "I": {"New": 822, "Total": 428},
+                "D": {"New": 373, "Total": 697}, 
+                "R": {"New": 546, "Total": 321}
+            },
+            
+        "TAN BINH":
+            {
+                "I": {"New": 951, "Total": 588},
+                "D": {"New": 9, "Total": 851}, 
+                "R": {"New": 437, "Total": 802}
+            },
+            
+        "TAN PHU":
+            {
+                "I": {"New": 448, "Total": 747},
+                "D": {"New": 884, "Total": 214}, 
+                "R": {"New": 301, "Total": 262}
+            },
+            
+        "THU DUC":
+            {
+                "I": {"New": 295, "Total": 893},
+                "D": {"New": 222, "Total": 748}, 
+                "R": {"New": 169, "Total": 55}
+            }
+    }
+}

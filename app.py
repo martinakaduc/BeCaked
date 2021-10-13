@@ -7,6 +7,9 @@ import argparse
 import pickle
 import time
 import numpy as np
+import json
+
+from database import get_latest_data, get_daily_latest_statistics
 
 app = Flask(__name__)
 
@@ -15,9 +18,9 @@ app = Flask(__name__)
 def hello(name=None):
     return render_template('hello.html', name=escape(name))
 
-@app.route("/", methods=["GET"])
-def home():
-    return render_template('home.html',
+@app.route("/old-home", methods=["GET"])
+def old_home():
+    return render_template('old_home.html',
                             name='home',
                             request=request,
                             countries=countries,
@@ -25,6 +28,34 @@ def home():
                             world_series=world_series,
                             world_series_predict=world_series_predict,
                             current_day=current_day)
+
+@app.route("/", methods=["GET"])
+@app.route("/<district>", methods=["GET"])
+def home(district="hcm"):
+    district = district.upper()
+    district = district.replace('-',' ')
+    
+    backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
+    backup_data_path = os.path.join(backup_data_dir,district+'.json')
+    backup_summary_path = os.environ.get("BACKUP_SUMMARY_PATH", "./backup/backup_summary.json")
+    with open(backup_data_path) as json_file:
+        data = json.load(json_file)
+    with open(backup_summary_path) as json_file:
+        summary = get_daily_latest_statistics()
+
+    districts = ['BINH CHANH', 'BINH TAN', 'BINH THANH', 'CAN GIO', 'CU CHI', 'GO VAP', 'HCM', 'HOC MON', 'NHA BE', 'PHU NHUAN'] + [f'QUAN {i}' for i in [1, 3, 4, 5, 6, 7, 8, 10, 11, 12]] + ['TAN BINH', 'TAN PHU', 'THU DUC']
+    districts.remove('HCM')
+    districts.sort()
+    districts.append('HCM')
+
+    return render_template('home.html',
+                            name = district,
+                            today = data['_id'],
+                            districts = districts,
+                            summary = summary['data'],
+                            data = data['data'],
+                            num_cols = [3 + (district == 'HCM'),1 + (district == 'HCM'),1]
+                            )
 
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
@@ -76,10 +107,6 @@ def contact():
 @app.route("/googlede2ce4a4cee74360.html", methods=["GET"])
 def googlede2ce4a4cee74360():
     return render_template('googlede2ce4a4cee74360.html')
-
-@app.route("/sitemap", methods=["GET"])
-def sitemap():
-    return render_template("sitemap.xml")
 
 @app.route('/favicon.ico')
 def favicon():
@@ -191,4 +218,4 @@ def main():
 if __name__ == "__main__":
     app = main()
     port = int(os.environ.get("PORT", 8080))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=True, host='127.0.0.1', port=port)
