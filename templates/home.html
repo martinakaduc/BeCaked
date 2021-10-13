@@ -31,7 +31,7 @@
         <div class="dropdown-menu" aria-labelledby="districtDrop">
           {% for district in districts %}
             {% if district != name %}
-              <a class="dropdown-item" href="/{{ district.lower().replace(' ','-') }}">{{ district }}</a>
+              <a class="dropdown-item" href="/BeCaked/{{ district.lower().replace(' ','-') }}">{{ district }}</a>
             {% endif %}
           {% endfor %}
         </div>
