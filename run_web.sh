@@ -12,6 +12,5 @@ do
   sleep 60
   echo "STARTING WEB SERVER"
   timeout 8h gunicorn -b 0.0.0.0:$PORT "app:main()"
-  # sleep 8h
-  input()
+  sleep 8h
 done

@@ -12,23 +12,20 @@ def query_data(db, district, date):
     return db[district].find_one({"_id": date})
 
 def get_latest_data(district='HCM', skip_missing = False):
-    try:
-        client = MongoClient("mongodb+srv://thesisbecaked:thesisbecaked@thesis.cojlj.mongodb.net")
-        db = client['daily-data']
-        latest_date = db.auxiliary.find_one({"type": "latest_date"}, {"latest_date": 1})['latest_date']
-        if skip_missing:
-            return query_data(db, district, latest_date)
-        is_exist = db[district].find_one({"_id": latest_date}, {"_id": 1})
-        if is_exist is not None:
-            return query_data(db, district, latest_date)
-        last_date = list(db[district].find({}, {"_id": 1}).sort("_id", -1))[0]['_id']
-        
-        data = query_data(db, district, last_date)
-        client.close()
-        return data
-    except:
-        return None
-
+    client = MongoClient("mongodb+srv://thesisbecaked:thesisbecaked@thesis.cojlj.mongodb.net")
+    db = client['daily-data']
+    latest_date = db.auxiliary.find_one({"type": "latest_date"}, {"latest_date": 1})['latest_date']
+    if skip_missing:
+        return query_data(db, district, latest_date)
+    is_exist = db[district].find_one({"_id": latest_date}, {"_id": 1})
+    if is_exist is not None:
+        return query_data(db, district, latest_date)
+    last_date = list(db[district].find({}, {"_id": 1}).sort("_id", -1))[0]['_id']
+    
+    data = query_data(db, district, last_date)
+    client.close()
+    return data
+    
 def get_daily_latest_statistics():
     client = MongoClient("mongodb+srv://thesisbecaked:thesisbecaked@thesis.cojlj.mongodb.net")
     db = client['daily-data']
