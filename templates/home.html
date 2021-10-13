@@ -50,29 +50,36 @@
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-lg-{{ 12//num_cols[0] }} col-md-{{ 12//num_cols[1] }} col-sm-{{ 12//num_cols[2] }}" style="margin: 24px 0px;" align="center" id="total_infectious_toggle">
+    <div class="col-lg-{{ 12//num_cols[0] + 1}} col-md-{{ 12//num_cols[1] + 1}} col-sm-{{ 12//num_cols[2] + 1}}" style="margin: 24px 0px;" align="center" id="total_infectious_toggle">
       <h3 style="color: red;"><b>Total Infectious</b></h3>
-      <h5 style="color: red;">{{ "{}".format(summary[name]['I']['Total']) }}</h5>
+      <h5 style="color: red;">{{ "{:,}".format(summary[name]['I']['Total']) }}</h5>
 
     </div>
     <div class="col-lg-{{ 12//num_cols[0] }} col-md-{{ 12//num_cols[1] }} col-sm-{{ 12//num_cols[2] }}" style="margin: 24px 0px;" align="center" id="recovered_toggle">
       <h3 style="color: blue;"><b>Recovered</b></h3>
-      <h5 style="color: blue;">{{ "{}".format(summary[name]['R']['Total']) }}</h5>
+      <h5 style="color: blue;">{{ "{:,}".format(summary[name]['R']['Total']) }}</h5>
 
     </div>
     <div class="col-lg-{{ 12//num_cols[0] }} col-md-{{ 12//num_cols[1] }} col-sm-{{ 12//num_cols[2] }}" style="margin: 24px 0px;" align="center" id="deceased_toggle">
       <h3 style="color: gray;"><b>Deceased</b></h3>
-      <h5 style="color: gray;">{{ "{}".format(summary[name]['D']['Total']) }}</h5>
+      <h5 style="color: gray;">{{ "{:,}".format(summary[name]['D']['Total']) }}</h5>
 
     </div>
 
-    {% if num_cols[0] == 4%}
       <div class="col-lg-{{ 12//num_cols[0] }} col-md-{{ 12//num_cols[1] }} col-sm-{{ 12//num_cols[2] }}" style="margin: 24px 0px;" align="center" id="critical_toggle">
         <h3 style="color: purple;"><b>Current Critical</b></h3>
-        <!-- TODO: critical -->
+        {% if name == 'HCM'%}
+        <h5 style="color: purple;">{{ "{:,}".format(summary[name]['C']['Total']) }}</h5>
+        {% else %}
         <h5 style="color: purple;">{{ "{}".format('-') }}</h5>
+        {% endif %}
       </div>
-    {% endif %}
+
+      <div class="col-lg-{{ 12//num_cols[0] }} col-md-{{ 12//num_cols[1] }} col-sm-{{ 12//num_cols[2] }}" style="margin: 24px 0px;" align="center" id="deceased_toggle">
+        <h3 style="color: #27ae60;"><b>Vaccinated</b></h3>
+        <h5 style="color: #27ae60;">{{ "{:,}".format(summary[name]['V']['Total']) }}</h5>
+  
+      </div>
   </div>
 </div>
 
@@ -85,7 +92,9 @@
               <th scope="col" style="text-align:center">No.</th>
               <th scope="col" style="text-align:center">District</th>
               <th scope="col" style="text-align:center">Total infectious</th>
+              <th scope="col" style="text-align:center">Total vaccinated (1 shot)</th>
               <th scope="col" style="text-align:center">New infectious</th>
+              <th scope="col" style="text-align:center">New vaccinated (1 shot)</th>
           </tr>
       </thead>
       <tbody>
@@ -96,8 +105,12 @@
           <td style="text-align:center">{{ district }}</td>
           {% if district in summary %}
           <td style="text-align:center">{{ "{}".format(summary[district]['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['V']['Total']) }}</td>
           <td style="text-align:center">{{ "{}".format(summary[district]['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['V']['New']) }}</td>
           {% else %}
+          <td style="text-align:center">{{ "{}".format('-') }}</td>
+          <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           {% endif %}
@@ -108,8 +121,12 @@
           <td style="text-align:center">{{ district }}</td>
           {% if district in summary %}
           <td style="text-align:center">{{ "{}".format(summary[district]['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['V']['Total']) }}</td>
           <td style="text-align:center">{{ "{}".format(summary[district]['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['V']['New']) }}</td>
           {% else %}
+          <td style="text-align:center">{{ "{}".format('-') }}</td>
+          <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           {% endif %}
@@ -120,8 +137,12 @@
           <td style="text-align:center">{{ district }}</td>
           {% if district in summary %}
           <td style="text-align:center">{{ "{}".format(summary[district]['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['V']['Total']) }}</td>
           <td style="text-align:center">{{ "{}".format(summary[district]['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['V']['New']) }}</td>
           {% else %}
+          <td style="text-align:center">{{ "{}".format('-') }}</td>
+          <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           {% endif %}

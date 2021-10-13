@@ -54,7 +54,7 @@ def home(district="hcm"):
                             districts = districts,
                             summary = summary['data'],
                             data = data['data'],
-                            num_cols = [3 + (district == 'HCM'),1 + (district == 'HCM'),1]
+                            num_cols = [6,3,1]
                             )
 
 @app.route("/predict", methods=["GET", "POST"])
