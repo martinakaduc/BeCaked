@@ -104,10 +104,10 @@
           <td scope="row" style="text-align:center">{{ loop.index }}</td>
           <td style="text-align:center">{{ district }}</td>
           {% if district in summary %}
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['Total']) }}</td>
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['Total']) }}</td>
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['New']) }}</td>
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['New']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['V']['Total']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['V']['New']) }}</td>
           {% else %}
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
@@ -116,30 +116,16 @@
           {% endif %}
         </tr>
         {% elif district == 'HCM' %}
-        <tr style="font-weight: bold; font-size: 2em;">
-          <td scope="row" style="text-align:center"></td>
-          <td style="text-align:center">{{ district }}</td>
-          {% if district in summary %}
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['Total']) }}</td>
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['Total']) }}</td>
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['New']) }}</td>
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['New']) }}</td>
-          {% else %}
-          <td style="text-align:center">{{ "{}".format('-') }}</td>
-          <td style="text-align:center">{{ "{}".format('-') }}</td>
-          <td style="text-align:center">{{ "{}".format('-') }}</td>
-          <td style="text-align:center">{{ "{}".format('-') }}</td>
-          {% endif %}
-        </tr>
+
         {% else %}
         <tr>
           <td scope="row" style="text-align:center">{{ loop.index }}</td>
           <td style="text-align:center">{{ district }}</td>
           {% if district in summary %}
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['Total']) }}</td>
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['Total']) }}</td>
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['New']) }}</td>
-          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['New']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['V']['Total']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary[district]['V']['New']) }}</td>
           {% else %}
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
@@ -150,6 +136,14 @@
         {% endif %}
         {% endfor %}
       </tbody>
+      <tfoot style="font-weight: bold; font-size: 2em;">
+          <td scope="row" style="text-align:center"></td>
+          <td style="text-align:center">HCM</td>
+          <td style="text-align:center">{{ "{}".format(summary['HCM']['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary['HCM']['V']['Total']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary['HCM']['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{}".format(summary['HCM']['V']['New']) }}</td>
+      </tfoot>
   </table>
 </div>
 
@@ -181,6 +175,12 @@
     draw()
 
     $('#types-form input').on('change', draw);
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#dataTable').DataTable({ "scrollX": true });
+    });
 </script>
 
 {% endblock %}
