@@ -104,10 +104,10 @@
           <td scope="row" style="text-align:center">{{ loop.index }}</td>
           <td style="text-align:center">{{ district }}</td>
           {% if district in summary %}
-          <td style="text-align:center">{{ "{}".format(summary[district]['I']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['V']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['I']['New']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['V']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['New']) }}</td>
           {% else %}
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
@@ -120,10 +120,10 @@
           <td scope="row" style="text-align:center"></td>
           <td style="text-align:center">{{ district }}</td>
           {% if district in summary %}
-          <td style="text-align:center">{{ "{}".format(summary[district]['I']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['V']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['I']['New']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['V']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['New']) }}</td>
           {% else %}
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
@@ -136,10 +136,10 @@
           <td scope="row" style="text-align:center">{{ loop.index }}</td>
           <td style="text-align:center">{{ district }}</td>
           {% if district in summary %}
-          <td style="text-align:center">{{ "{}".format(summary[district]['I']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['V']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['I']['New']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['V']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['New']) }}</td>
           {% else %}
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
