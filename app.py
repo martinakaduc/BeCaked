@@ -41,7 +41,7 @@ def home(district="hcm"):
     with open(backup_data_path) as json_file:
         data = json.load(json_file)
     with open(backup_summary_path) as json_file:
-        summary = get_daily_latest_statistics()
+        summary = json.load(json_file)
 
     districts = ['BINH CHANH', 'BINH TAN', 'BINH THANH', 'CAN GIO', 'CU CHI', 'GO VAP', 'HCM', 'HOC MON', 'NHA BE', 'PHU NHUAN'] + [f'QUAN {i}' for i in [1, 3, 4, 5, 6, 7, 8, 10, 11, 12]] + ['TAN BINH', 'TAN PHU', 'THU DUC']
     districts.remove('HCM')
