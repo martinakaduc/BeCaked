@@ -43,14 +43,14 @@
           class="fas fa-bars"></i></button>
       <div class="collapse navbar-collapse " id="collapsibleNavId">
         <ul class="navbar-nav d-flex align-items-lg-end align-items-center justify-content-end w-100">
-          {% if name == 'home'%}
+          {% if name == 'HCM' or ' ' in name%}
           <li class="nav-item active">
           {% else %}
           <li class="nav-item">
           {% endif %}
             <a class="nav-link" href="/BeCaked{{ url_for('home') }}">HCM</a>
           </li>
-          {% if name == 'predict'%}
+          {% if name == 'old-home'%}
           <li class="nav-item active">
           {% else %}
           <li class="nav-item">

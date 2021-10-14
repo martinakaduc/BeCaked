@@ -21,7 +21,7 @@ def hello(name=None):
 @app.route("/old-home", methods=["GET"])
 def old_home():
     return render_template('old_home.html',
-                            name='home',
+                            name='old-home',
                             request=request,
                             countries=countries,
                             data_countries_current=data_countries_current,
