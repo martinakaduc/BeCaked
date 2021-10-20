@@ -10,7 +10,7 @@
 <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-<script src="/BeCaked{{ url_for('static', filename='js/draw.js') }}"></script>
+<script src="{{ url_for('static', filename='js/draw.js') }}"></script>
 {% endblock %}
 {% block content %}
 
@@ -21,6 +21,9 @@
         <button type="button" class="btn btn-secondary" onclick="$('#myChart').attr('value','infected'); draw()">Infected</button>
         <button type="button" class="btn btn-secondary" onclick="$('#myChart').attr('value','recovered'); draw()">Recovered</button>
         <button type="button" class="btn btn-secondary" onclick="$('#myChart').attr('value','deceased'); draw()">Deceased</button>
+        {% if name == 'HCM' %}
+          <button type="button" class="btn btn-secondary" onclick="$('#myChart').attr('value','critical'); draw()">Critical</button>
+        {% endif %}
       </span>
     </div>
     <div class="col-4" align="center">
@@ -31,7 +34,7 @@
         <div class="dropdown-menu" aria-labelledby="districtDrop">
           {% for district in districts %}
             {% if district != name %}
-              <a class="dropdown-item" href="/BeCaked/{{ district.lower().replace(' ','-') }}">{{ district }}</a>
+              <a class="dropdown-item" href="/{{ district.lower().replace(' ','-') }}">{{ district }}</a>
             {% endif %}
           {% endfor %}
         </div>
@@ -104,10 +107,10 @@
           <td scope="row" style="text-align:center">{{ loop.index }}</td>
           <td style="text-align:center">{{ district }}</td>
           {% if district in summary %}
-          <td style="text-align:center">{{ "{}".format(summary[district]['I']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['V']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['I']['New']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['V']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['New']) }}</td>
           {% else %}
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
@@ -122,10 +125,10 @@
           <td scope="row" style="text-align:center">{{ loop.index }}</td>
           <td style="text-align:center">{{ district }}</td>
           {% if district in summary %}
-          <td style="text-align:center">{{ "{}".format(summary[district]['I']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['V']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['I']['New']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary[district]['V']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary[district]['V']['New']) }}</td>
           {% else %}
           <td style="text-align:center">{{ "{}".format('-') }}</td>
           <td style="text-align:center">{{ "{}".format('-') }}</td>
@@ -139,10 +142,10 @@
       <tfoot style="font-weight: bold; font-size: 2em;">
           <td scope="row" style="text-align:center"></td>
           <td style="text-align:center">HCM</td>
-          <td style="text-align:center">{{ "{}".format(summary['HCM']['I']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary['HCM']['V']['Total']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary['HCM']['I']['New']) }}</td>
-          <td style="text-align:center">{{ "{}".format(summary['HCM']['V']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary['HCM']['I']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary['HCM']['V']['Total']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary['HCM']['I']['New']) }}</td>
+          <td style="text-align:center">{{ "{:,}".format(summary['HCM']['V']['New']) }}</td>
       </tfoot>
   </table>
 </div>
@@ -163,6 +166,7 @@
       if (typ == "infected") {k = "I";} 
       else if (typ == "recovered") {k = 'R';} 
       else if (typ == "deceased") {k = 'D';}
+      else if (typ == "critical") {k = 'C';}
       
       data = {{ data|tojson }}
       real = data[k]['real'];
