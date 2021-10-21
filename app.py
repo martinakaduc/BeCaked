@@ -18,7 +18,8 @@ def reload():
     try:
         token = request.form.get('token')
         if check(token):
-            os.system('python3 database.py; reboot')
+            os.system('python3 database.py')
+            return "done"
         else:
             return "invalid token"
     except:
