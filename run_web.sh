@@ -3,6 +3,10 @@ set -o allexport
 source .env
 set +o allexport
 
+echo "UPDATING DATA..."
+python database.py
+sleep 100
+
 echo "STARTING WEB SERVER"
 gunicorn -b 0.0.0.0:$PORT "app:main()"
 
