@@ -16,7 +16,7 @@ app = Flask(__name__)
 @app.route('/reload-db', methods=["POST"])
 def reload():
     try:
-        token = request.args.get('token')
+        token = request.form.get('token')
         if check(token):
             os.system('python3 database.py; reboot')
         else:
