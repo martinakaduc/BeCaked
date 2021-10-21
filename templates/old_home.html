@@ -20,6 +20,7 @@
 </div> -->
 
 <h3 align="center" id="map_title">COVID-19 Current Infectious Map</h3>
+<div align="right" style="font-style: italic; font-size: 80%;">Last updated {{ current_day }}</div>
 <div class="container-fluid" style="width: 100%; height: 640px" id="mapContainer"></div>
 <hr>
 
@@ -181,10 +182,10 @@
 
 <script>
     function getDateArr(current_day) {
-      var start = new Date(current_day);
-      start.setDate(start.getDate()-29);
-      var end = new Date();
-      end.setDate(end.getDate()+28);
+      var current = new Date(current_day);
+      var start = new Date(current.getTime() - 29*24*60*60*1000); //last 29 days
+      // var end = new Date(current.getTime() + 28*24*60*60*1000);   //next 28 days
+      var end = current;
 
     for(var arr=[],dt=start; dt<=end; dt.setDate(dt.getDate()+1)){
         arr.push(new Date(dt).toLocaleDateString());

@@ -12,8 +12,8 @@ class DataLoader():
         self.confirmed = [sum(self.confirmed_obj[key]) for key in self.confirmed_obj.keys()[4:]]
         self.deaths = [sum(self.deaths_obj[key]) for key in self.deaths_obj.keys()[4:]]
         self.recovered = [sum(self.recovered_obj[key]) for key in self.recovered_obj.keys()[4:]]
-        self.total_day = len(self.confirmed_obj.keys()) - 4
-
+        # self.total_day = len(self.confirmed_obj.keys()) - 4
+        self.total_day = self.recovered.index(0)
         countries_temp = self.confirmed_obj.values[:,:4]
         self.countries = [list(set([x[1] for x in countries_temp])), []]
 
@@ -24,7 +24,7 @@ class DataLoader():
             self.countries[1].append(mean_loc.tolist())
 
     def get_data_world_series(self):
-        return np.array([np.array(self.confirmed), np.array(self.recovered), np.array(self.deaths)], dtype=np.float64)
+        return np.array([np.array(self.confirmed), np.array(self.recovered), np.array(self.deaths)], dtype=np.float64)[:,:self.total_day]
 
     def get_data_countries_series(self):
         confirmed = {x:np.zeros((self.total_day,), dtype=int) for x in self.countries[0]}
@@ -78,5 +78,5 @@ class DataLoader():
         return self.countries
 
     def get_current_day(self):
-        day_time= self.confirmed_obj.keys()[-1].split('/')
+        day_time= self.confirmed_obj.keys()[self.total_day+3].split('/')
         return '%s-%s-%s' % ('20'+day_time[2], '%.2d'%int(day_time[0]), day_time[1])
