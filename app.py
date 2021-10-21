@@ -9,9 +9,20 @@ import time
 import numpy as np
 import json
 
-from database import get_latest_data, get_daily_latest_statistics
+from database import get_latest_data, get_daily_latest_statistics, check
 
 app = Flask(__name__)
+
+@app.route('/reload-db', methods=["POST"])
+def reload():
+    try:
+        token = request.args.get('token')
+        if check(token):
+            os.system('python3 database.py; reboot')
+        else:
+            return "invalid token"
+    except:
+        return "invalid token"
 
 @app.route("/hello", methods=["GET"])
 @app.route('/hello/<name>', methods=["GET"])

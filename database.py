@@ -8,6 +8,14 @@ from datetime import datetime as dt, timedelta
 import json
 
 
+def check(token):
+    uri = json.load(open('config.json'))['mongodb_read_uri']
+    client = MongoClient(uri)
+    db = client['daily-data']
+    result = db['tokens'].find_one()['auth_token'] == token
+    client.close()
+    return result
+
 def query_data(db, district, date):
     return db[district].find_one({"_id": date})
 
