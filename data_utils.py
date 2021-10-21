@@ -13,7 +13,13 @@ class DataLoader():
         self.deaths = [sum(self.deaths_obj[key]) for key in self.deaths_obj.keys()[4:]]
         self.recovered = [sum(self.recovered_obj[key]) for key in self.recovered_obj.keys()[4:]]
         # self.total_day = len(self.confirmed_obj.keys()) - 4
+        
         self.total_day = self.recovered.index(0)
+        cols = [self.confirmed_obj.columns[i] for i in range(self.total_day+4,len(self.confirmed_obj.columns))]
+        self.confirmed_obj = self.confirmed_obj.drop(cols,axis=1)
+        self.deaths_obj = self.deaths_obj.drop(cols,axis=1)
+        self.recovered_obj = self.recovered_obj.drop(cols,axis=1)
+
         countries_temp = self.confirmed_obj.values[:,:4]
         self.countries = [list(set([x[1] for x in countries_temp])), []]
 
