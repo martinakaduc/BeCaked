@@ -309,7 +309,7 @@ def update_data():
 def main():
     run_init = bool(os.environ.get("INIT_DATA", True))
     data_dir = str(os.environ.get("DATA_DIR", "./web_data"))
-    # init(run_init, data_dir)
+    init(run_init, data_dir)
 
     return app
 

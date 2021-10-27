@@ -307,7 +307,7 @@
   {
     scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
     my_chart_i.destroy();
-    $.getJSON('/__load_data?district='+_district+'&&state=I&&scenario='+scenario, function(data) {
+    $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=I&&scenario='+scenario, function(data) {
       my_chart_i = draw_chart('chart_i', data,days)
      });
   }
@@ -315,7 +315,7 @@
   {
     scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
     my_chart_r.destroy();
-    $.getJSON('/__load_data?district='+_district+'&&state=R&&scenario='+scenario, function(data) {
+    $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=R&&scenario='+scenario, function(data) {
       my_chart_r = draw_chart('chart_r', data,days)
      });
   }
@@ -323,7 +323,7 @@
   {
     scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
     my_chart_d.destroy();
-    $.getJSON('/__load_data?district='+_district+'&&state=D&&scenario='+scenario, function(data) {
+    $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=D&&scenario='+scenario, function(data) {
       my_chart_d = draw_chart('chart_d', data,days)
      });
   }
@@ -332,7 +332,7 @@
     my_chart_c.destroy();
     if (_district == 'hcm'){
       scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
-      $.getJSON('/__load_data?district='+_district+'&&state=C&&scenario='+scenario, function(data) {
+      $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=C&&scenario='+scenario, function(data) {
         my_chart_c = draw_chart('chart_c', data,days)
       });
     }
@@ -348,16 +348,16 @@
   }
 
   scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
-  $.getJSON('/__load_data?district='+_district+'&&state=I&&scenario='+scenario, function(data) {
+  $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=I&&scenario='+scenario, function(data) {
       my_chart_i = draw_chart('chart_i', data,days)
   });
-  $.getJSON('/__load_data?district='+_district+'&&state=R&&scenario='+scenario, function(data) {
+  $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=R&&scenario='+scenario, function(data) {
       my_chart_r = draw_chart('chart_r', data,days)
   });
-  $.getJSON('/__load_data?district='+_district+'&&state=D&&scenario='+scenario, function(data) {
+  $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=D&&scenario='+scenario, function(data) {
       my_chart_d = draw_chart('chart_d', data,days)
   });
-  $.getJSON('/__load_data?district='+_district+'&&state=C&&scenario='+scenario, function(data) {
+  $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=C&&scenario='+scenario, function(data) {
       my_chart_c = draw_chart('chart_c', data,days)
   });
   </script>
