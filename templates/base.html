@@ -28,7 +28,7 @@
 </head>
 
 <body>
-  <header style="position: sticky; top: 0px; background-color: white; z-index: 9999;">
+  <header style="position: sticky; top: 0px; background-color: #26334f; z-index: 9999;">
     <nav class="navbar navbar-expand-sm navbar-dark shadow p-3 mb-5 bg-dark">
       <a class="navbar-brand" href="/BeCaked{{ url_for('home') }}">
         <span class="text-muted d-flex">
@@ -62,21 +62,21 @@
           {% else %}
           <li class="nav-item">
           {% endif %}
-            <a class="nav-link" href="/BeCaked{{ url_for('whitepaper') }}">White paper</a>
+            <a class="nav-link" href="/BeCaked{{ url_for('whitepaper') }}">About</a>
           </li>
           {% if name == 'donate'%}
-          <li class="nav-item active">
+          <!-- <li class="nav-item active"> -->
           {% else %}
-          <li class="nav-item">
+          <!-- <li class="nav-item"> -->
           {% endif %}
-            <a class="nav-link" href="/BeCaked{{ url_for('donate') }}">Donate</a>
-          </li>
+            <!-- <a class="nav-link" href="/BeCaked{{ url_for('donate') }}">Donate</a> -->
+          <!-- </li> -->
           {% if name == 'achievements'%}
           <li class="nav-item active">
           {% else %}
           <li class="nav-item">
           {% endif %}
-            <a class="nav-link" href="/BeCaked{{ url_for('achievements') }}">Achievements</a>
+            <a class="nav-link" href="/BeCaked{{ url_for('achievements') }}">Timeline</a>
           </li>
           {% if name == 'acknowledgement'%}
           <li class="nav-item active">
@@ -97,12 +97,21 @@
     </nav>
   </header>
 
+  {% if name == 'HCM'%}
+  <div class="container-fluid hcm-homepage">
+  {% else %}
   <div class="container-fluid">
+  {% endif %}
     {% block content %}{% endblock %}
   </div>
 
   <footer class="page-footer font-small blue">
+    {% if name == 'HCM'%}
+    <div class="footer-copyright text-center py-3 hcm-homepage" style="color: #fff">
+    {% else %}
     <div class="footer-copyright text-center py-3">
+    {% endif %}
+    {% block lastupdate %}{% endblock %}
      Copyright &copy 2020 BeCaked. All rights reserved.
     </div>
   </footer>

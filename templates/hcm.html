@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.21/datatables.min.css" />
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.21/datatables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-data.js" charset="utf-8"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.1.1/chartjs-plugin-zoom.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  // Chart.register(zoomPlugin);
+</script>
+<script src="/BeCaked{{ url_for('static', filename='js/draw_maps.js') }}"></script>
+<script src="/BeCaked{{ url_for('static', filename='js/draw.js') }}"></script>
+{% endblock %}
+{% block content %}
+
+<!-- <div align="right" style="font-style: italic; font-size: 80%;">Last updated {{ current_day }}</div> -->
+<div class="container-fluid hcm-homepage">
+  <div class="row no-padding">
+    <div class="col-2 left-div" align="left">
+      <!-- left -->
+      <div class="left-summary" role="button" align="left" onclick="window.location.reload()">
+        <h5 style="color:#1B9CFC">Total Cases</h5>
+        <h3 style="color: #d1d8e0">{{ "{:,}".format(summary['HCM']['I']['Total']) }}</h3>
+      </div>
+      <div class="my-custom-scrollbar">
+        <table class="table left-table">
+          <tbody>
+            {% for district in districts %}
+            {% if district != 'HCM' %}
+              <tr class="left-table-row" onclick = "load_district(this)">
+                <td class="btn btn-link district-btn">{{ district }}</td>
+                <td>{{ "{:,}".format(summary[district]['I']['Total']) }}</td>
+              </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      <br></br>
+
+      <div class="left-summary" role="button" align="left" onclick="window.location.reload()">
+        <h5 style="color:#1B9CFC">Total First Doses</h5>
+        <h3 style="color: #d1d8e0">{{ "{:,}".format(summary['HCM']['V']['Total']) }}</h3>
+      </div>
+      <div class="my-custom-scrollbar">
+        <table class="table left-table">
+          <tbody>
+            {% for district in districts_v %}
+            {% if district != 'HCM' %}
+              <tr class="left-table-row" onclick = "load_district(this)">
+                <td class="btn btn-link district-btn">{{ district }}</td>
+                <td>{{ "{:,}".format(summary[district]['V']['Total']) }}</td>
+              </tr>
+            {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>      
+
+    </div>
+    <div class="col-5" align="left">
+      <!-- center -->
+      <div id="district-title">Ho Chi Minh City</div>
+      <div class="container-fluid">
+        <div class="row center-summary">
+          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="total_infectious_toggle">
+            <h5 style="color: red;"><b>Total Cases</b></h5>
+            <h6 style="color: red;">{{ "{:,}".format(summary[name]['I']['Total']) }}</h6>
+          </div>
+
+          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="vaccinated_toggle">
+            <h5 style="color: #27ae60;"><b>Total First Doses</b></h5>
+            <h6 style="color: #27ae60;">{{ "{:,}".format(summary[name]['V']['Total']) }}</h6>
+          </div>
+
+          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="population_toggle">
+            <h5 style="color:chocolate;"><b>Population</b></h5>
+            <h6 style="color: chocolate;">{{ "{:,}".format(population[name]) }}</h6>
+          </div>
+
+          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="recovered_toggle">
+            <h5 style="color: blue;"><b>Total Recovered Cases</b></h5>
+            <h6 style="color: blue;">{{ "{:,}".format(summary[name]['R']['Total']) }}</h6>
+          </div>
+
+          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="deceased_toggle">
+            <h5 style="color: gray;"><b>Total Deceased Cases</b></h5>
+            <h6 style="color: gray;">{{ "{:,}".format(summary[name]['D']['Total']) }}</h6>
+          </div>
+
+          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="critical_toggle">
+            <h5 style="color: purple;"><b>Currently Critical Cases</b></h5>
+            {% if name == 'HCM'%}
+            <h6 style="color: purple;">{{ "{:,}".format(summary[name]['C']['Total']) }}</h6>
+            {% else %}
+            <h6 style="color: purple;">{{ "{}".format('-') }}</h6>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid" style="height: 47vh; background-color: aliceblue;" id="mapContainer"></div>
+
+      <div class="btn-group d-flex" role="group" aria-label="Basic example">
+        <div id="days" value="-1"></div>
+        <div id="type" value="I"></div>
+        <button type="button" class="btn btn-sm btn-dark w-100 active g-time" onclick="check(this,'g-time'); draw_map(); $('#days').attr('value','-1'); load_chart()">total</button>
+        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); draw_map(); $('#days').attr('value','28'); load_chart()">28 days</button>
+        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); draw_map(); $('#days').attr('value','7'); load_chart()">7 days</button>
+        <button type="button" class="btn btn-sm btn-dark w-100 active g-type" onclick="check(this,'g-type');  $('#type').attr('value','I'); draw_map()">confirmed</button>
+        <button type="button" class="btn btn-sm btn-dark w-100 g-type" onclick="check(this,'g-type');  $('#type').attr('value','V'); draw_map()">first dose</button>
+      </div>
+    </div>
+    <div class="col-5" align="left">
+      <!-- right -->
+      <div class="right-title">
+        <h3>Forecast</h3>
+      </div>
+      <div class="scenarios">
+        <div class="btn-group d-flex" role="group" aria-label="Basic example">
+          <div id = "scenario"></div>
+          <button type="button" class="btn btn-sm btn-dark w-100 active g-scenario"
+            onclick="$('#scenario').attr('value','best'); load_chart(); check(this,'g-scenario')">Best Scenario</button>
+          <button type="button" class="btn btn-sm btn-dark w-100 g-scenario"
+            onclick="$('#scenario').attr('value','normal'); load_chart(); check(this,'g-scenario')">Normal Scenario</button>
+          <button type="button" class="btn btn-sm btn-dark w-100 g-scenario"
+            onclick="$('#scenario').attr('value','worst'); load_chart(); check(this,'g-scenario')">Worst Scenario</button>
+          <button type="button" class="btn btn-sm btn-dark w-100 g-scenario"
+            onclick = "resetZoom(my_chart_i); resetZoom(my_chart_r); resetZoom(my_chart_d); resetZoom(my_chart_c)">Reset Zoom</button>
+        </div>
+      </div>
+      <div class="container-fluid right-charts">
+        <div style="width: 37vw; height: 40vh;">
+          <h5 style="color:#ecf0f1">New Confirmed Cases</h5>
+          <canvas id="chart_i"></canvas>
+        </div>
+        
+        <div style="width: 37vw; height: 40vh;">
+          <h5 style="color:#ecf0f1">Total Recovered Cases</h5>          
+          <canvas id="chart_r"></canvas>
+        </div>
+
+        <div style="width: 37vw; height: 40vh;">
+          <h5 style="color:#ecf0f1">Total Deceased Cases</h5>
+          <canvas id="chart_d"></canvas>
+        </div>
+        <div style="width: 37vw; height: 40vh;" id="critical-chart">
+          <h5 style="color:#ecf0f1">Critical Cases</h5>
+          <canvas id="chart_c"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Scripts -->
+<script>
+  function check(ele,group){
+    $("."+group).removeClass("active")
+    ele.classList.add("active")
+  }
+</script>
+
+<script>
+  // Draw map
+  //=====================================================================================
+  // Initialize the platform object:
+  var platform = new H.service.Platform({
+    'apikey': 'jxMw20pRVwzn8CRpwlU3YDnfLkjszVQ5oY3-RQyS3oc'
+  });
+
+  // Obtain the default map types from the platform object:
+  var defaultLayers = platform.createDefaultLayers();
+
+  // Instantiate (and display) a map object:
+  var map = new H.Map(
+    document.getElementById('mapContainer'),
+    // defaultLayers.vector.normal.map,
+    defaultLayers.raster.normal.mapnight, //dark mode
+    {
+      center: { lat: 10.762622, lng: 106.660172 },
+      zoom: 10,
+      pixelRatio: window.devicePixelRatio || 1
+    }
+  );
+
+  // add a resize listener to make sure that the map occupies the whole container
+  window.addEventListener('resize', () => map.getViewPort().resize());
+
+  //Step 3: make the map interactive
+  // MapEvents enables the event system
+  // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+  var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+  // Create the default UI components
+  var ui = H.ui.UI.createDefault(map, defaultLayers);
+  //=====================================================================================
+
+  // draw
+  showGeoJSONData(map, "/BeCaked{{ url_for('static', filename='data/hcm.json') }}")   //districts boundary
+  var districts = {{ districts| tojson }};
+
+  function draw_map(){
+    var time = $('.g-time.active')[0].innerHTML;
+    if (time == 'total') {
+     data = {{ total| tojson }};
+    }
+    else if (time == '28 days') {
+      data = {{ month|tojson }}
+    }
+    else{
+      data = {{ week|tojson }}
+    }
+
+    var type = $('#type')[0].getAttribute("value");
+    
+    var centre = {{ centre| tojson }};
+    if (typeof map!== "undefined") removeAllCircle(map);
+    districts.forEach(function addCircle(d) {
+      if (d != 'HCM') {
+        o = centre[d]
+        d_data = data[d]
+        addCircleToMap(map, ui, o, d, d_data, type, 'purple', 'rgba(208, 206, 226, 0.8)')
+      }
+    });
+  }
+
+  draw_map()
+</script>
+
+
+<script type="text/javascript">
+  // NOT USE
+  function draw(id){
+    // var typ = $('input[name=chart-type]:checked').val();
+    var typ = $("#"+id)[0].getAttribute("value");
+    var dates,real,best,normal,worst;
+    // var ctx = document.getElementById('myChart').getContext('2d');
+    dates = {{ total['HCM']['dates']|tojson }}
+
+    if (typ == "infected") {k = "I";} 
+    else if (typ == "recovered") {k = 'R';} 
+    else if (typ == "deceased") {k = 'D';}
+    else if (typ == "critical") {k = 'C';}
+    
+    data = {{ total['HCM']|tojson }}
+    real = data[k]['real'];
+    best = data[k]['BestCase'];
+    normal = data[k]['NormalCase'];
+    worst = data[k]['WorstCase'];
+    draw_3_scenarios(id,dates,real,best,normal,worst);
+  }
+
+  // draw('chart_c')
+  // draw('chart_d')
+
+  // $('#types-form input').on('change', draw);
+</script>
+
+<script type = "text/javascript">
+  _district = 'hcm';
+
+  function load_summary(){
+    summary = {{ summary|tojson }};
+    population = {{ population|tojson }};
+    i = Number(summary[_district]['I']['Total']).toLocaleString()
+    r = Number(summary[_district]['R']['Total']).toLocaleString()
+    d = Number(summary[_district]['D']['Total']).toLocaleString()
+    v = Number(summary[_district]['V']['Total']).toLocaleString()
+    c = _district == 'hcm' ? Number(summary[_district]['C']['Total']).toLocaleString() : '-'
+    p = Number(population[_district]).toLocaleString()
+
+    $("#total_infectious_toggle h6").text(i)
+    $("#vaccinated_toggle h6").text(v)
+    $("#recovered_toggle h6").text(r)
+    $("#deceased_toggle h6").text(d)
+    $("#critical_toggle h6").text(c)
+    $("#population_toggle h6").text(p)
+  }
+
+  function resetZoom(x)
+  {
+    x.resetZoom();
+  }
+  function load_chart(){
+    days = $("#days")[0].getAttribute('value');
+    load_chart_i();
+    load_chart_r();
+    load_chart_d();
+    load_chart_c();
+  }
+  function load_chart_i()
+  {
+    scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
+    my_chart_i.destroy();
+    $.getJSON('/__load_data?district='+_district+'&&state=I&&scenario='+scenario, function(data) {
+      my_chart_i = draw_chart('chart_i', data,days)
+     });
+  }
+  function load_chart_r()
+  {
+    scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
+    my_chart_r.destroy();
+    $.getJSON('/__load_data?district='+_district+'&&state=R&&scenario='+scenario, function(data) {
+      my_chart_r = draw_chart('chart_r', data,days)
+     });
+  }
+  function load_chart_d()
+  {
+    scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
+    my_chart_d.destroy();
+    $.getJSON('/__load_data?district='+_district+'&&state=D&&scenario='+scenario, function(data) {
+      my_chart_d = draw_chart('chart_d', data,days)
+     });
+  }
+  function load_chart_c()
+  {
+    my_chart_c.destroy();
+    if (_district == 'hcm'){
+      scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
+      $.getJSON('/__load_data?district='+_district+'&&state=C&&scenario='+scenario, function(data) {
+        my_chart_c = draw_chart('chart_c', data,days)
+      });
+    }
+    else {
+      $('#critical-chart').remove()
+    }
+  }
+  function load_district(x){
+      _district = x.children[0].innerText;
+      $("#district-title").text(_district);
+      load_chart();
+      load_summary();
+  }
+
+  scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
+  $.getJSON('/__load_data?district='+_district+'&&state=I&&scenario='+scenario, function(data) {
+      my_chart_i = draw_chart('chart_i', data,days)
+  });
+  $.getJSON('/__load_data?district='+_district+'&&state=R&&scenario='+scenario, function(data) {
+      my_chart_r = draw_chart('chart_r', data,days)
+  });
+  $.getJSON('/__load_data?district='+_district+'&&state=D&&scenario='+scenario, function(data) {
+      my_chart_d = draw_chart('chart_d', data,days)
+  });
+  $.getJSON('/__load_data?district='+_district+'&&state=C&&scenario='+scenario, function(data) {
+      my_chart_c = draw_chart('chart_c', data,days)
+  });
+  </script>
+
+{% endblock %}
+
+{% block lastupdate %}
+<div style="position:absolute; left: 3vw; bottom: 2vh; font-style: italic; font-size: 80%; color: #fff">
+  Last updated {{ today }}
+</div>
+{% endblock %}

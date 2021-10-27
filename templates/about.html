@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+{% block head %}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <h1 style="color: #283592;" align="center">An explainable artificial intelligence model to forecast Covid-19</h1>
+  <h1 style="color: #283592;" align="center">for Ho Chi Minh City</h1>
+  <i class="fa fa-letter"></i>
+  <p align="center">
+    Cuong Nguyen<sup>(1, <i class="far fa-envelope"></i>)</sup>, Minh Nguyen<sup>(1)</sup>,
+    Duc Nguyen<sup>(1)</sup>, Duc Nguyen<sup>(2)</sup>, Thinh Nguyen<sup>(1)</sup>, Khuong Nguyen<sup>(1)</sup>, Chon
+    Trung<sup>(1)</sup>, and Tho Quan<sup>(1)</sup>
+  </p>
+  <p align="center"><sup>(1)</sup> University of Technology - Viet Nam National University Ho Chi Minh City</p>
+  <p align="center"><sup>(2)</sup> Hanoi University of Science</p>
+  <p align="center" style="font-family: 'Courier New', monospace;"><sup>(1)</sup> {cuong.nguyen1605,
+    minh.nguyenhuynh.2257, duc.nguyenquang, ntthinh, nakhuong, ltchon, qttho}@hcmut.edu.vn</p>
+  <p align="center" style="font-family: 'Courier New', monospace;"><sup>(2)</sup> duc.nq204876@sis.hust.edu.vn</p>
+  <p align="center">October 27th, 2021</p>
+
+  <p style="font-size:20px" align="center"><b>ABSTRACT</b></p>
+  <p align="justify">
+  <p>Viet Nam has succeeded in controlling the first three waves of the Covid-19 epidemic. However, with the appearance
+    of the Delta variant, the pandemic is happening very complicatedly in Ho Chi Minh City. This project tries to
+    contribute a part to the city's epidemic prevention by using a short-term prediction model of the disease's
+    situation, thereby helping policymakers make accurate and timely strategies.</p>
+  The method mentioned in this project is a Compartment model whose parameters are solved by Deep Learning
+  techniques. By this method, the result not only achieves good accuracy but also can be explained.
+  </p>
+
+  <p style="font-size:30px" align="left"><b>1. Introduction</b></p>
+  <p align="justify">
+    Since the first case was identified in Wuhan, China in December 2019 due to a new novel virus, called SARS-Cov-2, it
+    has been spreading rapidly to many countries around the world, which caused an ongoing global pandemic (Covid-19
+    pandemic). According to the figures of WHO on October 1<sup>st</sup>, 2021, there have been more than <b>245
+      million</b> confirmed cases of Covid-19, including <b>4.9 million</b> deaths, which made it one of the most severe
+    and deadliest pandemics in history.
+    Vietnam and especially Ho Chi Minh city have experienced more than one year in disease prevention and achieved
+    certain successes. Nevertheless, with the appearance of the Delta variant spreading two to three times faster than
+    others, the ongoing fourth wave of Covid-19 in Vietnam is longer and much more serious than previous ones.
+    Concretely in Ho Chi Minh city, the pandemic situation is very complicated with more than <b>400,000</b> confirmed
+    cases and <b>16,500</b> deaths, affecting all aspects of the economy and society more and more.
+  </p>
+  <p align="justify">
+    In the context of an infectious disease outbreak, predicting the pandemic is necessary and important to plan
+    effective strategies. Hence in 2020, we developed a global pandemic prediction model based on the SIRD epidemic
+    model and deep neural network, named BeCaked <a href="#ref2">[1]</a>. Technically, we can divide BeCaked into two
+    groups consisting of a
+    compartmental model in epidemiology and a deep learning model. The compartmental models simulate how the individuals
+    in different compartments in a population interact, so it can explain an individual’s behavior in spreading and
+    controlling the Covid-19 pandemic. However, this model has parameters, so we need to estimate that it can describe
+    the results fitting with the actual data. Besides, the epidemic situation may change over time, the parameters
+    change respectively, the projection from huge data becomes a non-trivial task. To overcome this drawback, we propose
+    to use Deep Learning as an automatic way to learn the parameters. Deep Learning, is one of the hottest topics in
+    Computer Science, has been applied in many fields and showed its abilities to learn from huge data very well. So we
+    combine the advantages of Deep Learning with the SIRD model to create BaCaked. As our model was developed in 2020,
+    it did not consider vaccination or lockdown compartments. It also shows a quite good prediction of the number of
+    patients
+    infected with Covid-19 in the period before the vaccination is approved by many countries all over the world and its
+    effectiveness is acknowledged by many research in preventing severe disease as well as reducing the spread of the
+    pandemic.
+  </p>
+  <p align="justify">
+    Because of the urgent situation in Ho Chi Minh city when the outbreak of Covid-19 is so rapid, inheriting from the
+    above BeCaked model and being provided with the actual Covid-19 data of Ho Chi Minh city from the end of May 2021,
+    we have thrived and extended BeCaked to build a new model for Ho Chi Minh city, which takes into account many new
+    factors such as lockdown, vaccination. The initial results of our new model are relatively promising with the MAE
+    and MAPE metrics compared to the actual data.
+  </p>
+
+  <p style="font-size:30px" align="left"><b>2. Method</b></p>
+  <p align="justify">
+    We know that long-term forecasting is much more useful than short-term forecasting, but long-term forecasting is a
+    difficult problem with cumulative errors. Furthermore, many policies have been issued frequently in Ho Chi Minh
+    City, this makes the error of the long-term forecasting model even larger. Therefore, we decided to develop a
+    short-term forecasting model to simplify the problem and get more reasonable results.
+    As mentioned in the section Introduction, our method includes two main components: a compartmental model and a deep
+    learning model.
+  </p>
+  <p style="font-size:22px" align="left"><b>2.1 Compartmental model</b></p>
+  <p align="justify">
+    We develop and extend the SIR model <a href="#ref2">[8]</a> to create a more complex model, named SEIRDLVC, better describes the
+    evolution of the epidemic in Ho Chi Minh city. Each individual in the population is assigned to only one of eight
+    compartments with S (susceptible), E (exposed), I (infected), R (recovered), D (deceased), L (locked), V
+    (vaccinated), C (critical). As a multi-compartment epidemic model, there must exist specific relations between
+    compartments, which is depicted as Figure 1.
+  </p>
+  <div class="container-fluid" align="center">
+    <img src="/BeCaked{{ url_for('static', filename='images/seirdlvc.png') }}" width="640">
+    <p><b>Figure 1</b>: The relations between compartments</p>
+  </div>
+  <p align="justify">
+    Our model consists of eight following compartments:
+    <ul style="padding-left: 5em;">
+      <li>S (susceptible): susceptible individuals are not currently infected with the disease yet and those who have not gotten vaccinated </li>
+      <li>E (exposed): infectious individuals are not detected</li>
+      <li>I (infected): currently infected cases</li>
+      <li>R (recovered): the people have had the disease and are healthy now</li>
+      <li>D (deceased): individuals have died due to Covid-19</li>
+      <li>L (locked): individuals are living in restriction areas</li>
+      <li>V (vaccinated): susceptible individuals are not currently infected with the disease yet and those who have gotten vaccinated </li>
+      <li>C (critical): currently seriously infected cases</li>
+    </ul>
+    Because of the evolution of the disease, the size of each of these compartments change over time and the total population N is the sum of these compartments:
+    $${ N = S(t) + E(t) + I(t) + R(t) + D(t) + L(t) + V(t) + C(t) = const}$$
+    The dynamics of the model are given by the set of ordinary differential equations as follows:
+    $${
+      \begin{cases}
+        M = S + V + E + R
+        \\[1em]     \frac{dS}{dt} = -\frac{\beta SE}{M} - \tau S  - \rho S +  \widehat{\rho} L
+        \\[1em]     \frac{dV}{dt} = -\frac{\zeta VE}{M} + \tau S
+        \\[1em]     \frac{dE}{dt} = \frac{(\beta S + \zeta V) E}{M} - \eta E
+        \\[1em]     \frac{dI}{dt} = \eta E - \gamma_1 I - \theta I + \delta L
+        \\[1em]     \frac{dC}{dt} = \theta I - \gamma_2 C  - \mu C
+        \\[1em]     \frac{dD}{dt} = \mu C
+        \\[1em]     \frac{dR}{dt} = \gamma_1 I + \gamma_2 C 
+        \\[1em]     \frac{dL}{dt} = \rho S - (\delta +  \widehat{\rho}) L
+      \end{cases} 
+    }$$
+    To ensure correctness, the model also has constraints between parameters:
+    $${
+      \begin{cases}
+                    \gamma_2 + \mu < 1 
+        \\[1em]     \gamma_1 + \theta < 1
+        \\[1em]     \delta +  \widehat{\rho} < 1
+        \\[1em]     \zeta < \beta
+      \end{cases} 
+    }$$
+    <p align="justify">
+      Initially, almost all the people are in \(S\) state, other people are in \(E\) state and the others are in the \(I\) state. The
+      susceptible population \(S\), upon interactions with the exposed population \(E\), becomes exposed with the effective
+      contact rate \(\beta\). Besides, each susceptible individual has a rate \(\tau\) to be gotten vaccinated and then is in \(V\) state.
+      Simultaneously, the probability that a susceptible person lives in a restricted area is \(\rho\) and the one moves to \(L\) state.
+      Conversely, the probability the restricted area becomes normal is . The vaccinated population \(V\) having interactions
+      with the exposed \(E\) becomes exposed with the rate \(\zeta\). We assume that \(\zeta\) is less than \(\beta\) due to the efficiency of the
+      vaccine. If \(\zeta\) equals zero, the vaccine offers immunizable protection against the disease. The probabilities that the
+      exposed and locked population are confirmed to have Covid-19 are \(\eta\) and \(\delta\), respectively. Each currently infected case
+      \(I\) has a rate \(\theta\) of becoming serious \(C\). The recovery of an infected person and a critical case are determined by the
+      rates \(\gamma_1\) and \(\gamma_2\), respectively. The critical population \(C\) has a death rate \(\mu\) and then moves to \(D\) state.
+    </p>
+
+    <p style="font-size:22px" align="left"><b>2.2 Deep Learning model</b></p>
+    <p align="justify">
+      An overview of our proposed method is shown in Figure 2.  Generally, our model includes four components, namely Input, Encoder, Decoder, Output. 
+      The pipeline is detailed as follows:
+      <ul>
+        <li>Firstly, the input data is forwarded to the encoder to produce the parameters of the SEIRDLVC model.</li>
+        <li>Secondly, the decoder receives the output of the previous step and the input data to produce the prediction results.</li>
+        <li>Finally, Mean Squared Error (MSE) is the loss function used to train the entire model. Because our method is an end-to-end model, it has advantages for the optimization process.</li>
+      </ul>
+      The final outputs are the parameters of the SEIRDLVC model and the prediction results. The obtained parameters are used and analyzed intensively by epidemiologists. While the prediction results give a reference channel helping policymakers make suitable decisions.
+    </p>
+    <div class="container-fluid" align="center">
+      <img src="/BeCaked{{ url_for('static', filename='images/overall_dl.png') }}" width="640">
+      <p><b>Figure 2</b>: The overall structure of our approach</p>
+    </div>
+
+    <p style="font-size:30px" align="left"><b>3. Result and Analysis</b></p>
+    <p style="font-size:22px" align="left"><b>3.1 Result</b></p>
+    The model is applied to Ho Chi Minh city’s Covid-19 data with daily reports of Ho Chi Minh Centers for Disease Control and Prevention (HCDC). 
+    Performances are measured with Mean Absolute Error (MAE) and Mean Absolute Percentage Error (MAPE). Detailed data for the evaluation strategy 
+    is described in Table 1, and Table 2 contains the performance values for our experiments. Table 2 shows that our experiments assess three indicators, 
+    namely infections, severe cases and deaths, and all are daily new reports. Our method is better than ARIMA on all indicators. Intuitively, as shown 
+    in Figure 3 and Figure 4, the predictions are close to the observed data in the interval from July 14th to September 23rd. So the initial results 
+    of our method are relatively promising, we are continuing to develop and improve further.
+    </p>
+    <div class="container">
+      <p align="center"><b>Table 1:</b> Summary of training set and test set</p>
+        <table class="table table-striped table-inverse table-hover" id="dataTable" width="100%">
+            <thead class="thead-inverse">
+                <tr>
+                    <th scope="col" style="text-align:center"></th>
+                    <th scope="col" style="text-align:center">Preiod</th>
+                    <th scope="col" style="text-align:center">Rate (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" style="text-align:left">Training set</th>
+                <td style="text-align:center">May 27th, 2021 - September 7th, 2021</td>
+                <td style="text-align:center">\(83.37\)</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align:left">Test set</th>
+                <td style="text-align:center">September 8th, 2021 - September 23th, 2021</td>
+                <td style="text-align:center">\(16.13\)</td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container">
+      <p align="center"><b>Table 2:</b> Performances of two methods for daily data</p>
+        <table class="table table-striped table-inverse table-hover" id="dataTable" width="100%">
+            <thead class="thead-inverse">
+                <tr>
+                    <th scope="col" style="text-align:center">Method</th>
+                    <th scope="col" style="text-align:center">Metric</th>
+                    <th scope="col" style="text-align:center">\(I\)</th>
+                    <th scope="col" style="text-align:center">\(C\)</th>
+                    <th scope="col" style="text-align:center">\(D\)</th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr style="background-color: #fff;">
+                <th rowspan="2" scope="row" style="text-align:center; padding-top: 2.5em; background-color: beige;">Our proposed method</th>
+                <td style="text-align:center">MAE</td>
+                <td style="text-align:center; color: red">\(1305.1516\)</td>
+                <td style="text-align:center; color: red">\(46.0305\)</td>
+                <td style="text-align:center; color: red">\(16.1948\)</td>
+              </tr>
+              <tr>
+                <td style="text-align:center">MAPE</td>
+                <td style="text-align:center; color: red">\(0.4918\)</td>
+                <td style="text-align:center; color: red">\(0.7341\)</td>
+                <td style="text-align:center; color: red">\(0.0836\)</td>
+              </tr>
+              <tr style="background-color: #fff;">
+                <th rowspan="2" scope="row" style="text-align:center; padding-top: 2.5em; background-color: #bdc3c7;">ARIMA</th>
+                <td style="text-align:center">MAE</td>
+                <td style="text-align:center">\(1736.9333\)</td>
+                <td style="text-align:center">\(46.5333\)</td>
+                <td style="text-align:center">\(93.3333\)</td>
+              </tr>
+              <tr>
+                <td style="text-align:center">MAPE</td>
+                <td style="text-align:center">\(0.6533\)</td>
+                <td style="text-align:center">\(1.8104\)</td>
+                <td style="text-align:center">\(0.5238\)</td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container-fluid" align="center">
+      <img src="/BeCaked{{ url_for('static', filename='images/predicted_infectious.png') }}" width="900">
+      <p><b>Figure 3</b>: Prediction of daily infections</p>
+    </div>
+    <div class="container-fluid" align="center">
+      <img src="/BeCaked{{ url_for('static', filename='images/predicted_deceased.png') }}" width="900">
+      <p><b>Figure 4</b>: Prediction of total deceased</p>
+    </div>
+    <div class="container-fluid" align="center">
+      <img src="/BeCaked{{ url_for('static', filename='images/predicted_critical.png') }}" width="900">
+      <p><b>Figure 5</b>: Prediction of total critical</p>
+    </div>
+
+    <p style="font-size:22px" align="left"><b>3.2 Analysis of explainability of our model</b></p>
+    <p align="justify">
+      As previously mentioned, our model can serve not only as a regression system with good fit curves for compartments of epidemic model (i.e Infected, 
+      Exposed, etc.), but also as a analytical system to generate the parameters of the epidemic model (i.e \(\beta,\zeta,\mu\), etc.) with an explanation 
+      of the regressed value at the same time. 
+    </p>
+    <p align="justify">
+      More details, our encoder can infer the relationship between the sequence of compartments in the last 10 days and the parameters of the epidemic model, 
+      then the decoder is a differential equations solver that takes the compartments in the past and these parameters as the input to return the values of the compartments in next day.
+    </p>
+
+    <p style="font-size:30px" align="left"><b>References</b></p>
+    <p align="justify" id="ref1">
+      [1] Nguyen, D., Vo, N., Nguyen, T., Nguyen, K., Nguyen, Q., Tran, D., & Quan, T. (2021). BeCaked: An Explainable Artificial Intelligence Model For COVID-19 Forecasting.
+    </p>
+    <p align="justify" id="ref2">
+      [2] Sesti, N., Garau-Luis, J. J., Crawley, E., & Cameron, B. (2021). Integrating LSTMs and GNNs for COVID-19 Forecasting.
+    </p>
+    <p align="justify" id="ref3">
+      [3] Carpenter, M., Luo, C., & Wang, X. (2021). The effects of regularisation on RNN models for time series forecasting: Covid-19 as an example.
+    </p>
+    <p align="justify" id="ref4">
+      [4] Jin, X., Wang, Y. X., & Yan, X. (2021). Inter-Series Attention Model for COVID-19 Forecasting. In <i>Proceedings of the 2021 SIAM International Conference on Data Mining</i> (SDM) (pp. 495-503). Society for Industrial and Applied Mathematics.
+    </p>
+    <p align="justify" id="ref5">
+      [5] Bertozzi, A. L., Franco, E., Mohler, G., Short, M. B., & Sledge, D. (2020). The challenges of modeling and forecasting the spread of COVID-19. <i>Proceedings of the National Academy of Sciences, 117</i>(29), 16732-16738.      
+    </p>
+    <p align="justify" id="ref6">
+      [6] Moein, S., Nickaeen, N., Roointan, A., Borhani, N., Heidary, Z., Javanmard, S. H., ... & Gheisari, Y. (2021). Inefficiency of SIR models in forecasting COVID-19 epidemic: a case study of Isfahan. <i>Scientific Reports, 11</i>(1), 1-9.
+    </p>
+    <p align="justify" id="ref7">
+      [7] Chatterjee, S., Sarkar, A., Chatterjee, S., Karmakar, M., & Paul, R. (2021). Studying the progress of COVID-19 outbreak in India using SIRD model. <i>Indian Journal of Physics, 95</i>(9), 1941-1957.
+    </p>
+    <p align="justify" id="ref8">
+      [8] Harko, T., Lobo, F. S., & Mak, M. K. (2014). Exact analytical solutions of the Susceptible-Infected-Recovered (SIR) epidemic model and of the SIR model with equal death and birth rates. <i>Applied Mathematics and Computation</i>, 236, 184-194.
+    </p>
+    <p align="justify" id="ref9">
+      [9] Ioannidis, J. P., Cripps, S., & Tanner, M. A. (2020). Forecasting for COVID-19 has failed. <i>International journal of forecasting</i>.
+    </p>
+    <p align="justify" id="ref10">
+      [10] Kaur, J., Chattopadhyay, P., Singh, L., Chattopadhyay, K., & Mishra, N. (2021). Machine Learning Based Prediction and Impact Analysis of Various Lockdown Stages of COVID-19 Outbreak–A Case Study of India. <i>Journal of Graphic Era University</i>, 121-136.
+    </p>
+    <p align="justify" id="ref11">
+      [11] Ngo, H. A., Nguyen, T.-K., Nguyen, T.-A. (2021, October). A novel compartment model for analyzing and predicting Covid-19 outbreaks in Vietnam. <i>Oral presentation at the 52nd Union World Conference on Lung Health.</i>
+    </p>
+</div>
+{% endblock %}

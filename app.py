@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask import render_template
+from flask.helpers import make_response
 from markupsafe import escape
 import os
 from datetime import datetime, timedelta
@@ -10,6 +11,7 @@ import numpy as np
 import json
 
 from database import get_latest_data, get_daily_latest_statistics, check
+from utils import *
 
 app = Flask(__name__)
 
@@ -41,32 +43,116 @@ def old_home():
                             world_series_predict=world_series_predict,
                             current_day=current_day)
 
-@app.route("/", methods=["GET"])
-@app.route("/<district>", methods=["GET"])
-def home(district="hcm"):
-    district = district.upper()
-    district = district.replace('-',' ')
+# @app.route("/", methods=["GET"])
+# @app.route("/<district>", methods=["GET"])
+# def home(district="hcm"):
+#     district = district.upper()
+#     district = district.replace('-',' ')
     
+#     backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
+#     backup_data_path = os.path.join(backup_data_dir,district+'.json')
+#     backup_summary_path = os.environ.get("BACKUP_SUMMARY_PATH", "./backup/backup_summary.json")
+#     with open(backup_data_path) as json_file:
+#         data = json.load(json_file)
+#     with open(backup_summary_path) as json_file:
+#         summary = json.load(json_file)
+
+#     districts = ['BINH CHANH', 'BINH TAN', 'BINH THANH', 'CAN GIO', 'CU CHI', 'GO VAP', 'HCM', 'HOC MON', 'NHA BE', 'PHU NHUAN'] + [f'QUAN {i}' for i in [1, 3, 4, 5, 6, 7, 8, 10, 11, 12]] + ['TAN BINH', 'TAN PHU', 'THU DUC']
+#     districts.remove('HCM')
+#     districts.sort()
+#     districts.append('HCM')
+
+#     return render_template('home.html',
+#                             name = district,
+#                             today = data['_id'],
+#                             districts = districts,
+#                             summary = summary['data'],
+#                             data = data['data'],
+#                             num_cols = [6,3,1]
+#                             )
+
+@app.route('/__load_data')
+def load():
+    state = request.args['state']
+    scenario = request.args['scenario']
+    district = ' '.join(request.args['district'].split('_')).upper()
     backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
     backup_data_path = os.path.join(backup_data_dir,district+'.json')
-    backup_summary_path = os.environ.get("BACKUP_SUMMARY_PATH", "./backup/backup_summary.json")
-    with open(backup_data_path) as json_file:
-        data = json.load(json_file)
-    with open(backup_summary_path) as json_file:
-        summary = json.load(json_file)
+    content = json.load(open(backup_data_path))
+    dates = content['data'].pop('dates')
+    if scenario == 'best':  
+        data = content['data'][state]['BestCase']
+        scenario = 'Best Scenario'
+    elif scenario == 'normal': 
+        data = content['data'][state]['NormalCase']
+        scenario = 'Normal Scenario'
+    elif scenario == 'worst': 
+        data = content['data'][state]['WorstCase']
+        scenario = 'Worst Scenario'
+    actual_data = content['data'][state]['real']
 
+    if state.upper() in ['R','D','V']:
+        temp = np.array(data)
+        temp = temp[1:] - temp[:-1]
+        temp[temp < 0] = 0
+        data[1:] = temp.tolist()
+        # data[0] -= actual_data[-1]
+
+        temp = np.array(actual_data)
+        temp = temp[1:] - temp[:-1]
+        temp[temp < 0] = 0
+        actual_data[1:] = temp.tolist()
+    
+    data = data[1:]
+    actual_data = actual_data[1:]
+    dates = dates[1:]
+
+    num_real = len(actual_data)
+    actual_data.extend([0] * (len(data) - len(actual_data)))
+    mask = 1 - np.array(actual_data).astype(bool).astype(int)
+    data = (np.array(data) * mask).tolist()
+    return json.dumps({'scenario': scenario, 'dates': dates, 'actual': actual_data, 'data': data})
+
+@app.route("/", methods=["GET"])
+def home():
     districts = ['BINH CHANH', 'BINH TAN', 'BINH THANH', 'CAN GIO', 'CU CHI', 'GO VAP', 'HCM', 'HOC MON', 'NHA BE', 'PHU NHUAN'] + [f'QUAN {i}' for i in [1, 3, 4, 5, 6, 7, 8, 10, 11, 12]] + ['TAN BINH', 'TAN PHU', 'THU DUC']
-    districts.remove('HCM')
-    districts.sort()
-    districts.append('HCM')
+    backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
+    total, month, week = {},{},{}
+    for district in districts:
+        backup_data_path = os.path.join(backup_data_dir,district+'.json')
+        with open(backup_data_path) as json_file:
+            data = json.load(json_file)
+            raw = data['data']
+            total[district] = get_daily_data(raw)
+            month[district] = get_nth_last_data(total[district],28)
+            week[district] = get_nth_last_data(total[district],7)
+            today = data['_id']
+            
+            #get yesterdate
+            today = datetime.strptime(today,'%m.%d') - timedelta(1)
+            today = today.replace(year=2021,hour=18)
+            today = today.strftime('%b %d, %Y %H:%M')
 
-    return render_template('home.html',
-                            name = district,
-                            today = data['_id'],
+    backup_summary_path = os.environ.get("BACKUP_SUMMARY_PATH", "./backup/backup_summary.json")
+    with open(backup_summary_path) as json_file:
+        summary = json.load(json_file)['data']
+
+    districts.sort(key=lambda x:summary[x]['I']['Total'],reverse=True)
+    districts_v = sorted(districts,key=lambda x:summary[x]['V']['Total'],reverse=True)
+    centre = {'BINH CHANH': [10.7080941, 106.59928437], 'BINH THANH': [10.81236736, 106.7106739], 'BINH TAN': [10.76849142, 106.59185577], 'CU CHI': [11.03145621, 106.52149395], 'CAN GIO': [10.508327, 106.8635], 'GO VAP': [10.83800042, 106.66737587], 'HOC MON': [10.88712536, 106.60970238], 'NHA BE': [10.64094082, 106.72282509], 'PHU NHUAN': [10.79897935, 106.67950392], 'QUAN 10': [10.77079414, 106.66866466], 'QUAN 11': [10.76583559, 106.64520678], 'QUAN 12': [10.86093358, 106.65810283], 'QUAN 1': [10.78343482, 106.69548463], 'QUAN 3': [10.78522737, 106.67608034], 'QUAN 4': [10.75829395, 106.70296998], 'QUAN 5': [10.75301895, 106.66929241], 'QUAN 6': [10.74503421, 106.63090987], 'QUAN 7': [10.73376706, 106.72356962], 'QUAN 8': [10.72540308, 106.6435674], 'TAN BINH': [10.81229902, 106.65917519], 'TAN PHU': [10.78907531, 106.62464563], 'THU DUC': [10.82217494, 106.77374533]}
+    population = { "HCM": 8926959, "QUAN 1": 139485, "QUAN 3": 189258, "QUAN 4": 173970, "QUAN 5": 157920, "QUAN 6": 232077, "QUAN 7": 356380, "QUAN 8": 422151, "QUAN 10": 233223, "QUAN 11": 208680, "QUAN 12": 618365, "BINH CHANH": 702972, "BINH TAN": 781417, "BINH THANH": 495955, "CAN GIO": 69326, "CU CHI": 457275, "GO VAP": 671252, "HOC MON": 539227, "NHA BE": 205329, "PHU NHUAN": 162148, "TAN BINH": 470393, "TAN PHU": 478786, "THU DUC": 1161370}
+
+    return render_template('hcm.html',
+                            name = 'HCM',
+                            today = today,
                             districts = districts,
-                            summary = summary['data'],
-                            data = data['data'],
-                            num_cols = [6,3,1]
+                            districts_v = districts_v,
+                            centre = centre,
+                            population = population,
+                            total = total,
+                            month = month,
+                            week = week,
+                            summary = summary
                             )
 
 @app.route("/predict", methods=["GET", "POST"])
@@ -91,9 +177,9 @@ def predict():
                             num_day=len(data_series[0]),
                             date_series=date_series)
 
-@app.route("/whitepaper", methods=["GET"])
+@app.route("/about", methods=["GET"])
 def whitepaper():
-    return render_template('whitepaper.html',
+    return render_template('about.html',
                             name='whitepaper')
 
 @app.route("/donate", methods=["GET"])
@@ -223,7 +309,7 @@ def update_data():
 def main():
     run_init = bool(os.environ.get("INIT_DATA", True))
     data_dir = str(os.environ.get("DATA_DIR", "./web_data"))
-    init(run_init, data_dir)
+    # init(run_init, data_dir)
 
     return app
 

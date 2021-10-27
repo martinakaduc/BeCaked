@@ -3,9 +3,25 @@
   padding: 0px;
 }
 
+/* *:not(.center-summary *, .H_ib_body *){
+  color: #fff;
+} */
+
+.hcm-homepage{
+  background-color: #24304b;
+  color: #fff;
+}
+
 .navbar {
   border: 0;
   z-index: 9999;
+  height: 3.8em !important;
+  margin: 0 !important;
+  background-color: #26334f !important;
+}
+
+.hcm-homepage.container-fluid, .hcm-homepage .container-fluid{
+  padding: 0 !important;
 }
 
 .embed-container {position: relative; padding-bottom: 80%; height: 0; max-width: 100%;}
@@ -33,6 +49,140 @@
   min-width: 30vw;
 }
 
-#distric-title { 
-  color: #111; font-family: 'Open Sans Condensed', sans-serif; font-size: 3em; font-weight: 700; line-height: 48px; margin: 0 0 24px; padding: 0 30px; text-align: center; text-transform: uppercase;
+#district-title { 
+  color: #fff; 
+  font-family: 'Open Sans Condensed', sans-serif; 
+  font-size: 2em; 
+  font-weight: 700; 
+  line-height: 2em; 
+  margin: 0.25em; 
+  padding-top: 0.5em; 
+  padding-bottom: 0.5em;
+  text-align: center; 
+  text-transform: uppercase;
+  background-color: #26334f;
+  /* border: 1px solid #000; */
+  border-radius: 10px;
+}
+
+.left-div{
+  margin-top: 0.5em;
+  padding-top: 1em;
+  padding-left: 0.5em;
+  /* border: 1px solid #000; */
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: #1B1464;
+  font-family: 'Open Sans Condensed', sans-serif; 
+}
+
+.left-table, .left-table tr, .left-table td{
+  border: none;
+}
+
+.left-table-row{
+  font-size: 1em;
+  padding: 0.5em;
+  color: #d1d8e0;
+}
+
+.left-summary{
+  padding: .25em;
+  background-color: #1e3799;
+  border-radius: 5px;
+  margin-bottom: .5em;
+}
+
+.district-btn, .district-btn:link, .district-btn:visited{
+  color: #d1d8e0;
+  text-decoration: none;
+}
+
+.district-btn:hover{
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.right-title{
+  color: #fff; 
+  font-family: 'Open Sans Condensed', sans-serif; 
+  font-size: 2em; 
+  font-weight: 700; 
+  line-height: 2em; 
+  margin: 0.25em; 
+  padding-top: 0.5em; 
+  padding-bottom: 0.5em;
+  text-align: center; 
+  text-transform: uppercase;
+  background-color: #26334f;
+  /* border: 1px solid #000; */
+  border-radius: 10px;
+}
+
+.right-charts{
+  margin-top: 0.5em;
+  padding-top: 1em;
+  padding-left: 0.5em;
+  /* border: 1px solid #000; */
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  background-color: #1B1464;
+  font-family: 'Open Sans Condensed', sans-serif; 
+  height: 68vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.right-charts h5{
+  margin-top: 1em;
+  text-align: center;
+}
+
+.right-charts canvas{
+  padding-bottom: 1em;
+  margin-left: 1em;
+}
+
+.scenarios{
+  position: sticky; 
+  top: 0px; 
+  /* margin-top: 0.5em; */
+  /* padding-top: 1em; */
+  padding-left: 0.5em;
+  font-family: 'Open Sans Condensed', sans-serif; 
+}
+
+.no-padding{
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+/** Style for the info bubble content */
+.H_ib_body {
+  width: max-content !important;
+}
+/** Style for the info bubble tail */
+/* .H_ib.H_ib_top .H_ib_tail::after {
+    border-color: rgb(45, 213, 201) transparent !important;
+} */
+
+.my-custom-scrollbar {
+  display: block;
+  position: relative;
+  height: 25vh;
+  overflow: auto;
+  }
+
+hr.white-line{
+  border-top: 1px solid #fff;
+}
+
+.card-body *{
+  color: #000;
+}
+
+.checked {
+  color: #8e44ad;
 }

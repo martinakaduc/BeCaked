@@ -6,3 +6,4 @@ COVID-19/who_covid_19_situation_reports/
 COVID-19/.git/
 ./images/
 __pycache__/
+config.json
