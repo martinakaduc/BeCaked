@@ -186,3 +186,17 @@ hr.white-line{
 .checked {
   color: #8e44ad;
 }
+
+html, body{
+  height: 100%;
+}
+header{
+  height: 60px;
+}
+.hcm-homepage{
+  height: calc(100% - 116px);
+}
+.page-footer{
+  height: 56px;
+  background-color: #24304b;
+}

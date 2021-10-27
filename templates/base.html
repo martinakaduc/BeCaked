@@ -105,14 +105,22 @@
     {% block content %}{% endblock %}
   </div>
 
+  {% if name == 'HCM'%}
+  <footer class="page-footer font-small blue hcm-homepage">
+  {% else %}
   <footer class="page-footer font-small blue">
-    {% if name == 'HCM'%}
-    <div class="footer-copyright text-center py-3 hcm-homepage" style="color: #fff">
-    {% else %}
-    <div class="footer-copyright text-center py-3">
-    {% endif %}
-    {% block lastupdate %}{% endblock %}
-     Copyright &copy 2020 BeCaked. All rights reserved.
+  {% endif %}
+    <div class="row" style="margin: 0">
+      <div class="col-4" align="left" style="padding-left: 1em;">
+        {% block lastupdate %}{% endblock %}
+      </div>
+      <div class="col-4" align="center" style="padding-left: 1em;">
+        <div class="footer-copyright text-center py-3" style="color: #fff">
+        Copyright &copy 2020 BeCaked. All rights reserved.
+        </div>
+      </div>
+      <div class="col-4" align="center" style="padding-left: 1em;"></div>
+    </div>
     </div>
   </footer>
 
