@@ -200,3 +200,8 @@ header{
   height: 56px;
   background-color: #24304b;
 }
+
+.card-img-top{
+  width: 320px;
+  height: 320px;
+}
