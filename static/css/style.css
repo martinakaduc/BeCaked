@@ -196,9 +196,15 @@ header{
 .hcm-homepage{
   height: calc(100% - 116px);
 }
-.page-footer{
+.page-footer, .page-footer *{
+  height: 56px;
+  background-color: #fff;
+  color: #000;
+}
+.page-footer.hcm-homepage, .page-footer.hcm-homepage *{
   height: 56px;
   background-color: #24304b;
+  color: #fff;
 }
 
 .card-img-top{
