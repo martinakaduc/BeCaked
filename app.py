@@ -142,6 +142,9 @@ def home():
     centre = {'BINH CHANH': [10.7080941, 106.59928437], 'BINH THANH': [10.81236736, 106.7106739], 'BINH TAN': [10.76849142, 106.59185577], 'CU CHI': [11.03145621, 106.52149395], 'CAN GIO': [10.508327, 106.8635], 'GO VAP': [10.83800042, 106.66737587], 'HOC MON': [10.88712536, 106.60970238], 'NHA BE': [10.64094082, 106.72282509], 'PHU NHUAN': [10.79897935, 106.67950392], 'QUAN 10': [10.77079414, 106.66866466], 'QUAN 11': [10.76583559, 106.64520678], 'QUAN 12': [10.86093358, 106.65810283], 'QUAN 1': [10.78343482, 106.69548463], 'QUAN 3': [10.78522737, 106.67608034], 'QUAN 4': [10.75829395, 106.70296998], 'QUAN 5': [10.75301895, 106.66929241], 'QUAN 6': [10.74503421, 106.63090987], 'QUAN 7': [10.73376706, 106.72356962], 'QUAN 8': [10.72540308, 106.6435674], 'TAN BINH': [10.81229902, 106.65917519], 'TAN PHU': [10.78907531, 106.62464563], 'THU DUC': [10.82217494, 106.77374533]}
     population = { "HCM": 8926959, "QUAN 1": 139485, "QUAN 3": 189258, "QUAN 4": 173970, "QUAN 5": 157920, "QUAN 6": 232077, "QUAN 7": 356380, "QUAN 8": 422151, "QUAN 10": 233223, "QUAN 11": 208680, "QUAN 12": 618365, "BINH CHANH": 702972, "BINH TAN": 781417, "BINH THANH": 495955, "CAN GIO": 69326, "CU CHI": 457275, "GO VAP": 671252, "HOC MON": 539227, "NHA BE": 205329, "PHU NHUAN": 162148, "TAN BINH": 470393, "TAN PHU": 478786, "THU DUC": 1161370}
 
+    df = pd.read_csv(os.path.join(backup_data_dir,'level.csv'),encoding='utf-8').dropna(axis=1)
+    levels = dict(zip(df['ID_3'],df['level']))
+
     return render_template('hcm.html',
                             name = 'HCM',
                             today = today,
@@ -152,7 +155,8 @@ def home():
                             total = total,
                             month = month,
                             week = week,
-                            summary = summary
+                            summary = summary,
+                            levels = levels
                             )
 
 @app.route("/predict", methods=["GET", "POST"])

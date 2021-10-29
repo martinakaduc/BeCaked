@@ -10,6 +10,15 @@
 <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
 <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-data.js" charset="utf-8"></script>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+   <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+ integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+ crossorigin=""></script>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.1.1/chartjs-plugin-zoom.min.js"></script>
@@ -114,9 +123,9 @@
       <div class="btn-group d-flex" role="group" aria-label="Basic example">
         <div id="days" value="-1"></div>
         <div id="type" value="I"></div>
-        <button type="button" class="btn btn-sm btn-dark w-100 active g-time" onclick="check(this,'g-time'); draw_map(); $('#days').attr('value','-1'); load_chart()">total</button>
-        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); draw_map(); $('#days').attr('value','28'); load_chart()">28 days</button>
-        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); draw_map(); $('#days').attr('value','7'); load_chart()">7 days</button>
+        <button type="button" class="btn btn-sm btn-dark w-100 active g-time" onclick="check(this,'g-time'); $('#days').attr('value','-1'); load_chart()">total</button>
+        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); $('#days').attr('value','28'); load_chart()">28 days</button>
+        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); $('#days').attr('value','7'); load_chart()">7 days</button>
         <button type="button" class="btn btn-sm btn-dark w-100 active g-type" onclick="check(this,'g-type');  $('#type').attr('value','I'); draw_map()">confirmed</button>
         <button type="button" class="btn btn-sm btn-dark w-100 g-type" onclick="check(this,'g-type');  $('#type').attr('value','V'); draw_map()">first dose</button>
       </div>
@@ -169,79 +178,66 @@
 
 <!-- Scripts -->
 <script>
+  basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	subdomains: 'abcd',
+	maxZoom: 20
+});
+
+  var map = new L.Map(
+    document.getElementById('mapContainer'),
+    {
+      center: { lat: 10.762622, lng: 106.660172 },
+      zoom: 10,
+      layers: [basemap]
+    }
+  );
+  
+
+  var myStyle = {
+    "color": "#ff7800",
+    "weight": 1,
+    "opacity": 0.65
+  };
+
+  levels = {{ levels|tojson }}
+
+  fetch("{{ url_for('static', filename='data/phuongxa.geojson') }}")
+  .then(function(response) {
+      return response.json();
+  })
+  .then(function(data) {
+      L.geoJSON(data,{
+        style: function(district) {
+          id_3 = district.properties["maphuong"].slice(3)
+          level = levels[id_3]
+          // level = Math.floor(Math.random() * 3) + 1;
+          return  level == 1  ? {color: '#27ae60', opacity:0.1} :
+                  level == 2  ? {color: '#f39c12', opacity:0.1} :
+                  level == 3  ? {color: '#e74c3c', opacity:0.1} :
+                                {color: '#7f8c8d', opacity:0.1};
+
+         },
+         onEachFeature: function (district, layer) {
+              id_3 = district.properties["maphuong"].slice(3)
+              level = levels[id_3]
+              name_2 = district.properties["tenquan"]
+              name_3 = district.properties["tenphuong"]
+
+              text = '<div style="font-weight: bold">'+name_3 + ' - ' + name_2+'</div>'
+              text += '<div> Level: '+level+'</div>'
+              layer.bindPopup(text);
+          }
+        }).addTo(map);
+  });
+</script>
+
+<script>
   function check(ele,group){
     $("."+group).removeClass("active")
     ele.classList.add("active")
   }
 </script>
-
-<script>
-  // Draw map
-  //=====================================================================================
-  // Initialize the platform object:
-  var platform = new H.service.Platform({
-    'apikey': 'jxMw20pRVwzn8CRpwlU3YDnfLkjszVQ5oY3-RQyS3oc'
-  });
-
-  // Obtain the default map types from the platform object:
-  var defaultLayers = platform.createDefaultLayers();
-
-  // Instantiate (and display) a map object:
-  var map = new H.Map(
-    document.getElementById('mapContainer'),
-    // defaultLayers.vector.normal.map,
-    defaultLayers.raster.normal.mapnight, //dark mode
-    {
-      center: { lat: 10.762622, lng: 106.660172 },
-      zoom: 10,
-      pixelRatio: window.devicePixelRatio || 1
-    }
-  );
-
-  // add a resize listener to make sure that the map occupies the whole container
-  window.addEventListener('resize', () => map.getViewPort().resize());
-
-  //Step 3: make the map interactive
-  // MapEvents enables the event system
-  // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
-  var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-
-  // Create the default UI components
-  var ui = H.ui.UI.createDefault(map, defaultLayers);
-  //=====================================================================================
-
-  // draw
-  showGeoJSONData(map, "/BeCaked{{ url_for('static', filename='data/hcm.json') }}")   //districts boundary
-  var districts = {{ districts| tojson }};
-
-  function draw_map(){
-    var time = $('.g-time.active')[0].innerHTML;
-    if (time == 'total') {
-     data = {{ total| tojson }};
-    }
-    else if (time == '28 days') {
-      data = {{ month|tojson }}
-    }
-    else{
-      data = {{ week|tojson }}
-    }
-
-    var type = $('#type')[0].getAttribute("value");
-    
-    var centre = {{ centre| tojson }};
-    if (typeof map!== "undefined") removeAllCircle(map);
-    districts.forEach(function addCircle(d) {
-      if (d != 'HCM') {
-        o = centre[d]
-        d_data = data[d]
-        addCircleToMap(map, ui, o, d, d_data, type, 'purple', 'rgba(208, 206, 226, 0.8)')
-      }
-    });
-  }
-
-  draw_map()
-</script>
-
 
 <script type="text/javascript">
   // NOT USE
