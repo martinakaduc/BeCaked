@@ -203,7 +203,7 @@
   levels = {{ levels|tojson }}
   filename="/BeCaked{{ url_for('static', filename='data/phuongxa.geojson') }}"
 
-  fetch("{{ url_for('static', filename) }}")
+  fetch(filename)
   .then(function(response) {
       return response.json();
   })
