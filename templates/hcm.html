@@ -29,8 +29,8 @@
 <script>
   // Chart.register(zoomPlugin);
 </script>
-<script src="{{ url_for('static', filename='js/draw_maps.js') }}"></script>
-<script src="{{ url_for('static', filename='js/draw.js') }}"></script>
+<script src="/BeCaked{{ url_for('static', filename='js/draw_maps.js') }}"></script>
+<script src="/BeCaked{{ url_for('static', filename='js/draw.js') }}"></script>
 {% endblock %}
 {% block content %}
 
@@ -326,7 +326,7 @@
 
   levels = {{ levels|tojson }}
  
-  var quanhuyen = new L.GeoJSON.AJAX("{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
+  var quanhuyen = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
                       style: function(district) {
                           id_2 = district.properties["maDVHC"]
                           level = levels[id_2]
@@ -369,7 +369,7 @@
                           }
                     });
 
-  var phuongxa = new L.GeoJSON.AJAX("{{ url_for('static', filename='data/phuongxa_2021.geojson') }}",{
+  var phuongxa = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/phuongxa_2021.geojson') }}",{
                       style: function(phuong) {
                                 id_3 = phuong.properties["maDVHCXa"]
                                 level = levels[id_3]

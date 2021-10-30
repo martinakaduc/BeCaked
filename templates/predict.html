@@ -6,7 +6,7 @@
 
 {% endblock %}
 {% block content %}
-<form action="{{ url_for('predict') }}" method="POST">
+<form action="/BeCaked{{ url_for('predict') }}" method="POST">
   <div class="form-inline">
 
     <label for="day-start"><h4>From</h4></label>
