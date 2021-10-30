@@ -89,7 +89,7 @@
     compartments, which is depicted as Figure 1.
   </p>
   <div class="container-fluid" align="center">
-    <img src="BeCaked{{ url_for('static', filename='images/seirdlvc.png') }}" width="640">
+    <img src="{{ url_for('static', filename='images/seirdlvc.png') }}" width="640">
     <p><b>Figure 1</b>: The relations between compartments</p>
   </div>
   <p align="justify">
@@ -154,7 +154,7 @@
       The final outputs are the parameters of the SEIRDLVC model and the prediction results. The obtained parameters are used and analyzed intensively by epidemiologists. While the prediction results give a reference channel helping policymakers make suitable decisions.
     </p>
     <div class="container-fluid" align="center">
-      <img src="BeCaked{{ url_for('static', filename='images/overall_dl.png') }}" width="640">
+      <img src="{{ url_for('static', filename='images/overall_dl.png') }}" width="640">
       <p><b>Figure 2</b>: The overall structure of our approach</p>
     </div>
 
@@ -234,15 +234,15 @@
         </table>
     </div>
     <div class="container-fluid" align="center">
-      <img src="BeCaked{{ url_for('static', filename='images/predicted_infectious.png') }}" width="900">
+      <img src="{{ url_for('static', filename='images/predicted_infectious.png') }}" width="900">
       <p><b>Figure 3</b>: Prediction of daily infections</p>
     </div>
     <div class="container-fluid" align="center">
-      <img src="BeCaked{{ url_for('static', filename='images/predicted_deceased.png') }}" width="900">
+      <img src="{{ url_for('static', filename='images/predicted_deceased.png') }}" width="900">
       <p><b>Figure 4</b>: Prediction of total deceased</p>
     </div>
     <div class="container-fluid" align="center">
-      <img src="BeCaked{{ url_for('static', filename='images/predicted_critical.png') }}" width="900">
+      <img src="{{ url_for('static', filename='images/predicted_critical.png') }}" width="900">
       <p><b>Figure 5</b>: Prediction of total critical</p>
     </div>
 
