@@ -291,16 +291,23 @@
 
 <script>
   // map scripts
-  basemap = L.tileLayer('https://pcd.hcmgis.vn/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=hcm_map:hcm_map_all&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
-    attribution: "<a href='https://hcmgis.vn/' target='_blank'>HCMGIS</a>", maxZoom: 20, fillOpacity: 1
+  //HCMC HCMGIS map
+  const hcmgis_map = new L.tileLayer('https://pcd.hcmgis.vn/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=hcm_map:hcm_map_all&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
+      attribution: "<a href='https://hcmgis.vn/' target='_blank'>HCMGIS</a>", opacity: 1, maxZoom: 20
   });
+
+  //Việt Bản đồ
+  const vbd_map = new L.tileLayer('http://images.vietbando.com/ImageLoader/GetImage.ashx?Ver=2016&LayerIds=VBD&Level={z}&X={x}&Y={y}', {
+      attribution: "<a href='http://maps.vietbando.com//' target='_blank'>VIETBANDO CORP</a>", maxZoom: 20, opacity: .6
+  }); 
+  // Link https://sqhkt-qlqh.tphcm.gov.vn/geoserver/gwc/demo
 
   var map = new L.Map(
     document.getElementById('mapContainer'),
     {
       center: { lat: 10.762622, lng: 106.660172 },
-      zoom: 10.2,
-      layers: [basemap]
+      zoom: 10,
+      layers: [vbd_map,hcmgis_map]
     }
   );
   
@@ -417,7 +424,7 @@
   quanhuyen.addTo(map)
   map.on('zoomend', function() {
           var zoomlevel = map.getZoom();
-              if (zoomlevel < 12){
+              if (zoomlevel < 11){
                   if (map.hasLayer(phuongxa)) {
                       map.removeLayer(phuongxa);
                   } 
@@ -425,7 +432,7 @@
                       map.addLayer(quanhuyen)
                   }
               }
-              if (zoomlevel >= 12){
+              if (zoomlevel >= 11){
                 if (map.hasLayer(quanhuyen)) {
                       map.removeLayer(quanhuyen);
                   } 
