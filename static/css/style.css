@@ -116,6 +116,11 @@
 .scalable > div:nth-child(odd) > .num-1,.scalable > div:nth-child(odd) > .num-2{
   color: #34ace0;
 }
+.nav-item{
+  background-color: #343a40;
+  width: 100%;
+  text-align: center;
+}
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
   
@@ -123,6 +128,9 @@
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) { 
+  .nav-item{
+    width: max-content;
+  }
   .scalable > div:nth-child(odd){
     border-right: solid .01em #000 !important;
     background-color: #fff !important;
