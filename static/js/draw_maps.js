@@ -8,12 +8,13 @@ function showGeoJSONData(map, filename) {
             // Parsed geo objects could be styled using setStyle method
             if (mapObject instanceof H.map.Polygon) {
                 mapObject.setStyle({
-                    fillColor: 'rgba(255, 0, 0, 0.5)',
+                    // fillColor: 'rgba(255, 0, 0, 0.5)',
+                    fillColor: 'rgba(192, 57, 43,1.0)',
                     strokeColor: 'rgba(0, 0, 255, 0.2)',
                     lineWidth: 3
                 });
             }
-            // mapObject.addEventListener('pointermove', () => { console.log(mapObject['data']['properties']['NAME_2']) });
+            mapObject.addEventListener('pointermove', () => { console.log(mapObject['data']['properties']['NAME_3'] + '\t' + mapObject['data']['properties']['NAME_2']) });
         }
     });
 

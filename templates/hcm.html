@@ -17,6 +17,9 @@
  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
  crossorigin=""></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.min.js"></script>
+
+<!-- <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" /> -->
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
@@ -26,268 +29,416 @@
 <script>
   // Chart.register(zoomPlugin);
 </script>
-<script src="/BeCaked{{ url_for('static', filename='js/draw_maps.js') }}"></script>
-<script src="/BeCaked{{ url_for('static', filename='js/draw.js') }}"></script>
+<script src="BeCaked{{ url_for('static', filename='js/draw_maps.js') }}"></script>
+<script src="BeCaked{{ url_for('static', filename='js/draw.js') }}"></script>
 {% endblock %}
 {% block content %}
 
-<!-- <div align="right" style="font-style: italic; font-size: 80%;">Last updated {{ current_day }}</div> -->
+<div class="dropdown mr-1" style="position: fixed; top: calc(60px + 1em); right: 0; z-index: 99999;">
+  <button type="button" class="btn btn-secondary dropdown-toggle" id="district" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-offset="10,20">
+    {{ name }}
+  </button>
+  <div class="dropdown-menu" aria-labelledby="district">
+    {% for district in districts %}
+    <div class="dropdown-item btn" onclick="load_district('{{ district }}')">{{district}}</div>
+    {% endfor %}
+  </div>
+</div>
+
 <div class="container-fluid hcm-homepage">
-  <div class="row no-padding">
-    <div class="col-2 left-div" align="left">
+  <div class="row" style="margin-top: 1em; margin-bottom: 1em;">
+    <div class="col-lg-8 col-sm-12" align="left">
       <!-- left -->
-      <div class="left-summary" role="button" align="left" onclick="window.location.reload()">
-        <h5 style="color:#1B9CFC">Total Cases</h5>
-        <h3 style="color: #d1d8e0">{{ "{:,}".format(summary['HCM']['I']['Total']) }}</h3>
-      </div>
-      <div class="my-custom-scrollbar">
-        <table class="table left-table">
-          <tbody>
-            {% for district in districts %}
-            {% if district != 'HCM' %}
-              <tr class="left-table-row" onclick = "load_district(this)">
-                <td class="btn btn-link district-btn">{{ district }}</td>
-                <td>{{ "{:,}".format(summary[district]['I']['Total']) }}</td>
-              </tr>
-            {% endif %}
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      
-      <br></br>
-
-      <div class="left-summary" role="button" align="left" onclick="window.location.reload()">
-        <h5 style="color:#1B9CFC">Total First Doses</h5>
-        <h3 style="color: #d1d8e0">{{ "{:,}".format(summary['HCM']['V']['Total']) }}</h3>
-      </div>
-      <div class="my-custom-scrollbar">
-        <table class="table left-table">
-          <tbody>
-            {% for district in districts_v %}
-            {% if district != 'HCM' %}
-              <tr class="left-table-row" onclick = "load_district(this)">
-                <td class="btn btn-link district-btn">{{ district }}</td>
-                <td>{{ "{:,}".format(summary[district]['V']['Total']) }}</td>
-              </tr>
-            {% endif %}
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>      
-
+      <div class="container-fluid" style="border-radius: 20px; height: calc(100vh - 60px - 2em);" id="mapContainer"></div>
     </div>
-    <div class="col-5" align="left">
-      <!-- center -->
-      <div id="district-title">Ho Chi Minh City</div>
-      <div class="container-fluid">
-        <div class="row center-summary">
-          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="total_infectious_toggle">
-            <h5 style="color: red;"><b>Total Cases</b></h5>
-            <h6 style="color: red;">{{ "{:,}".format(summary[name]['I']['Total']) }}</h6>
-          </div>
-
-          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="vaccinated_toggle">
-            <h5 style="color: #27ae60;"><b>Total First Doses</b></h5>
-            <h6 style="color: #27ae60;">{{ "{:,}".format(summary[name]['V']['Total']) }}</h6>
-          </div>
-
-          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="population_toggle">
-            <h5 style="color:chocolate;"><b>Population</b></h5>
-            <h6 style="color: chocolate;">{{ "{:,}".format(population[name]) }}</h6>
-          </div>
-
-          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="recovered_toggle">
-            <h5 style="color: blue;"><b>Total Recovered Cases</b></h5>
-            <h6 style="color: blue;">{{ "{:,}".format(summary[name]['R']['Total']) }}</h6>
-          </div>
-
-          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="deceased_toggle">
-            <h5 style="color: gray;"><b>Total Deceased Cases</b></h5>
-            <h6 style="color: gray;">{{ "{:,}".format(summary[name]['D']['Total']) }}</h6>
-          </div>
-
-          <div class="col-lg-4 col-md-4 col-sm-1" align="center" id="critical_toggle">
-            <h5 style="color: purple;"><b>Currently Critical Cases</b></h5>
-            {% if name == 'HCM'%}
-            <h6 style="color: purple;">{{ "{:,}".format(summary[name]['C']['Total']) }}</h6>
-            {% else %}
-            <h6 style="color: purple;">{{ "{}".format('-') }}</h6>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-
-      <div class="container-fluid" style="height: 47vh; background-color: aliceblue;" id="mapContainer"></div>
-
-      <div class="btn-group d-flex" role="group" aria-label="Basic example">
-        <div id="days" value="-1"></div>
-        <div id="type" value="I"></div>
-        <button type="button" class="btn btn-sm btn-dark w-100 active g-time" onclick="check(this,'g-time'); $('#days').attr('value','-1'); load_chart()">total</button>
-        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); $('#days').attr('value','28'); load_chart()">28 days</button>
-        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); $('#days').attr('value','7'); load_chart()">7 days</button>
-        <button type="button" class="btn btn-sm btn-dark w-100 active g-type" onclick="check(this,'g-type');  $('#type').attr('value','I'); draw_map()">confirmed</button>
-        <button type="button" class="btn btn-sm btn-dark w-100 g-type" onclick="check(this,'g-type');  $('#type').attr('value','V'); draw_map()">first dose</button>
-      </div>
-    </div>
-    <div class="col-5" align="left">
+    <div class="col-lg-4 col-sm-12" align="left">
       <!-- right -->
-      <div class="right-title">
-        <h3>Forecast</h3>
-      </div>
-      <div class="scenarios">
-        <div class="btn-group d-flex" role="group" aria-label="Basic example">
-          <div id = "scenario"></div>
-          <button type="button" class="btn btn-sm btn-dark w-100 g-scenario"
-            onclick="$('#scenario').attr('value','best'); load_chart(); check(this,'g-scenario')">Best Scenario</button>
-          <button type="button" class="btn btn-sm btn-dark w-100 active g-scenario"
-            onclick="$('#scenario').attr('value','normal'); load_chart(); check(this,'g-scenario')">Normal Scenario</button>
-          <button type="button" class="btn btn-sm btn-dark w-100 g-scenario"
-            onclick="$('#scenario').attr('value','worst'); load_chart(); check(this,'g-scenario')">Worst Scenario</button>
-          <button type="button" class="btn btn-sm btn-dark w-100 g-scenario"
-            onclick = "resetZoom(my_chart_i); resetZoom(my_chart_r); resetZoom(my_chart_d); resetZoom(my_chart_c)">Reset Zoom</button>
+      <div class="container-fluid" style="margin-top: 1em; margin-bottom: 1em; height: auto; min-height: 100%">
+        <div class="text-center" style="padding-bottom: .25em; font-size: 2em;">
+          {{ today[:-6].upper() }}
         </div>
-      </div>
-      <div class="container-fluid right-charts">
-        <div style="width: 37vw; height: 40vh;">
-          <h5 style="color:#ecf0f1">New Confirmed Cases</h5>
-          <canvas id="chart_i"></canvas>
-        </div>
-        
-        <div style="width: 37vw; height: 40vh;">
-          <h5 style="color:#ecf0f1">New Recovered Cases</h5>          
-          <canvas id="chart_r"></canvas>
-        </div>
-
-        <div style="width: 37vw; height: 40vh;">
-          <h5 style="color:#ecf0f1">New Deceased Cases</h5>
-          <canvas id="chart_d"></canvas>
-        </div>
-        <div style="width: 37vw; height: 40vh;" id="critical-chart">
-          <h5 style="color:#ecf0f1">Current Critical Cases</h5>
-          <canvas id="chart_c"></canvas>
+        <div class="row scalable">
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">CA MỚI</div>
+            <div class="txt-2">(PCR + TEST)</div>
+            <div class="num-1">977 + 649</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">TỔNG SỐ CA</div>
+            <div class="txt-2">(ĐỢT 4)</div>
+            <div class="num-1">425,336</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">XUẤT VIỆN</div>
+            <div class="num-1">250,267</div>
+            <div class="num-2">+718</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">HỒI PHỤC KCL</div>
+            <div class="num-1">110,870</div>
+            <div class="num-2">+585</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">ĐIỀU TRỊ</div>
+            <div class="num-1">11,305</div>
+            <div class="num-2">+1,212</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">TỬ VONG</div>
+            <div class="num-1">16,618</div>
+            <div class="num-2">+32</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">MŨI 1</div>
+            <div class="num-1">7,249,076</div>
+            <div class="num-2">+85,887</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">MŨI 2</div>
+            <div class="num-1">5,689,910</div>
+            <div class="num-2">+17,796</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">F0 TẠI NHÀ</div>
+            <div class="num-1">21,025</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">F0 KCL</div>
+            <div class="num-1">5,313</div>    
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">THỞ MÁY XÂM LẤN</div>
+            <div class="num-1">255</div>    
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">ECMO</div>
+            <div class="num-1">12</div>    
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-lg-8 col-md-12" align="left">
+      <!-- left -->
+      <div id="days" value="-1"></div>
+      <div id = "scenario"></div>
+      <div class="btn-group d-flex" role="group" style="padding-bottom: 1em;">
+        <button type="button" class="btn btn-sm btn-dark w-100 active g-time" onclick="check(this,'g-time'); $('#days').attr('value','-1'); load_chart()">
+          <span class="hide-sm">Tất cả</span>
+          <span class="visible-sm"><i class="fas fa-infinity"></i></span>
+        </button>
+        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); $('#days').attr('value','28'); load_chart()">
+          <span class="hide-sm">28 ngày</span>
+          <span class="visible-sm">28</i></span>
+        </button>
+        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); $('#days').attr('value','7'); load_chart()">
+          <span class="hide-sm">7 ngày</span>
+          <span class="visible-sm">7</i></span>
+        </button>
+        <button type="button" class="btn btn-sm btn-dark w-100 g-scenario" onclick="$('#scenario').attr('value','best'); load_chart(); check(this,'g-scenario')">
+          <span class="hide-sm">Kịch bản tốt</span>
+          <span class="visible-sm"><i class="fas fa-check-double"></i></span>
+        </button>
+        <button type="button" class="btn btn-sm btn-dark w-100 active g-scenario" onclick="$('#scenario').attr('value','normal'); load_chart(); check(this,'g-scenario')">
+          <span class="hide-sm">Kịch bản bình thường</span>
+          <span class="visible-sm"><i class="fas fa-check"></i></span>
+        </button>
+        <button type="button" class="btn btn-sm btn-dark w-100 g-scenario" onclick="$('#scenario').attr('value','worst'); load_chart(); check(this,'g-scenario')">
+          <span class="hide-sm">Kịch bản xấu</span>
+          <span class="visible-sm"><i class="fas fa-exclamation-triangle"></i></span>
+        </button>
+        <button type="button" class="btn btn-sm btn-dark w-30 g-scenario" onclick = "resetZoom(my_chart_i); resetZoom(my_chart_r); resetZoom(my_chart_d); resetZoom(my_chart_c)">
+          <i class="fas fa-expand-alt"></i>
+        </button>
+      </div>
+  
+      <div id="carousel-example-generic-captions" class="carousel slide" data-ride="carousel">
+			  		<!-- Indicators -->
+					  <ol class="carousel-indicators">
+						<li data-target="#carousel-example-generic-captions" data-slide-to="0" class="active"></li>
+						<li data-target="#carousel-example-generic-captions" data-slide-to="1"></li>
+						<li data-target="#carousel-example-generic-captions" data-slide-to="2"></li>
+            <li class="only-hcm" data-target="#carousel-example-generic-captions" data-slide-to="3"></li>
+					  </ol>                      
+				  <!-- Wrapper for slides -->
+				  <div class="carousel-inner" role="listbox">
+					<div class="carousel-item active forcast-charts">
+            <h5 style="color:#19191a">DỰ BÁO SỐ CA NHIỄM MỚI HÀNG NGÀY</h5>
+            <div></div>
+					  <canvas id="chart_i"></canvas>
+					</div>
+					<div class="carousel-item forcast-charts">
+            <h5 style="color:#19191a">DỰ BÁO SỐ CA HỒI PHỤC HÀNG NGÀY</h5>
+					  <canvas id="chart_r"></canvas>
+					</div>
+					<div class="carousel-item forcast-charts">
+            <h5 style="color:#19191a">DỰ BÁO SỐ CA TỬ VONG HÀNG NGÀY</h5>
+					  <canvas id="chart_d"></canvas>
+					</div>
+          <div class="carousel-item forcast-charts only-hcm">
+            <h5 style="color:#19191a">DỰ BÁO SỐ BỆNH NHÂN Ở TẦNG 3</h5>
+					  <canvas id="chart_c"></canvas>
+					</div>
+				  </div>
+				  <!-- Controls -->
+				  <a class="carousel-control-prev" href="#carousel-example-generic-captions" role="button" data-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+				  </a>
+				  <a class="carousel-control-next" href="#carousel-example-generic-captions" role="button" data-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+				  </a>
+				</div> 
+    </div>
+    <div class="col-lg-4 col-md-12" align="left">
+      <!-- right -->
+      <div class="text-center" style="padding-bottom: .25em; font-size: 2em;">
+        BỆNH VIỆN
+      </div>
+      <table class="table table-hover table-responsive text-center" style="height: calc(100vh - 116px - 1em -  6em); overflow-y: scroll;">
+        <tr style="position: sticky; top: 0; z-index: 1; background-color: #7f8c8d;">
+          <th>Phân loại</th>
+          <th>Trong ngày</th>
+          <th>Ngày trước</th>
+        </tr>
+        <tr>
+          <td>Tầng 2</td>
+          <td>9,522</td>
+          <td>+313</td>
+        </tr>
+        <tr>
+          <td>Tầng 3</td>
+          <td>1,783</td>
+          <td>+4</td>
+        </tr>
+        <tr style="background-color: yellow;">
+          <td>Tổng T.2 + T.3</td>
+          <td>11,305</td>
+          <td>+317</td>
+        </tr>
+        <tr>
+          <th>Thở nội khí quản</th>
+          <th>255</th>
+          <th>-2</th>
+        </tr>
+        <tr>
+          <td>trong đó ECMO</td>
+          <td>12</td>
+          <td>+1</td>
+        </tr>
+        <tr>
+          <td>Thở máy không xâm lấn</td>
+          <td>238</td>
+          <td>-4</td>
+        </tr>
+        <tr>
+          <td>Thở oxy qua mũi, mask</td>
+          <td>1,408</td>
+          <td>+27</td>
+        </tr>
+        <tr style="background-color: yellow;">
+          <td>Tổng hỗ trợ hô hấp</td>
+          <td>1,901</td>
+          <td>+21</td>
+        </tr>
+        <tr>
+          <th>Xuất viện - Trẻ em</th>
+          <th>77</th>
+          <th>0</th>
+        </tr>
+        <tr>
+          <td>Xuất viện - Phụ nữ mang thai</td>
+          <td>5</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>Xuất viện - Khác</td>
+          <td>636</td>
+          <td>-151</td>
+        </tr>
+        <tr style="background-color: yellow;">
+          <td>Tổng xuất viện</td>
+          <td>718</td>
+          <td>-151</td>
+        </tr>
+        <tr>
+          <th>Tử vong - Trẻ em</th>
+          <th>0</th>
+          <th>0</th>
+        </tr>
+        <tr>
+          <td>Tử vong - Phụ nữ mang thai</td>
+          <td>0</td>
+          <td>0</td>
+        </tr>
+        <tr>
+          <td>Tử vong - Khác</td>
+          <td>32</td>
+          <td>0</td>
+        </tr>
+        <tr style="background-color: yellow;">
+          <td>Tổng tử vong</td>
+          <td>32</td>
+          <td>0</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
 </div>
 
-
-
-
-
-<!-- Scripts -->
 <script>
-  basemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-	subdomains: 'abcd',
-	maxZoom: 20
-});
+  // map scripts
+  basemap = L.tileLayer('https://pcd.hcmgis.vn/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=hcm_map:hcm_map_all&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
+    attribution: "<a href='https://hcmgis.vn/' target='_blank'>HCMGIS</a>", maxZoom: 20, fillOpacity: 1
+  });
 
   var map = new L.Map(
     document.getElementById('mapContainer'),
     {
       center: { lat: 10.762622, lng: 106.660172 },
-      zoom: 10,
+      zoom: 10.2,
       layers: [basemap]
     }
   );
   
-
-  var myStyle = {
-    "color": "#ff7800",
-    "weight": 1,
-    "opacity": 0.65
-  };
+  var prevLayerClicked = null;
+  var mystyle = function(level){ 
+    color = level == 1  ? { default: '#27ae60', click: '#2ecc71'}:
+            level == 2  ? { default: '#f39c12', click: '#feca57'}:
+            level == 3  ? { default: '#e74c3c', click: '#ff6b6b'}:
+                          '#7f8c8d';
+    return {
+      default: {
+        "color": color.default,
+        "opacity": .3,
+        "fillOpacity": .35
+      },
+      click: {
+        "color": color.click,
+        "weight": 5,
+        "opacity": .3,
+        "fillOpacity": .5
+      }}
+  }
 
   levels = {{ levels|tojson }}
-  filename="/BeCaked{{ url_for('static', filename='data/phuongxa.geojson') }}"
+ 
+  var quanhuyen = new L.GeoJSON.AJAX("BeCaked{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
+                      style: function(district) {
+                          id_2 = district.properties["maDVHC"]
+                          level = levels[id_2]
+                          return  mystyle(level).default
+                        },
+                        onEachFeature: function (district, layer) {
+                              layer.on({
+                                mouseover: function(e){
+                                  id_2 = district.properties["maDVHC"]
+                                  level = levels[id_2]
+                                  name_2= district.properties["diaDanh"]
 
-  fetch(filename)
-  .then(function(response) {
-      return response.json();
-  })
-  .then(function(data) {
-      L.geoJSON(data,{
-        style: function(district) {
-          id_3 = district.properties["maphuong"].slice(3)
-          level = levels[id_3]
-          // level = Math.floor(Math.random() * 3) + 1;
-          return  level == 1  ? {color: '#27ae60', opacity:0.1} :
-                  level == 2  ? {color: '#f39c12', opacity:0.1} :
-                  level == 3  ? {color: '#e74c3c', opacity:0.1} :
-                                {color: '#7f8c8d', opacity:0.1};
+                                  text = '<div style="font-weight: bold">'+name_2
+                                  text += '<div> Cấp độ dịch: '+level+'</div>'
+                                  text += '<div> Diện tích: '+parseInt(district.properties["dienTich"])+'km<sup>2</sup></div>'
+                                  text += '<div> Dân số: '+district.properties["danSoThuTe"].toLocaleString()+'</div>'
+                                  layer.bindPopup(text).openPopup();
+                                },
 
-         },
-         onEachFeature: function (district, layer) {
-              id_3 = district.properties["maphuong"].slice(3)
-              level = levels[id_3]
-              name_2 = district.properties["tenquan"]
-              name_3 = district.properties["tenphuong"]
+                                click: function(e){
+                                  var id_2 = e.target.feature.properties["maDVHC"]
+                                  var level = levels[id_2]
 
-              text = '<div style="font-weight: bold">'+name_3 + ' - ' + name_2+'</div>'
-              text += '<div> Level: '+level+'</div>'
-              layer.bindPopup(text);
-          }
-        }).addTo(map);
-  });
-</script>
+                                  if (prevLayerClicked !== null) {
+                                      // Reset style
+                                    prevLayerClicked.setStyle(mystyle(prevLevel).default);
+                                  }
+                                  map.fitBounds(e.target.getBounds());
+                                  var layer = e.target;
+                                  layer.setStyle(mystyle(level).click);
+                                  if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                                    layer.bringToFront();
+                                  }
+                                  // info.update(layer.feature.properties.availability);
+                                  prevLayerClicked = layer;
+                                  prevLevel = level;
 
-<script>
-  function check(ele,group){
-    $("."+group).removeClass("active")
-    ele.classList.add("active")
-  }
-</script>
+                                }
+                                });
+                          }
+                    });
 
-<script type="text/javascript">
-  // NOT USE
-  function draw(id){
-    // var typ = $('input[name=chart-type]:checked').val();
-    var typ = $("#"+id)[0].getAttribute("value");
-    var dates,real,best,normal,worst;
-    // var ctx = document.getElementById('myChart').getContext('2d');
-    dates = {{ total['HCM']['dates']|tojson }}
+  var phuongxa = new L.GeoJSON.AJAX("BeCaked{{ url_for('static', filename='data/phuongxa_2021.geojson') }}",{
+                      style: function(phuong) {
+                                id_3 = phuong.properties["maDVHCXa"]
+                                level = levels[id_3]
+                                return  mystyle(level).default
+                              },
+                              onEachFeature: function (phuong, layer) {
+                                    layer.on({
+                                      mouseover: function(e){
+                                        id_3 = phuong.properties["maDVHCXa"]
+                                        id_2 = phuong.properties["maDVHCHuye"]
+                                        name_3 = phuong.properties["diaDanhXa"]
+                                        name_2 = phuong.properties["diaDanhHuy"]
 
-    if (typ == "infected") {k = "I";} 
-    else if (typ == "recovered") {k = 'R';} 
-    else if (typ == "deceased") {k = 'D';}
-    else if (typ == "critical") {k = 'C';}
-    
-    data = {{ total['HCM']|tojson }}
-    real = data[k]['real'];
-    best = data[k]['BestCase'];
-    normal = data[k]['NormalCase'];
-    worst = data[k]['WorstCase'];
-    draw_3_scenarios(id,dates,real,best,normal,worst);
-  }
+                                        text = '<div style="font-weight: bold">'+name_3 + ' - ' + name_2+'</div>'
+                                        text += '<div> Cấp độ dịch của Phường/Xã: '+levels[id_3]+'</div>'
+                                        text += '<div> Cấp độ dịch của Quận/Huyện: '+levels[id_2]+'</div>'
+                                        text += '<div> Diện tích: '+parseInt(phuong.properties["dienTich"])+'km<sup>2</sup></div>'
+                                        text += '<div> Dân số: '+phuong.properties["danSoThucT"].toLocaleString()+'</div>'
+                                        layer.bindPopup(text).openPopup();
+                                      },
 
-  // draw('chart_c')
-  // draw('chart_d')
+                                      click: function(e){
+                                        var id_3 = e.target.feature.properties["maDVHCXa"]
+                                        var level = levels[id_3]
 
-  // $('#types-form input').on('change', draw);
+                                        if (prevLayerClicked !== null) {
+                                            // Reset style
+                                          prevLayerClicked.setStyle(mystyle(prevLevel).default);
+                                        }
+                                        map.fitBounds(e.target.getBounds());
+                                        var layer = e.target;
+                                        layer.setStyle(mystyle(level).click);
+                                        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                                          layer.bringToFront();
+                                        }
+                                        // info.update(layer.feature.properties.availability);
+                                        prevLayerClicked = layer;
+                                        prevLevel = level;
+
+                                      }
+                                    });
+                                }
+                    });
+ 
+  quanhuyen.addTo(map)
+  map.on('zoomend', function() {
+          var zoomlevel = map.getZoom();
+              if (zoomlevel < 12){
+                  if (map.hasLayer(phuongxa)) {
+                      map.removeLayer(phuongxa);
+                  } 
+                  if (!map.hasLayer(quanhuyen)){
+                      map.addLayer(quanhuyen)
+                  }
+              }
+              if (zoomlevel >= 12){
+                if (map.hasLayer(quanhuyen)) {
+                      map.removeLayer(quanhuyen);
+                  } 
+                if (!map.hasLayer(phuongxa)){
+                      map.addLayer(phuongxa)
+                  }
+              }
+          });
 </script>
 
 <script type = "text/javascript">
+// chart scripts
   _district = 'hcm';
-
-  function load_summary(){
-    summary = {{ summary|tojson }};
-    population = {{ population|tojson }};
-    i = Number(summary[_district]['I']['Total']).toLocaleString()
-    r = Number(summary[_district]['R']['Total']).toLocaleString()
-    d = Number(summary[_district]['D']['Total']).toLocaleString()
-    v = Number(summary[_district]['V']['Total']).toLocaleString()
-    c = _district == 'hcm' ? Number(summary[_district]['C']['Total']).toLocaleString() : '-'
-    p = Number(population[_district]).toLocaleString()
-
-    $("#total_infectious_toggle h6").text(i)
-    $("#vaccinated_toggle h6").text(v)
-    $("#recovered_toggle h6").text(r)
-    $("#deceased_toggle h6").text(d)
-    $("#critical_toggle h6").text(c)
-    $("#population_toggle h6").text(p)
-  }
 
   function resetZoom(x)
   {
@@ -328,20 +479,29 @@
   {
     my_chart_c.destroy();
     if (_district == 'hcm'){
+      $(".carousel-indicators").append('<li class="only-hcm" data-target="#carousel-example-generic-captions" data-slide-to="3"></li>')
+      $(".carousel-inner").append('<div class="carousel-item forcast-charts only-hcm"><h5 style="color:#19191a">DỰ BÁO SỐ BỆNH NHÂN Ở TẦNG 3</h5><canvas id="chart_c"></canvas></div>')
+
       scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
       $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=C&&scenario='+scenario, function(data) {
         my_chart_c = draw_chart('chart_c', data,days)
       });
     }
     else {
-      $('#critical-chart').remove()
+      $('.carousel-indicators .active').removeClass('active')
+      $('.carousel-indicators li:first-child').addClass('active')
+      $('.carousel-inner .active').removeClass('active')
+      $('.carousel-inner div:first-child').addClass('active')
+      $('.only-hcm').remove()
     }
   }
   function load_district(x){
-      _district = x.children[0].innerText;
-      $("#district-title").text(_district);
+      _district = x.toLowerCase().replace(' ','_');
+      $("#district").text(x);
+      if ($('.active.only-hcm').length > 0){
+
+      }
       load_chart();
-      load_summary();
   }
 
   scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
@@ -358,6 +518,15 @@
       my_chart_c = draw_chart('chart_c', data,days)
   });
   </script>
+
+<script>
+  // other scripts
+  function check(ele,group){
+    $("."+group).removeClass("active")
+    ele.classList.add("active")
+  }
+</script>
+
 
 {% endblock %}
 

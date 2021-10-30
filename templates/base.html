@@ -20,19 +20,19 @@
     integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
     crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/c73fc0a645.js" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="/BeCaked{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="BeCaked{{ url_for('static', filename='css/style.css') }}">
 
-  <link rel="shortcut icon" href="/BeCaked{{ url_for('favicon') }}" type="image/x-icon">
-  <link rel="icon" href="/BeCaked{{ url_for('favicon') }}" type="image/x-icon">
+  <link rel="shortcut icon" href="BeCaked{{ url_for('favicon') }}" type="image/x-icon">
+  <link rel="icon" href="BeCaked{{ url_for('favicon') }}" type="image/x-icon">
   {% block head %}{% endblock %}
 </head>
 
 <body>
   <header style="position: sticky; top: 0px; background-color: #26334f; z-index: 9999;">
     <nav class="navbar navbar-expand-sm navbar-dark shadow p-3 mb-5 bg-dark">
-      <a class="navbar-brand" href="/BeCaked{{ url_for('home') }}">
+      <a class="navbar-brand" href="BeCaked{{ url_for('home') }}">
         <span class="text-muted d-flex">
-          <img src="/BeCaked{{ url_for('static', filename='images/BK.png') }}" width="46" height="36" class="d-inline-block align-top" alt="" style="padding-right: 10px;">
+          <img src="BeCaked{{ url_for('static', filename='images/BK.png') }}" width="46" height="36" class="d-inline-block align-top" alt="" style="padding-right: 10px;">
           <h2 style="font-family: 'Comic Sans MS', cursive, sans-serif; color: #82c7a5; font-weight: bold;">
             BeCaked
           </h2>
@@ -48,83 +48,70 @@
           {% else %}
           <li class="nav-item">
           {% endif %}
-            <a class="nav-link" href="/BeCaked{{ url_for('home') }}">HCM</a>
+            <a class="nav-link" href="BeCaked{{ url_for('home') }}">HCM</a>
           </li>
           {% if name == 'old-home'%}
           <li class="nav-item active">
           {% else %}
           <li class="nav-item">
           {% endif %}
-            <a class="nav-link" href="/BeCaked{{ url_for('old_home') }}">World</a>
+            <a class="nav-link" href="BeCaked{{ url_for('old_home') }}">World</a>
           </li>
           {% if name == 'whitepaper'%}
           <li class="nav-item active">
           {% else %}
           <li class="nav-item">
           {% endif %}
-            <a class="nav-link" href="/BeCaked{{ url_for('whitepaper') }}">About</a>
+            <a class="nav-link" href="BeCaked{{ url_for('whitepaper') }}">About</a>
           </li>
           {% if name == 'donate'%}
           <!-- <li class="nav-item active"> -->
           {% else %}
           <!-- <li class="nav-item"> -->
           {% endif %}
-            <!-- <a class="nav-link" href="/BeCaked{{ url_for('donate') }}">Donate</a> -->
+            <!-- <a class="nav-link" href="BeCaked{{ url_for('donate') }}">Donate</a> -->
           <!-- </li> -->
           {% if name == 'achievements'%}
           <li class="nav-item active">
           {% else %}
           <li class="nav-item">
           {% endif %}
-            <a class="nav-link" href="/BeCaked{{ url_for('achievements') }}">Timeline</a>
+            <a class="nav-link" href="BeCaked{{ url_for('achievements') }}">Timeline</a>
           </li>
           {% if name == 'acknowledgement'%}
           <li class="nav-item active">
           {% else %}
           <li class="nav-item">
           {% endif %}
-            <a class="nav-link" href="/BeCaked{{ url_for('acknowledgement') }}">Acknowledgement</a>
+            <a class="nav-link" href="BeCaked{{ url_for('acknowledgement') }}">Acknowledgement</a>
           </li>
           {% if name == 'contact'%}
           <li class="nav-item active">
           {% else %}
           <li class="nav-item">
           {% endif %}
-            <a class="nav-link" href="/BeCaked{{ url_for('contact') }}">Contact</a>
+            <a class="nav-link" href="BeCaked{{ url_for('contact') }}">Contact</a>
           </li>
         </ul>
       </div>
     </nav>
   </header>
 
-  {% if name == 'HCM'%}
-  <div class="container-fluid hcm-homepage">
-  {% else %}
+  {% if name != 'HCM'%}
   <div class="container-fluid">
   {% endif %}
-    {% block content %}{% endblock %}
-  </div>
 
-  {% if name == 'HCM'%}
-  <footer class="page-footer font-small blue hcm-homepage">
-  {% else %}
-  <footer class="page-footer font-small blue">
-  <hr>
+    {% block content %}{% endblock %}
+
+  {% if name != 'HCM'%}
+  </div>
   {% endif %}
-    <div class="row" style="margin: 0">
-      <div class="col-4" align="left" style="padding-left: 1em;">
-        {% block lastupdate %}{% endblock %}
-      </div>
-      <div class="col-4" align="center" style="padding-left: 1em;">
-        <div class="footer-copyright text-center py-3">
-        Copyright &copy 2020 BeCaked. All rights reserved.
-        </div>
-      </div>
-      <div class="col-4" align="center" style="padding-left: 1em;"></div>
-    </div>
+
+  <hr>
+  <footer class="page-footer font-small blue">
+    <div class="footer-copyright text-center py-3">
+      Copyright &copy 2020 BeCaked. All rights reserved.
     </div>
   </footer>
-
 </body>
-
 </html>
