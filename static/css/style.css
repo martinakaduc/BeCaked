@@ -8,7 +8,7 @@
 } */
 
 .hcm-homepage{
-  font-family: 'Open Sans Condensed', sans-serif; 
+  font-family: 'Tahoma','Verdana','Segoe',sans-serif;
 }
 
 .navbar {
@@ -32,29 +32,39 @@
 
 .txt-1{
   font-size: .9em;
+  font-weight: 800;
   text-transform: uppercase;;
 }
 .txt-2{
   font-size: .75em;
+  font-weight: 600;
   text-transform: uppercase;;
 }
 .num-1{
   font-weight: bolder;
   font-size: 1.5em;
-  color: #2c3e50;
 }
 .num-2{
   font-weight: 700;
   font-size: 1.25em;
-  color: #34495e;
+}
+.info-popup{
+  display: none; 
+  position:absolute; 
+  top: -1em; 
+  border: 1px solid; 
+  border-radius: 20px; 
+  background-color: #fff;
+  max-width: 20em;
+  height: max-content;
+  padding: 1em;
+  z-index: 9999;
 }
 
 .forcast-charts{
-  /* margin-left: 1em; */
   border-radius: 20px;
-  background-color: #bdc3c7;
+  background-color: #fff;
   height: calc(100vh - 116px - 1em -  5em);
-  /* width: 90vw; */
   overflow: hidden;
 }
 .forcast-charts h5{
@@ -67,6 +77,13 @@
   margin-left: 1em;
   height: auto;
   min-height: 100%;
+}
+
+.carousel-indicators li {
+  background-color: #d2dae2;
+}
+.carousel-indicators .active {
+  background-color: #808e9b;
 }
 
 
@@ -87,6 +104,18 @@
 .visible-sm{
   display: block;
 }
+.scalable > div:nth-child(odd){
+  background-color: #bdc3c7 !important;
+}
+.num-1{
+  color: #0652DD;
+}
+.num-2{
+  color: #0652DD;
+}
+.scalable > div:nth-child(odd) > .num-1,.scalable > div:nth-child(odd) > .num-2{
+  color: #34ace0;
+}
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) { 
   
@@ -96,7 +125,17 @@
 @media (min-width: 992px) { 
   .scalable > div:nth-child(odd){
     border-right: solid .01em #000 !important;
+    background-color: #fff !important;
+  }
+  .scalable > div:nth-child(odd) > .num-1,.scalable > div:nth-child(odd) > .num-2{
+    color: #0652DD;
   } 
+  .scalable > div:nth-child(4n+0), .scalable > div:nth-child(4n+3){
+    background-color: #bdc3c7 !important;
+  }
+  .scalable > div:nth-child(4n+0) .num-1, .scalable > div:nth-child(4n+0) .num-2, .scalable > div:nth-child(4n+3) .num-1, .scalable > div:nth-child(4n+3) .num-2{
+    color: #34ace0 !important;
+  }
   .hide-sm{
     display: block;
   }

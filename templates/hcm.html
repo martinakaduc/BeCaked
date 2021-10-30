@@ -54,7 +54,7 @@
     <div class="col-lg-4 col-sm-12" align="left">
       <!-- right -->
       <div class="container-fluid" style="margin-top: 1em; margin-bottom: 1em; height: auto; min-height: 100%">
-        <div class="text-center" style="padding-bottom: .25em; font-size: 2em;">
+        <div class="text-center" style="padding-bottom: .25em; font-size: 2em; font-weight: 900;">
           {{ today[:-6].upper() }}
         </div>
         <div class="row scalable">
@@ -68,35 +68,53 @@
             <div class="txt-2">(ĐỢT 4)</div>
             <div class="num-1">426,378</div>
           </div>
-          <div class="col-lg-6 col-sm-12 text-center">
+          <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#xuatvien-popup').show()" onmouseout="$('#xuatvien-popup').hide()">
             <div class="txt-1">XUẤT VIỆN</div>
             <div class="num-1">251,113</div>
             <div class="num-2">+846</div>
+            <div class="info-popup" id="xuatvien-popup">
+              Hôm nay có 846 ca mới, tổng đợt 4 có 251,113 ca
+            </div>
           </div>
-          <div class="col-lg-6 col-sm-12 text-center">
+          <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#kcl-popup').show()" onmouseout="$('#kcl-popup').hide()">
             <div class="txt-1">HỒI PHỤC KCL</div>
             <div class="num-1">111,385</div>
             <div class="num-2">+894</div>
+            <div class="info-popup" id="kcl-popup">
+              Hôm nay có 894 ca mới, tổng đợt 4 có 111,385 ca
+            </div>
           </div>
-          <div class="col-lg-6 col-sm-12 text-center">
+          <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#dieutri-popup').show()" onmouseout="$('#dieutri-popup').hide()">
             <div class="txt-1">ĐIỀU TRỊ</div>
             <div class="num-1">11,359</div>
             <div class="num-2">+982</div>
+            <div class="info-popup" id="dieutri-popup">
+              Hôm nay nhập viện thêm 982 ca, hiện đang điều trị 11,359 ca
+            </div>
           </div>
-          <div class="col-lg-6 col-sm-12 text-center">
+          <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#tuvong-popup').show()" onmouseout="$('#tuvong-popup').hide()">
             <div class="txt-1">TỬ VONG</div>
             <div class="num-1">16,648</div>
             <div class="num-2">+30</div>
+            <div class="info-popup" id="tuvong-popup">
+              Hôm nay có 30 ca mới, tổng đợt 4 có 16,648 ca
+            </div>
           </div>
-          <div class="col-lg-6 col-sm-12 text-center">
+          <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#mui1-popup').show()" onmouseout="$('#mui1-popup').hide()">
             <div class="txt-1">MŨI 1</div>
             <div class="num-1">7,380,350</div>
             <div class="num-2">+131,274</div>
+            <div class="info-popup" id="mui1-popup">
+              Hôm nay tiêm được 131,274 mũi mới, tổng cộng đã tiêm 7,380,350 mũi
+            </div>
           </div>
-          <div class="col-lg-6 col-sm-12 text-center">
+          <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#mui2-popup').show()" onmouseout="$('#mui2-popup').hide()">
             <div class="txt-1">MŨI 2</div>
             <div class="num-1">5,700,451</div>
             <div class="num-2">+10,541</div>
+            <div class="info-popup" id="mui2-popup">
+              Hôm nay tiêm được 10,541 mũi mới, tổng cộng đã tiêm 5,700,451 mũi
+            </div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center">
             <div class="txt-1">F0 TẠI NHÀ</div>
@@ -112,7 +130,7 @@
           </div>
           <div class="col-lg-6 col-sm-12 text-center">
             <div class="txt-1">ECMO</div>
-            <div class="num-1">11</div>  
+            <div class="num-1">11</div>    
           </div>
         </div>
       </div>
@@ -124,31 +142,31 @@
       <div id="days" value="-1"></div>
       <div id = "scenario"></div>
       <div class="btn-group d-flex" role="group" style="padding-bottom: 1em;">
-        <button type="button" class="btn btn-sm btn-dark w-100 active g-time" onclick="check(this,'g-time'); $('#days').attr('value','-1'); load_chart()">
+        <button type="button" class="btn btn-sm btn-light w-100 active g-time" onclick="check(this,'g-time'); $('#days').attr('value','-1'); load_chart()">
           <span class="hide-sm">Tất cả</span>
           <span class="visible-sm"><i class="fas fa-infinity"></i></span>
         </button>
-        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); $('#days').attr('value','28'); load_chart()">
+        <button type="button" class="btn btn-sm btn-light w-100 g-time" onclick="check(this,'g-time'); $('#days').attr('value','28'); load_chart()">
           <span class="hide-sm">28 ngày</span>
           <span class="visible-sm">28</i></span>
         </button>
-        <button type="button" class="btn btn-sm btn-dark w-100 g-time" onclick="check(this,'g-time'); $('#days').attr('value','7'); load_chart()">
+        <button type="button" class="btn btn-sm btn-light w-100 g-time" onclick="check(this,'g-time'); $('#days').attr('value','7'); load_chart()">
           <span class="hide-sm">7 ngày</span>
           <span class="visible-sm">7</i></span>
         </button>
-        <button type="button" class="btn btn-sm btn-dark w-100 g-scenario" onclick="$('#scenario').attr('value','best'); load_chart(); check(this,'g-scenario')">
+        <button type="button" class="btn btn-sm btn-light w-100 g-scenario" onclick="$('#scenario').attr('value','best'); load_chart(); check(this,'g-scenario')">
           <span class="hide-sm">Kịch bản tốt</span>
           <span class="visible-sm"><i class="fas fa-check-double"></i></span>
         </button>
-        <button type="button" class="btn btn-sm btn-dark w-100 active g-scenario" onclick="$('#scenario').attr('value','normal'); load_chart(); check(this,'g-scenario')">
+        <button type="button" class="btn btn-sm btn-light w-100 active g-scenario" onclick="$('#scenario').attr('value','normal'); load_chart(); check(this,'g-scenario')">
           <span class="hide-sm">Kịch bản bình thường</span>
           <span class="visible-sm"><i class="fas fa-check"></i></span>
         </button>
-        <button type="button" class="btn btn-sm btn-dark w-100 g-scenario" onclick="$('#scenario').attr('value','worst'); load_chart(); check(this,'g-scenario')">
+        <button type="button" class="btn btn-sm btn-light w-100 g-scenario" onclick="$('#scenario').attr('value','worst'); load_chart(); check(this,'g-scenario')">
           <span class="hide-sm">Kịch bản xấu</span>
           <span class="visible-sm"><i class="fas fa-exclamation-triangle"></i></span>
         </button>
-        <button type="button" class="btn btn-sm btn-dark w-30 g-scenario" onclick = "resetZoom(my_chart_i); resetZoom(my_chart_r); resetZoom(my_chart_d); resetZoom(my_chart_c)">
+        <button type="button" class="btn btn-sm btn-light w-30 g-scenario" onclick = "resetZoom(my_chart_i); resetZoom(my_chart_r); resetZoom(my_chart_d); resetZoom(my_chart_c)">
           <i class="fas fa-expand-alt"></i>
         </button>
       </div>
@@ -213,15 +231,15 @@
           <td>1,814</td>
           <td>+31</td>
         </tr>
-        <tr style="background-color: yellow;">
+        <tr style="background-color: yellow; font-weight: 600; font-size: 1.25em;">
           <td>Tổng T.2 + T.3</td>
           <td>11,359</td>
           <td>+54</td>
         </tr>
         <tr>
-          <th>Thở nội khí quản</th>
-          <th>252</th>
-          <th>-3</th>
+          <td>Thở nội khí quản</td>
+          <td>252</td>
+          <td>-3</td>
         </tr>
         <tr>
           <td>trong đó ECMO</td>
@@ -238,15 +256,15 @@
           <td>1,293</td>
           <td>-115</td>
         </tr>
-        <tr style="background-color: yellow;">
+        <tr style="background-color: yellow; font-weight: 600; font-size: 1.25em;">
           <td>Tổng hỗ trợ hô hấp</td>
           <td>1,786</td>
           <td>-115</td>
         </tr>
         <tr>
-          <th>Xuất viện - Trẻ em</th>
-          <th>222</th>
-          <th>145</th>
+          <td>Xuất viện - Trẻ em</td>
+          <td>222</td>
+          <td>145</td>
         </tr>
         <tr>
           <td>Xuất viện - Phụ nữ mang thai</td>
@@ -258,15 +276,15 @@
           <td>608</td>
           <td>-28</td>
         </tr>
-        <tr style="background-color: yellow;">
+        <tr style="background-color: yellow; font-weight: 600; font-size: 1.25em;">
           <td>Tổng xuất viện</td>
           <td>846</td>
           <td>+128</td>
         </tr>
         <tr>
-          <th>Tử vong - Trẻ em</th>
-          <th>0</th>
-          <th>0</th>
+          <td>Tử vong - Trẻ em</td>
+          <td>0</td>
+          <td>0</td>
         </tr>
         <tr>
           <td>Tử vong - Phụ nữ mang thai</td>
@@ -278,7 +296,7 @@
           <td>30</td>
           <td>-2</td>
         </tr>
-        <tr style="background-color: yellow;">
+        <tr style="background-color: yellow; font-weight: 600; font-size: 1.25em;">
           <td>Tổng tử vong</td>
           <td>30</td>
           <td>-2</td>
@@ -286,7 +304,6 @@
       </table>
     </div>
   </div>
-</div>
 </div>
 
 <script>
