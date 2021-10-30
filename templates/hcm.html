@@ -445,6 +445,7 @@
 
 <script type = "text/javascript">
 // chart scripts
+  _prev_district = 'hcm';
   _district = 'hcm';
 
   function resetZoom(x)
@@ -486,8 +487,10 @@
   {
     my_chart_c.destroy();
     if (_district == 'hcm'){
-      $(".carousel-indicators").append('<li class="only-hcm" data-target="#carousel-example-generic-captions" data-slide-to="3"></li>')
-      $(".carousel-inner").append('<div class="carousel-item forcast-charts only-hcm"><h5 style="color:#19191a">DỰ BÁO SỐ BỆNH NHÂN Ở TẦNG 3</h5><canvas id="chart_c"></canvas></div>')
+      if (_prev_district != 'hcm'){
+        $(".carousel-indicators").append('<li class="only-hcm" data-target="#carousel-example-generic-captions" data-slide-to="3"></li>')
+        $(".carousel-inner").append('<div class="carousel-item forcast-charts only-hcm"><h5 style="color:#19191a">DỰ BÁO SỐ BỆNH NHÂN Ở TẦNG 3</h5><canvas id="chart_c"></canvas></div>')
+      }
 
       scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
       $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=C&&scenario='+scenario, function(data) {
@@ -503,11 +506,9 @@
     }
   }
   function load_district(x){
+      _prev_district = _district;
       _district = x.toLowerCase().replace(' ','_');
       $("#district").text(x);
-      if ($('.active.only-hcm').length > 0){
-
-      }
       load_chart();
   }
 
