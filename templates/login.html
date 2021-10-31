@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Login</title>
-        <link rel="stylesheet" href = "../static/css/login.css">
+        <link rel="stylesheet" href="/BeCaked{{ url_for('static', filename='css/login.css') }}">
         <style>
             #message{
                 width: 80%;
@@ -19,7 +19,7 @@
             }
         </style>
     </head>
-    <body>
+    <body style="background: /BeCaked{{ url_for('static',filename='images/bg.jpg') }};">
         <div id = "container">
             <form action = "/login" method = "post">
                 <div class = "form-group">

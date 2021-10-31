@@ -3,7 +3,7 @@
 
 <head>
     <title>Insert new data</title>
-    <link rel="stylesheet" href="../static/css/insert_data.css">
+    <link rel="stylesheet" href="/BeCaked{{ url_for('static', filename='css/insert_data.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         .msg-form {
@@ -509,7 +509,8 @@
         </div>
 
     </div>
-    <script src = "../static/js/insert_data.js"></script>
+    <script src = "/BeCaked/{{ url_for('static',filename='js/insert_data.js') }}"></script>
+    
 </body>
 
 </html>
