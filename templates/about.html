@@ -89,7 +89,7 @@
     compartments, which is depicted as Figure 1.
   </p>
   <div class="container-fluid" align="center">
-    <img src="/BeCaked{{ url_for('static', filename='images/seirdlvc.png') }}" width="640">
+    <img src="/BeCaked{{ url_for('static', filename='images/seirdlvc.png') }}" style="width: 80vw;">
     <p><b>Figure 1</b>: The relations between compartments</p>
   </div>
   <p align="justify">
@@ -104,12 +104,12 @@
       <li>V (vaccinated): susceptible individuals are not currently infected with the disease yet and those who have gotten vaccinated </li>
       <li>C (critical): currently seriously infected cases</li>
     </ul>
-    Because of the evolution of the disease, the size of each of these compartments change over time and the total population N is the sum of these compartments:
-    $${ N = S(t) + E(t) + I(t) + R(t) + D(t) + L(t) + V(t) + C(t) = const}$$
+    Because of the evolution of the disease, the size of each of these compartments change over time and the total population N is the sum of these compartments is constant. 
     The dynamics of the model are given by the set of ordinary differential equations as follows:
     $${
       \begin{cases}
         M = S + V + E + R
+        \\[1em]     N = S + E + I + R + D + L + V + C = const
         \\[1em]     \frac{dS}{dt} = -\frac{\beta SE}{M} - \tau S  - \rho S +  \widehat{\rho} L
         \\[1em]     \frac{dV}{dt} = -\frac{\zeta VE}{M} + \tau S
         \\[1em]     \frac{dE}{dt} = \frac{(\beta S + \zeta V) E}{M} - \eta E
@@ -154,7 +154,7 @@
       The final outputs are the parameters of the SEIRDLVC model and the prediction results. The obtained parameters are used and analyzed intensively by epidemiologists. While the prediction results give a reference channel helping policymakers make suitable decisions.
     </p>
     <div class="container-fluid" align="center">
-      <img src="/BeCaked{{ url_for('static', filename='images/overall_dl.png') }}" width="640">
+      <img src="/BeCaked{{ url_for('static', filename='images/overall_dl.png') }}" style="width: 80vw;">
       <p><b>Figure 2</b>: The overall structure of our approach</p>
     </div>
 
@@ -169,7 +169,7 @@
     </p>
     <div class="container">
       <p align="center"><b>Table 1:</b> Summary of training set and test set</p>
-        <table class="table table-striped table-inverse table-hover" id="dataTable" width="100%">
+        <table class="table table-striped table-inverse table-hover" id="dataTable" style="width: 80vw;">
             <thead class="thead-inverse">
                 <tr>
                     <th scope="col" style="text-align:center"></th>
@@ -193,7 +193,7 @@
     </div>
     <div class="container">
       <p align="center"><b>Table 2:</b> Performances of two methods for daily data</p>
-        <table class="table table-striped table-inverse table-hover" id="dataTable" width="100%">
+        <table class="table table-responsive table-striped" id="dataTable" style="width: 80vw;">
             <thead class="thead-inverse">
                 <tr>
                     <th scope="col" style="text-align:center">Method</th>
@@ -234,15 +234,15 @@
         </table>
     </div>
     <div class="container-fluid" align="center">
-      <img src="/BeCaked{{ url_for('static', filename='images/predicted_infectious.png') }}" width="900">
+      <img src="/BeCaked{{ url_for('static', filename='images/predicted_infectious.png') }}" style="width: 80vw;">
       <p><b>Figure 3</b>: Prediction of daily infections</p>
     </div>
     <div class="container-fluid" align="center">
-      <img src="/BeCaked{{ url_for('static', filename='images/predicted_deceased.png') }}" width="900">
+      <img src="/BeCaked{{ url_for('static', filename='images/predicted_deceased.png') }}" style="width: 80vw;">
       <p><b>Figure 4</b>: Prediction of total deceased</p>
     </div>
     <div class="container-fluid" align="center">
-      <img src="/BeCaked{{ url_for('static', filename='images/predicted_critical.png') }}" width="900">
+      <img src="/BeCaked{{ url_for('static', filename='images/predicted_critical.png') }}" style="width: 80vw;">
       <p><b>Figure 5</b>: Prediction of total critical</p>
     </div>
 

@@ -19,6 +19,9 @@
   /* background-color: #26334f !important; */
   /* background-color: #bdc3c7 !important; */
 }
+.navbar-toggler{
+  border: 0;
+}
 
 .dropdown-menu{
   max-height: 300px;
@@ -73,7 +76,7 @@
 }
 
 .forcast-charts canvas{
-  padding-bottom: 4em;
+  padding-bottom: 6em;
   margin-left: 1em;
   height: auto;
   min-height: 100%;
