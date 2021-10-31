@@ -11,18 +11,14 @@ import numpy as np
 import json
 import hashlib
 from functools import wraps
-from dotenv import load_dotenv
 import pandas as pd
 
 from database import decode_auth_token, get_latest_data, get_daily_latest_statistics, check, is_valid_account, encode_auth_token
 from utils import *
 from utils_form import *
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-load_dotenv(dotenv_path)
-
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = os.environ.get("SECRET_KEY", "")
 app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(hours = 1)
 
 def login_required(fn):
