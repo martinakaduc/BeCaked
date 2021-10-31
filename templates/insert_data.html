@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Insert new data</title>
+    <link rel="stylesheet" href="../static/css/insert_data.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .msg-form {
+            text-align: center;
+            font-size: 18px;
+            width: 200px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #f00;
+            /* background-color: #1E90FF; */
+            padding-top: 5px;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .msg-form p {
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        function read_file_1(input) {
+            if (input.files && input.files[0]) {
+
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("#wrap-file-1").css("box-shadow", "unset");
+                    $("#wrap-file-1 div.header").hide();
+                    $("#file-form-1 .file-upload-input").hide();
+                    $("#file-form-1 button").show();
+                    $("#wrap-file-1 .file-title-wrap").show();
+                    $("#msg-form-1 > p").html("")
+                    $('#wrap-file-1 .file-title').html(input.files[0].name);
+
+                };
+                reader.readAsDataURL(input.files[0]);
+
+            } else {
+                removeUpload();
+            }
+        }
+        function read_file_2(input) {
+            if (input.files && input.files[0]) {
+
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("#wrap-file-2").css("box-shadow", "unset");
+                    $("#wrap-file-2 div.header").hide();
+                    $("#file-form-2 .file-upload-input").hide();
+                    $("#file-form-2 button").show();
+                    $("#wrap-file-2 .file-title-wrap").show();
+                    $("#msg-form-2 > p").html("")
+                    $('#wrap-file-2 .file-title').html(input.files[0].name);
+
+                };
+                reader.readAsDataURL(input.files[0]);
+
+            } else {
+                removeUpload();
+            }
+        }
+        function read_file_3(input) {
+            if (input.files && input.files[0]) {
+
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("#wrap-file-3").css("box-shadow", "unset");
+                    $("#wrap-file-3 div.header").hide();
+                    $("#file-form-3 .file-upload-input").hide();
+                    $("#file-form-3 button").show();
+                    $("#wrap-file-3 .file-title-wrap").show();
+                    $("#msg-form-3 > p").html("")
+                    $('#wrap-file-3 .file-title').html(input.files[0].name);
+
+                };
+                reader.readAsDataURL(input.files[0]);
+
+            } else {
+                removeUpload();
+            }
+        }
+        function remove_upload_1() {
+            $("#wrap-file-1").css("box-shadow", " 0 0 5px rgba(0,0,0,.3)");
+            $("#wrap-file-1 div.header").show();
+            $("#file-form-1 .file-upload-input").show();
+            $("#file-form-1 button").hide();
+            $("#wrap-file-1 .file-title-wrap").hide();
+            $("#msg-form-1 > p").html("")
+        }
+        function remove_upload_2() {
+            $("#wrap-file-2").css("box-shadow", " 0 0 5px rgba(0,0,0,.3)");
+            $("#wrap-file-2 div.header").show();
+            $("#file-form-2 .file-upload-input").show();
+            $("#file-form-2 button").hide();
+            $("#wrap-file-2 .file-title-wrap").hide();
+            $("#msg-form-2 > p").html("")
+        }
+        function remove_upload_3() {
+            $("#wrap-file-3").css("box-shadow", " 0 0 5px rgba(0,0,0,.3)");
+            $("#wrap-file-3 div.header").show();
+            $("#file-form-3 .file-upload-input").show();
+            $("#file-form-3 button").hide();
+            $("#wrap-file-3 .file-title-wrap").hide();
+            $("#msg-form-3 > p").html("")
+        }
+    
+        function showForm() {
+            if ($("#tab-1:checked").val() !== undefined) {
+                $(".wrap-form-2").hide()
+                $(".wrap-form-3").hide()
+                $(".wrap-form-1").show()
+            }
+            else if ($("#tab-2:checked").val() !== undefined) {
+                $(".wrap-form-1").hide()
+                $(".wrap-form-3").hide()
+                $(".wrap-form-2").show()
+            }
+            else if ($("#tab-3:checked").val() !== undefined) {
+                $(".wrap-form-1").hide()
+                $(".wrap-form-2").hide()
+                $(".wrap-form-3").show()
+            }
+            else if ($("#tab-4:checked").val() !== undefined) {
+                window.location.href = "/"
+            }
+        }
+        function switchInput1Method() {
+            if ($("#user-input-1:checked").val() !== undefined) {
+                $("#wrap-file-1").hide()
+                $("#daily-summary").show()
+            }
+            else if ($("#file-upload-1:checked").val() !== undefined) {
+                $("#daily-summary").hide()
+                $("#wrap-file-1").show()
+            }
+        }
+        function switchInput2Method() {
+            if ($("#user-input-2:checked").val() !== undefined) {
+                $("#wrap-file-2").hide()
+                $("#daily-new").show()
+            }
+            else if ($("#file-upload-2:checked").val() !== undefined) {
+                $("#daily-new").hide()
+                $("#wrap-file-2").show()
+            }
+        }
+        function switchInput3Method() {
+            if ($("#user-input-3:checked").val() !== undefined) {
+                $("#wrap-file-3").hide()
+                $("#daily-treatment").show()
+            }
+            else if ($("#file-upload-3:checked").val() !== undefined) {
+                $("#daily-treatment").hide()
+                $("#wrap-file-3").show()
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="choice-panel">
+            <input id="tab-1" name="tab" class="form-1" type="radio" value="form-1" onchange="showForm()" checked><label
+                for="tab-1" class="tab">Mẫu 1</label>
+            <input id="tab-2" name="tab" class="form-2" type="radio" value="form-2" onchange="showForm()"><label
+                for="tab-2" class="tab">Mẫu 2</label>
+            <input id="tab-3" name="tab" class="form-3" type="radio" value="form-3" onchange="showForm()"><label
+                for="tab-3" class="tab">Mẫu 3</label>
+            <input id="tab-4" name="tab" class="return-home" type="radio" onchange="showForm()"><label for="tab-4"
+                class="tab">Trang chủ</label>
+        </div>
+        <div class="wrap-form-1">
+            <div class="left">
+                <p>Bảng tổng kết <br>dịch bệnh</p>
+                <input id="file-upload-1" name="input1-method" type="radio" class="file-upload"
+                    onchange="switchInput1Method()" checked><label for="file-upload-1">Tải tệp</label>
+                <input id="user-input-1" name="input1-method" type="radio" class="user-input"
+                    onchange="switchInput1Method()"><label for="user-input-1">Nhập</label>
+
+            </div>
+            <div class="right">
+                <div id="daily-summary">
+                    <form>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="date-summary">Ngày</label>
+                                <input type="text" id="date-summary" name="date-summary" placeholder = "30/10/2021">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="new-pcr">Số ca PCR mới</label>
+                                <input type="number" id="new-pcr" name="new-pcr">
+                            </div>
+                            <div class="pair">
+                                <label for="new-rapid-test">Số ca test nhanh mới</label>
+                                <input type="number" id="new-rapid-test" name="new-rapid-test">
+                            </div>
+                            <div class="pair">
+                                <label for="total-cases">Tổng số ca</label>
+                                <input type="number" id="total-cases" name="total-cases">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="new-hospital">Xuất viện</label>
+                                <input type="number" id="new-hospital" name="new-hospital">
+                            </div>
+                            <div class="pair">
+                                <label for="new-home">Hồi phục tại cách ly</label>
+                                <input type="number" id="new-home" name="new-home">
+                            </div>
+                            <div class="pair">
+                                <label for="total-hospital">Tổng số xuất viện</label>
+                                <input type="number" id="total-hospital" name="total-hospital">
+                            </div>
+                            <div class="pair">
+                                <label for="total-recovered">Tổng số hồi phục</label>
+                                <input type="number" id="total-recovered" name="total-recovered">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="new-hospitalized">Số ca nhập viện</label>
+                                <input type="number" id="new-hospitalized" name="new-hospitalized">
+                            </div>
+                            <div class="pair">
+                                <label for="treating-cases">Số ca đang điều trị</label>
+                                <input type="number" id="treating-cases" name="treating-cases">
+                            </div>
+                            <div class="pair">
+                                <label for="critical-cases-ventilator">Số ca nặng thở máy</label>
+                                <input type="number" id="critical-cases-ventilator" name="critical-cases-ventilator">
+                            </div>
+                            <div class="pair">
+                                <label for="critical-cases-emo">Số ca nặng EMO</label>
+                                <input type="number" id="critical-cases-emo" name="critical-cases-emo">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="f0-home">F0 theo dõi tại nhà</label>
+                                <input type="number" id="f0-home" name="f0-home">
+                            </div>
+                            <div class="pair">
+                                <label for="f0-quarantined">F0 theo dõi tại khu cách ly</label>
+                                <input type="number" id="f0-quarantined" name="f0-quarantined">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="new-vaccine-1"> mũi 1 tiêm trong ngày</label>
+                                <input type="number" id="new-vaccine-1" name="new-vaccine-1">
+                            </div>
+                            <div class="pair">
+                                <label for="new-vaccine-1"> mũi 2 tiêm trong ngày</label>
+                                <input type="number" id="new-vaccine-2" name="new-vaccine-2">
+                            </div>
+                            <div class="pair">
+                                <label for="total-vaccine-1">Tổng số mũi 1</label>
+                                <input type="number" id="total-vaccine-1" name="total-vaccine-1">
+                            </div>
+                            <div class="pair">
+                                <label for="total-vaccine-2">Tổng số mũi 2</label>
+                                <input type="number" id="total-vaccine-2" name="total-vaccine-2">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="deaths">Số ca tử vong</label>
+                                <input type="number" id="deaths" name="deaths">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <button type="submit">Gửi</button>
+                        </div>
+
+                    </form>
+                </div>
+                <div id="msg-form-1" class="msg-form">
+                    <p>
+                    </p>
+                </div>
+                <div class="wrapper-file-upload" id="wrap-file-1">
+
+                    <div class="header">
+                        <p><i class="fa fa-cloud-upload fa-2x"></i><span><span>up</span>load</span></p>
+                    </div>
+                    <form class="form-group" id="file-form-1" action='/upload-form-1' method='post'
+                        enctype="multipart/form-data">
+                        <div class="file-upload-input">
+                            <input type="file" id="file-input-1" name='file' onchange="read_file_1(this);"
+                                accept=".xlsx">
+                            <label for="file-input-1">
+                                <i class="fa fa-file-text-o fa-3x"></i>
+                                <p>
+                                    <!-- <strong>Drag and drop</strong> files here<br> -->
+                                    <!-- or -->
+                                    <span>browse</span> to begin the upload
+                                </p>
+                            </label>
+                        </div>
+                        <div class="file-title-wrap">
+                            <div>
+                                <i class="fa fa-file-text-o fa-3x"><span class="file-title"></span></i>
+                            </div>
+                            <button type="submit" class="upload-file">Upload</button>
+                            <button type="button" onclick="remove_upload_1()" class="remove-file">Remove</button>
+                        </div>
+                    </form>
+                    <div class="template-format-file">
+                        <p><i>Template file: </i> <a
+                                href="/BeCaked{{ url_for('static', filename='template_files/template-form-1.xlsx') }}" download>
+                                here</a></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="wrap-form-2">
+            <div class="left">
+                <p>Số ca <br>nhiễm mới</p>
+                <input id="file-upload-2" name="input2-method" type="radio" class="file-upload"
+                    onchange="switchInput2Method()" checked><label for="file-upload-2">Tải tệp</label>
+                <input id="user-input-2" name="input2-method" type="radio" class="user-input"
+                    onchange="switchInput2Method()"><label for="user-input-2">Nhập</label>
+
+            </div>
+            <div class="right">
+                <div id="daily-new">
+                    <form>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="date-new">Ngày</label>
+                                <input type="text" id="date-new" name="date-new" placeholder = "30/10/2021">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="f0-pcr-hospital">Số F0 PCR tại bệnh viện</label>
+                                <input type="number" id="f0-pcr-hospital" name="f0-pcr-hospital">
+                            </div>
+                            <div class="pair">
+                                <label for="f0-pcr-community">Số F0 PCR tại cộng đồng</label>
+                                <input type="number" id="f0-pcr-community" name="f0-pcr-community">
+                            </div>
+                            <div class="pair">
+                                <label for="f0-pcr-quarantined">Số F0 PCR tại khu cách ly</label>
+                                <input type="number" id="f0-pcr-quarantined" name="f0-pcr-quarantined">
+                            </div>
+                            <div class="pair">
+                                <label for="total-f0-pcr">Tổng số F0 PCR</label>
+                                <input type="number" id="total-f0-pcr" name="total-f0-pcr">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="f0-test-hospital">Số F0 test tại bệnh viện</label>
+                                <input type="number" id="f0-test-hospital" name="f0-test-hospital">
+                            </div>
+                            <div class="pair">
+                                <label for="f0-test-community">Số F0 test tại cộng đồng</label>
+                                <input type="number" id="f0-test-community" name="f0-test-community">
+                            </div>
+                            <div class="pair">
+                                <label for="f0-test-quarantined">Số F0 test tại khu cách ly</label>
+                                <input type="number" id="f0-test-quarantined" name="f0-test-quarantined">
+                            </div>
+                            <div class="pair">
+                                <label for="total-f0-test">Tổng số F0 test</label>
+                                <input type="number" id="total-f0-test" name="total-f0-test">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="f0-pcr-hm">Số F0 PCR ở HCM</label>
+                                <input type="number" id="f0-pcr-hcm" name="f0-pcr-hcm">
+                            </div>
+                            <div class="pair">
+                                <label for="f0-pcr-other">Số F0 PCR tỉnh</label>
+                                <input type="number" id="f0-pcr-other" name="f0-pcr-other">
+                            </div>
+                            <div class="pair">
+                                <label for="f0-pcr-entry">Số F0 PCR nhập cảnh</label>
+                                <input type="number" id="f0-pcr-entry" name="f0-pcr-entry">
+                            </div>
+                        </div>
+                        <div class="group">
+                            <div class="pair">
+                                <label for="f0-test-hm">Số F0 test ở HCM</label>
+                                <input type="number" id="f0-test-hcm" name="f0-test-hcm">
+                            </div>
+                            <div class="pair">
+                                <label for="f0-test-other">Số F0 test tỉnh</label>
+                                <input type="number" id="f0-test-other" name="f0-test-other">
+                            </div>
+                            <div class="pair">
+                                <label for="f0-test-entry">Số F0 test nhập cảnh</label>
+                                <input type="number" id="f0-test-entry" name="f0-test-entry">
+                            </div>
+                        </div>
+
+                        <div class="group">
+                            <button type="submit">Gửi</button>
+                        </div>
+
+                    </form>
+                </div>
+                <div id="msg-form-2" class="msg-form">
+                    <p>
+                    </p>
+                </div>
+                <div class="wrapper-file-upload" id="wrap-file-2">
+                    <div class="header">
+                        <p><i class="fa fa-cloud-upload fa-2x"></i><span><span>up</span>load</span></p>
+                    </div>
+                    <form action='/upload-form-2' method='post'
+                    enctype="multipart/form-data" class="form-group" id="file-form-2">
+                        <div class="file-upload-input" >
+                            <input name = 'file' type="file" id="file-input-2" onchange="read_file_2(this);"
+                                accept=".xlsx">
+                            <label for="file-input-2">
+                                <i class="fa fa-file-text-o fa-3x"></i>
+                                <p>
+                                    <!-- <strong>Drag and drop</strong> files here<br> -->
+                                    <!-- or  -->
+                                    <span>browse</span> to begin the upload
+                                </p>
+                            </label>
+                        </div>
+                        <div class="file-title-wrap">
+                            <div>
+                                <i class="fa fa-file-text-o fa-3x"><span class="file-title"></span></i>
+                            </div>
+                            <button type="submit" onclick="upload()" class="upload-file">Upload</button>
+                            <button type="button" onclick="remove_upload_2()" class="remove-file">Remove</button>
+                        </div>
+                    </form>
+                    <div class="template-format-file">
+                        <p><i>Template file: </i> <a
+                                href="/BeCaked{{ url_for('static', filename='template_files/template-form-2.xlsx') }}" download>
+                                here</a></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="wrap-form-3">
+            <div class="left">
+                <p>Tình hình <br>điều trị</p>
+                <input id="file-upload-3" name="input3-method" type="radio" class="file-upload"
+                    onchange="switchInput3Method()" checked><label for="file-upload-3">Tải tệp</label>
+                <input id="user-input-3" name="input3-method" type="radio" class="user-input"
+                    onchange="switchInput3Method()"><label for="user-input-3">Nhập</label>
+
+            </div>
+            <div class="right">
+                <div id="daily-treatment">
+
+                </div>
+                <div id="msg-form-3" class="msg-form">
+                    <p>                               
+                    </p>
+                </div>
+                <div class="wrapper-file-upload" id="wrap-file-3">
+                    <div class="header">
+                        <p><i class="fa fa-cloud-upload fa-2x"></i><span><span>up</span>load</span></p>
+                    </div>
+                    <form action='/upload-form-3' method='post'
+                    enctype="multipart/form-data" class="form-group" id="file-form-3">
+                        <div class="file-upload-input">
+                            <input name = 'file' type="file" id="file-input-3" onchange="read_file_3(this);"
+                                accept=".xlsx">
+                            <label for="file-input-3">
+                                <i class="fa fa-file-text-o fa-3x"></i>
+                                <p>
+                                    <!-- <strong>Drag and drop</strong> files here<br> -->
+                                    <!-- or -->
+                                     <span>browse</span> to begin the upload
+                                </p>
+                            </label>
+                        </div>
+                        <div class="file-title-wrap">
+                            <div>
+                                <i class="fa fa-file-text-o fa-3x"><span class="file-title"></span></i>
+                            </div>
+                            <button type="submit" class="upload-file">Upload</button>
+                            <button type="button" onclick="remove_upload_3()" class="remove-file">Remove</button>
+                        </div>
+                    </form>
+                    <div class="template-format-file">
+                        <p><i>Template file: </i> <a
+                                href="/BeCaked{{ url_for('static', filename='template_files/template-form-3.xlsx') }}" download>
+                                here</a></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <script src = "../static/js/insert_data.js"></script>
+</body>
+
+</html>

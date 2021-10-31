@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, url_for, send_from_directory
-from flask import render_template
+from flask import render_template, session, redirect, flash
 from flask.helpers import make_response
 from markupsafe import escape
 import os
@@ -10,11 +10,99 @@ import time
 import numpy as np
 import json
 import hashlib
+from functools import wraps
+from dotenv import load_dotenv
+import pandas as pd
 
-from database import get_latest_data, get_daily_latest_statistics, check
+from database import decode_auth_token, get_latest_data, get_daily_latest_statistics, check, is_valid_account, encode_auth_token
 from utils import *
+from utils_form import *
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY')
+app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(hours = 1)
+
+def login_required(fn):
+    @wraps(fn)
+    def decorator(*args, **kwargs):
+        if 'is-logged-in' not in session or session['is-logged-in'] is False:
+            return redirect('/login')
+        auth_token = session['auth-token']
+        flag, msg = decode_auth_token(app.secret_key, auth_token)
+        if flag:
+            return fn(msg, *args, **kwargs)
+        else:
+            return redirect('/login')
+    return decorator
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = hashlib.sha256(request.form['password'].encode()).hexdigest()
+        flag, message = is_valid_account(username, password)
+        if flag:
+            session['is-logged-in'] = True
+            session['auth-token'] = encode_auth_token(app.secret_key, username)
+            return redirect(url_for('insert_data'))
+        else:
+            return render_template('login.html', message = message)
+    elif request.method == 'GET':
+        if 'is-logged-in' not in session or session['is-logged-in'] is False:
+            return render_template('login.html', message = None)
+        return redirect('/insert-data')
+
+@app.route('/insert-data')
+@login_required
+def insert_data(username):
+    return render_template('insert_data.html')
+
+@app.route('/upload-form-1', methods = ['GET', 'POST'])
+def upload_form_1():
+    if request.method == 'POST':
+        f = request.files['file']
+        df = pd.read_excel(f.read(), header = None)
+        try:
+            data = process_form_1(df)
+            backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
+            backup_data_path = os.path.join(backup_data_dir,'form-1.json')
+            with open(backup_data_path,'w') as f:
+                json.dump(data,f)
+            return make_response("", 200)
+        except Exception as e:
+            print(e)
+            return make_response("", 400)
+
+@app.route('/upload-form-2', methods = ['GET', 'POST'])
+def upload_form_2():
+    if request.method == 'POST':
+        f = request.files['file']
+        df = pd.read_excel(f.read(), header = None)
+        try:
+            data = process_form_2(df)
+            return make_response("", 200)
+        except:
+            return make_response("", 400)
+                
+@app.route('/upload-form-3', methods = ['GET', 'POST'])
+def upload_form_3():
+    if request.method == 'POST':
+        f = request.files['file']
+        df = pd.read_excel(f.read(), header = None)
+        try:
+            data = process_form_3(df)
+            backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
+            backup_data_path = os.path.join(backup_data_dir,'form-3.json')
+            with open(backup_data_path,'w') as f:
+                json.dump(data,f)
+            return make_response("", 200)
+        except Exception as e:
+            print(e)
+            return make_response("", 400)
+                
 
 @app.route('/reload-db', methods=["POST"])
 def reload():
@@ -26,6 +114,7 @@ def reload():
         else:
             return "invalid token"
     except Exception as e:
+        print(e)
         return str(e)
 
 @app.route("/hello", methods=["GET"])
@@ -145,7 +234,10 @@ def home():
     id_2 = { "QUAN 1": 760, "QUAN 3": 770, "QUAN 4": 773, "QUAN 5": 774, "QUAN 6": 775, "QUAN 7": 778, "QUAN 8": 776, "QUAN 10": 771, "QUAN 11": 772, "QUAN 12": 761, "BINH CHANH": 785, "BINH TAN": 777, "BINH THANH": 765, "CAN GIO": 787, "CU CHI": 783, "GO VAP": 764, "HOC MON": 784, "NHA BE": 786, "PHU NHUAN": 768, "TAN BINH": 766, "TAN PHU": 767, "THU DUC": 769}
     id_2r = {v: k for k, v in id_2.items()}
 
-
+    with open(os.path.join(backup_data_dir,'form-1.json')) as f:
+        form_1 = json.load(f)
+    with open(os.path.join(backup_data_dir,'form-3.json')) as f:
+        form_3 = json.load(f)
 
     df = pd.read_csv(os.path.join(backup_data_dir,'level_3.csv'),encoding='utf-8').dropna(axis=1)
     level_3 = dict(zip(df['ID_3'],df['level']))
@@ -164,7 +256,9 @@ def home():
                             month = month,
                             week = week,
                             summary = summary,
-                            levels = levels
+                            levels = levels,
+                            form_1 = form_1,
+                            form_3 = form_3
                             )
 
 @app.route("/predict", methods=["GET", "POST"])
@@ -321,7 +415,7 @@ def update_data():
 def main():
     run_init = bool(os.environ.get("INIT_DATA", True))
     data_dir = str(os.environ.get("DATA_DIR", "./web_data"))
-    init(run_init, data_dir)
+    # init(run_init, data_dir)
 
     return app
 

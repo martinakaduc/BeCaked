@@ -6,6 +6,7 @@ import shutil
 import sys
 from datetime import datetime as dt, timedelta
 import json
+import jwt
 
 
 def check(token):
@@ -18,6 +19,42 @@ def check(token):
 
 def query_data(db, district, date):
     return db[district].find_one({"_id": date})
+
+def encode_auth_token(secret_key, username):
+    try:
+        payload = {
+            'exp': dt.utcnow() + timedelta(days = 0, hours = 1),
+            'iat': dt.utcnow(),
+            'sub': username
+        }
+        return jwt.encode(
+            payload,
+            secret_key,
+            algorithm = 'HS256'
+        )
+    except Exception as e:
+        return e
+def decode_auth_token(secret_key, auth_token):
+    try:
+        payload = jwt.decode(auth_token, secret_key)
+        return True, payload['sub']
+    except jwt.ExpiredSignatureError:
+        return False, 'Expired'
+    except jwt.InvalidTokenError:
+        return False, 'invalid token'
+
+def is_valid_account(username, password):
+    uri = json.load(open('config.json'))['mongodb_read_uri']
+    client = MongoClient(uri)
+    db = client['auth']
+    result = db['accounts'].find_one({"username": username}, {"password": 1})
+    client.close()
+    if result is None:
+        return False, "Username does not exist"
+    if result['password'] == password:
+        return True, ""
+    return False, "Wrong password"
+
 
 def get_latest_data(district='HCM', skip_missing = False):
     uri = json.load(open('config.json'))['mongodb_read_uri']

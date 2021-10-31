@@ -61,76 +61,76 @@
           <div class="col-lg-6 col-sm-12 text-center">
             <div class="txt-1">CA MỚI</div>
             <div class="txt-2">(PCR + TEST)</div>
-            <div class="num-1">1,042 + 682</div>
+            <div class="num-1">{{ "{:,}".format(form_1['new-infections']['pcr']) }} + {{ "{:,}".format(form_1['new-infections']['rapid-test']) }}</div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center">
             <div class="txt-1">TỔNG SỐ CA</div>
             <div class="txt-2">(ĐỢT 4)</div>
-            <div class="num-1">426,378</div>
+            <div class="num-1">{{ "{:,}".format(form_1['total-cases']) }}</div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#xuatvien-popup').show()" onmouseout="$('#xuatvien-popup').hide()">
             <div class="txt-1">XUẤT VIỆN</div>
-            <div class="num-1">251,113</div>
-            <div class="num-2">+846</div>
+            <div class="num-1">{{ "{:,}".format(form_1['total-recovered']['hospital']) }}</div>
+            <div class="num-2">+{{ "{:,}".format(form_1['recovered']['hospital']) }}</div>
             <div class="info-popup" id="xuatvien-popup">
-              Hôm nay có 846 ca mới, tổng đợt 4 có 251,113 ca
+              Hôm nay có {{ "{:,}".format(form_1['recovered']['hospital']) }} ca mới, tổng đợt 4 có {{ "{:,}".format(form_1['total-recovered']['hospital']) }} ca
             </div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#kcl-popup').show()" onmouseout="$('#kcl-popup').hide()">
             <div class="txt-1">HỒI PHỤC KCL</div>
-            <div class="num-1">111,385</div>
-            <div class="num-2">+894</div>
+            <div class="num-1">{{ "{:,}".format(form_1['total-recovered']['quarantine']) }}</div>
+            <div class="num-2">+{{ "{:,}".format(form_1['recovered']['quarantine']) }}</div>
             <div class="info-popup" id="kcl-popup">
-              Hôm nay có 894 ca mới, tổng đợt 4 có 111,385 ca
+              Hôm nay có {{ "{:,}".format(form_1['recovered']['quarantine']) }} ca mới, tổng đợt 4 có {{ "{:,}".format(form_1['total-recovered']['quarantine']) }} ca
             </div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#dieutri-popup').show()" onmouseout="$('#dieutri-popup').hide()">
             <div class="txt-1">ĐIỀU TRỊ</div>
-            <div class="num-1">11,359</div>
-            <div class="num-2">+982</div>
+            <div class="num-1">{{ "{:,}".format(form_1['treatment']['current']) }}</div>
+            <div class="num-2">+{{ "{:,}".format(form_1['treatment']['new-hospital']) }}</div>
             <div class="info-popup" id="dieutri-popup">
-              Hôm nay nhập viện thêm 982 ca, hiện đang điều trị 11,359 ca
+              Hôm nay nhập viện thêm {{ "{:,}".format(form_1['treatment']['new-hospital']) }} ca, hiện đang điều trị {{ "{:,}".format(form_1['treatment']['current']) }} ca
             </div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#tuvong-popup').show()" onmouseout="$('#tuvong-popup').hide()">
             <div class="txt-1">TỬ VONG</div>
-            <div class="num-1">16,648</div>
-            <div class="num-2">+30</div>
+            <div class="num-1">{{ "{:,}".format(form_3['data'][15][0]) }}</div>
+            <div class="num-2">+{{ "{:,}".format(form_1['death']) }}</div>
             <div class="info-popup" id="tuvong-popup">
-              Hôm nay có 30 ca mới, tổng đợt 4 có 16,648 ca
+              Hôm nay có {{ "{:,}".format(form_1['death']) }} ca mới, tổng đợt 4 có {{ "{:,}".format(form_3['data'][15][0]) }} ca
             </div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#mui1-popup').show()" onmouseout="$('#mui1-popup').hide()">
             <div class="txt-1">MŨI 1</div>
-            <div class="num-1">7,380,350</div>
-            <div class="num-2">+131,274</div>
+            <div class="num-1">{{ "{:,}".format(form_1['total-vaccine']['first-dose']) }}</div>
+            <div class="num-2">+{{ "{:,}".format(form_1['new-vaccine']['first-dose']) }}</div>
             <div class="info-popup" id="mui1-popup">
-              Hôm nay tiêm được 131,274 mũi mới, tổng cộng đã tiêm 7,380,350 mũi
+              Hôm nay tiêm được {{ "{:,}".format(form_1['new-vaccine']['first-dose']) }} mũi mới, tổng cộng đã tiêm {{ "{:,}".format(form_1['total-vaccine']['first-dose']) }} mũi
             </div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#mui2-popup').show()" onmouseout="$('#mui2-popup').hide()">
             <div class="txt-1">MŨI 2</div>
-            <div class="num-1">5,700,451</div>
-            <div class="num-2">+10,541</div>
+            <div class="num-1">{{ "{:,}".format(form_1['total-vaccine']['second-dose']) }}</div>
+            <div class="num-2">+{{ "{:,}".format(form_1['new-vaccine']['second-dose']) }}</div>
             <div class="info-popup" id="mui2-popup">
-              Hôm nay tiêm được 10,541 mũi mới, tổng cộng đã tiêm 5,700,451 mũi
+              Hôm nay tiêm được {{ "{:,}".format(form_1['new-vaccine']['second-dose']) }} mũi mới, tổng cộng đã tiêm {{ "{:,}".format(form_1['total-vaccine']['second-dose']) }} mũi
             </div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center">
             <div class="txt-1">F0 TẠI NHÀ</div>
-            <div class="num-1">21,976</div>
+            <div class="num-1">{{ "{:,}".format(form_1['F0']['home']) }}</div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center">
             <div class="txt-1">F0 KCL</div>
-            <div class="num-1">4,895</div>    
+            <div class="num-1">{{ "{:,}".format(form_1['F0']['quarantine']) }}</div>    
           </div>
           <div class="col-lg-6 col-sm-12 text-center">
             <div class="txt-1">THỞ MÁY XÂM LẤN</div>
-            <div class="num-1">252</div>    
+            <div class="num-1">{{ "{:,}".format(form_1['critical']['invasive-ventilation']) }}</div>    
           </div>
           <div class="col-lg-6 col-sm-12 text-center">
             <div class="txt-1">ECMO</div>
-            <div class="num-1">11</div>    
+            <div class="num-1">{{ "{:,}".format(form_1['critical']['emo']) }}</div>    
           </div>
         </div>
       </div>
@@ -223,83 +223,83 @@
         </tr>
         <tr>
           <td>Tầng 2</td>
-          <td>9,545</td>
-          <td>+23</td>
+          <td>{{ "{:,}".format(form_3['data'][0][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][0][1]>0 else '',form_3['data'][0][1]) }}</td>
         </tr>
         <tr>
           <td>Tầng 3</td>
-          <td>1,814</td>
-          <td>+31</td>
+          <td>{{ "{:,}".format(form_3['data'][1][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][1][1]>0 else '',form_3['data'][1][1]) }}</td>
         </tr>
         <tr style="background-color: yellow; font-weight: 600; font-size: 1.25em;">
           <td>Tổng T.2 + T.3</td>
-          <td>11,359</td>
-          <td>+54</td>
+          <td>{{ "{:,}".format(form_3['data'][2][0]) }}</td>
+          <td style="color: {{'red' if form_3['data'][2][1]>0 else 'green'}};">{{ "{}{:,}".format('+' if form_3['data'][2][1]>0 else '',form_3['data'][2][1]) }}</td>
         </tr>
         <tr>
           <td>Thở nội khí quản</td>
-          <td>252</td>
-          <td>-3</td>
+          <td>{{ "{:,}".format(form_3['data'][3][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][3][1]>0 else '',form_3['data'][3][1]) }}</td>
         </tr>
         <tr>
           <td>trong đó ECMO</td>
-          <td>11</td>
-          <td>-1</td>
+          <td>{{ "{:,}".format(form_3['data'][4][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][4][1]>0 else '',form_3['data'][4][1]) }}</td>
         </tr>
         <tr>
           <td>Thở máy không xâm lấn</td>
-          <td>241</td>
-          <td>+3</td>
+          <td>{{ "{:,}".format(form_3['data'][5][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][5][1]>0 else '',form_3['data'][5][1]) }}</td>
         </tr>
         <tr>
           <td>Thở oxy qua mũi, mask</td>
-          <td>1,293</td>
-          <td>-115</td>
+          <td>{{ "{:,}".format(form_3['data'][6][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][6][1]>0 else '',form_3['data'][6][1]) }}</td>
         </tr>
         <tr style="background-color: yellow; font-weight: 600; font-size: 1.25em;">
           <td>Tổng hỗ trợ hô hấp</td>
-          <td>1,786</td>
-          <td>-115</td>
+          <td>{{ "{:,}".format(form_3['data'][7][0]) }}</td>
+          <td style="color: {{'red' if form_3['data'][7][1]>0 else 'green'}};">{{ "{}{:,}".format('+' if form_3['data'][7][1]>0 else '',form_3['data'][7][1]) }}</td>
         </tr>
         <tr>
           <td>Xuất viện - Trẻ em</td>
-          <td>222</td>
-          <td>145</td>
+          <td>{{ "{:,}".format(form_3['data'][8][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][8][1]>0 else '',form_3['data'][8][1]) }}</td>
         </tr>
         <tr>
           <td>Xuất viện - Phụ nữ mang thai</td>
-          <td>16</td>
-          <td>11</td>
+          <td>{{ "{:,}".format(form_3['data'][9][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][9][1]>0 else '',form_3['data'][9][1]) }}</td>
         </tr>
         <tr>
           <td>Xuất viện - Khác</td>
-          <td>608</td>
-          <td>-28</td>
+          <td>{{ "{:,}".format(form_3['data'][10][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][10][1]>0 else '',form_3['data'][10][1]) }}</td>
         </tr>
         <tr style="background-color: yellow; font-weight: 600; font-size: 1.25em;">
           <td>Tổng xuất viện</td>
-          <td>846</td>
-          <td>+128</td>
+          <td>{{ "{:,}".format(form_3['data'][11][0]) }}</td>
+          <td style="color: {{'red' if form_3['data'][11][1]<0 else 'green'}};">{{ "{}{:,}".format('+' if form_3['data'][11][1]>0 else '',form_3['data'][11][1]) }}</td>
         </tr>
         <tr>
           <td>Tử vong - Trẻ em</td>
-          <td>0</td>
-          <td>0</td>
+          <td>{{ "{:,}".format(form_3['data'][12][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][12][1]>0 else '',form_3['data'][12][1]) }}</td>
         </tr>
         <tr>
           <td>Tử vong - Phụ nữ mang thai</td>
-          <td>0</td>
-          <td>0</td>
+          <td>{{ "{:,}".format(form_3['data'][13][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][13][1]>0 else '',form_3['data'][13][1]) }}</td>
         </tr>
         <tr>
           <td>Tử vong - Khác</td>
-          <td>30</td>
-          <td>-2</td>
+          <td>{{ "{:,}".format(form_3['data'][14][0]) }}</td>
+          <td>{{ "{}{:,}".format('+' if form_3['data'][14][1]>0 else '',form_3['data'][14][1]) }}</td>
         </tr>
         <tr style="background-color: yellow; font-weight: 600; font-size: 1.25em;">
           <td>Tổng tử vong</td>
-          <td>30</td>
-          <td>-2</td>
+          <td>{{ "{:,}".format(form_3['data'][15][0]) }}</td>
+          <td style="color: {{'red' if form_3['data'][15][1]>0 else 'green'}};">{{ "{}{:,}".format('+' if form_3['data'][15][1]>0 else '',form_3['data'][15][1]) }}</td>
         </tr>
       </table>
     </div>
@@ -308,6 +308,42 @@
 
 <script>
   // map scripts
+  //quy hoach su dung dat 2016-2020
+  const qhsdd = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:qhsdd2020&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
+      attribution: "<a href='http://dost.hochiminhcity.gov.vn' target='_blank'>HCMC DONRE</a>",
+      opacity:0.5,maxZoom:20
+  });
+  // ranh thua cua Tp.HCM
+  const ranhthua_hcmc = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:v_ranhthua_TPHCM&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
+      attribution: "<a href='http://dost.hochiminhcity.gov.vn' target='_blank'>HCMC DONRE</a>",
+      opacity: 1, maxZoom: 20
+  });
+
+  //HCMC LIDAR 2012
+  const lidar2012 = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:hcm_lidar_2012&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
+      attribution: "<a href='http://dost.hochiminhcity.gov.vn' target='_blank'>HCMC DOST</a>", maxZoom: 20
+  });
+
+  // Topographic map 2003 updated 2010
+  const bddh2003 = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:BDDH&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
+      attribution: "<a href='http://www.donre.hochiminhcity.gov.vn' target='_blank'>HCMC DONRE</a>", maxZoom: 20
+  });
+
+  //HCMC SPOT 2008
+  const spot5_2008 = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:hcm_spot&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
+      attribution: "<a href='http://www.donre.hochiminhcity.gov.vn/' target='_blank'>HCMC DONRE</a>", maxZoom: 16
+  });
+
+  //HCMC VNREDSAT 2019
+  const vnredsat2019 = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:vnredsat2019&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
+      attribution: "<a href='http://www.donre.hochiminhcity.gov.vn/' target='_blank'>HCMC DONRE</a>", maxZoom: 16
+  });
+
+  //HCMC kế hoạch SD đất 2018
+  const kehoachsdd2018 = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:kehoachsdd_hcm_2018&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
+      attribution: "<a href='http://www.donre.hochiminhcity.gov.vn/' target='_blank'>HCMC DONRE</a>", opacity: 0.5, maxZoom: 20
+  });
+
   //HCMC HCMGIS map
   const hcmgis_map = new L.tileLayer('https://pcd.hcmgis.vn/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=hcm_map:hcm_map_all&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
       attribution: "<a href='https://hcmgis.vn/' target='_blank'>HCMGIS</a>", opacity: 1, maxZoom: 20
@@ -318,6 +354,12 @@
       attribution: "<a href='http://maps.vietbando.com//' target='_blank'>VIETBANDO CORP</a>", maxZoom: 20, opacity: .6
   }); 
   // Link https://sqhkt-qlqh.tphcm.gov.vn/geoserver/gwc/demo
+
+
+  //HCMC Địa giới hành chính Thành phố Thủ Đức
+  const DGHC_THUDUC = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:DGHC_TD&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
+      attribution: "<a href='https://donre.hochiminhcity.gov.vn/' target='_blank'>HCMC DONRE</a>", maxZoom: 20
+  }); 
 
   var map = new L.Map(
     document.getElementById('mapContainer'),
@@ -365,7 +407,7 @@
 
                                   text = '<div style="font-weight: bold">'+name_2
                                   text += '<div> Cấp độ dịch: '+level+'</div>'
-                                  text += '<div> Diện tích: '+parseInt(district.properties["dienTich"])+' ha</div>'
+                                  text += '<div> Diện tích: '+parseInt(district.properties["dienTich"]).toLocaleString()+' ha</div>'
                                   text += '<div> Dân số: '+district.properties["danSoThuTe"].toLocaleString()+' người</div>'
                                   layer.bindPopup(text).openPopup();
                                 },
@@ -432,7 +474,6 @@
                                         // info.update(layer.feature.properties.availability);
                                         prevLayerClicked = layer;
                                         prevLevel = level;
-
                                       }
                                     });
                                 }
