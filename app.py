@@ -29,13 +29,13 @@ def login_required(fn):
     @wraps(fn)
     def decorator(*args, **kwargs):
         if 'is-logged-in' not in session or session['is-logged-in'] is False:
-            return redirect('/login')
+            return redirect('/BeCaked/login')
         auth_token = session['auth-token']
         flag, msg = decode_auth_token(app.secret_key, auth_token)
         if flag:
             return fn(msg, *args, **kwargs)
         else:
-            return redirect('/login')
+            return redirect('/BeCaked/login')
     return decorator
 
 @app.route('/login', methods = ['GET', 'POST'])
@@ -53,7 +53,7 @@ def login():
     elif request.method == 'GET':
         if 'is-logged-in' not in session or session['is-logged-in'] is False:
             return render_template('login.html', message = None)
-        return redirect('/insert-data')
+        return redirect('/BeCaked/insert-data')
 
 @app.route('/insert-data')
 @login_required
