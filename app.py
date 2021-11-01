@@ -29,13 +29,13 @@ def login_required(fn):
     @wraps(fn)
     def decorator(*args, **kwargs):
         if 'is-logged-in' not in session or session['is-logged-in'] is False:
-            return redirect('/BeCaked/login')
+            return redirect(url_for('login'))
         auth_token = session['auth-token']
         flag, msg = decode_auth_token(app.secret_key, auth_token)
         if flag:
             return fn(msg, *args, **kwargs)
         else:
-            return redirect('/BeCaked/login')
+            return redirect(url_for('login'))
     return decorator
 
 @app.route('/login', methods = ['GET', 'POST'])
@@ -53,7 +53,7 @@ def login():
     elif request.method == 'GET':
         if 'is-logged-in' not in session or session['is-logged-in'] is False:
             return render_template('login.html', message = None)
-        return redirect('/BeCaked/insert-data')
+        return redirect(url_for('insert_data'))
 
 @app.route('/insert-data')
 @login_required
@@ -415,7 +415,7 @@ def update_data():
 def main():
     run_init = bool(os.environ.get("INIT_DATA", True))
     data_dir = str(os.environ.get("DATA_DIR", "./web_data"))
-    # init(run_init, data_dir)
+    init(run_init, data_dir)
 
     return app
 
