@@ -3,7 +3,7 @@ $(document).ready(function(){
         e.preventDefault();
         var formData = new FormData($(this)[0]);
         $.ajax({
-            url: '/upload-form-1',
+            url: '/BeCaked/upload-form-1',
             type: 'POST',
             data: formData,
             async: false,
@@ -25,7 +25,7 @@ $(document).ready(function(){
         e.preventDefault();
         var formData = new FormData($(this)[0]);
         $.ajax({
-            url: '/upload-form-2',
+            url: '/BeCaked/upload-form-2',
             type: 'POST',
             data: formData,
             async: false,
@@ -47,7 +47,7 @@ $(document).ready(function(){
         e.preventDefault();
         var formData = new FormData($(this)[0]);
         $.ajax({
-            url: '/upload-form-3',
+            url: '/BeCaked/upload-form-3',
             type: 'POST',
             data: formData,
             async: false,
