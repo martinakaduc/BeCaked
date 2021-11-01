@@ -8,6 +8,7 @@ html{
     height: 100%;
 }
 body{
+    background: url(../images/bg.jpg);
     position: relative;
     /* height: 100%; */
     background-size: cover;
