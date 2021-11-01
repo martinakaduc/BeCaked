@@ -47,13 +47,13 @@ def login():
         if flag:
             session['is-logged-in'] = True
             session['auth-token'] = encode_auth_token(app.secret_key, username)
-            return redirect(url_for('insert_data'))
+            return render_template('insert_data.html')
         else:
             return render_template('login.html', message = message)
     elif request.method == 'GET':
         if 'is-logged-in' not in session or session['is-logged-in'] is False:
             return render_template('login.html', message = None)
-        return redirect(url_for('insert_data'))
+        return render_template('insert_data.html')
 
 @app.route('/insert-data')
 @login_required
