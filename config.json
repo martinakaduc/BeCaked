@@ -1,4 +1,4 @@
 {
-    "mongodb_read_uri": "mongodb+srv://thesisbecaked:thesisbecaked@thesis.cojlj.mongodb.net",
-    "mongodb_write_uri": "mongodb+srv://thesis.cojlj.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority"
+    "mongodb_read_uri": "",
+    "mongodb_write_uri": ""
 }
