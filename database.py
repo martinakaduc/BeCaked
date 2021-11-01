@@ -23,8 +23,8 @@ def query_data(db, district, date):
 def encode_auth_token(secret_key, username):
     try:
         payload = {
-            'exp': dt.utcnow() + timedelta(days = 0, hours = 1),
-            'iat': dt.utcnow(),
+            'exp': (dt.utcnow() + timedelta(days = 0, hours = 1)).strftime('%b %d, %Y %H:%M'),
+            'iat': dt.utcnow().strftime('%b %d, %Y %H:%M'),
             'sub': username
         }
         return jwt.encode(
