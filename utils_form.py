@@ -34,6 +34,6 @@ def process_form_3(df):
     today = today.replace(hour=18)
     today = today.strftime('%b %d, %Y %H:%M')
     result['date'] = today
-    data = df.values[2:, 2:].astype(int).tolist()
+    data = df.fillna(0).values[2:, 1:].astype(int).tolist()
     result['data'] = data
     return result
