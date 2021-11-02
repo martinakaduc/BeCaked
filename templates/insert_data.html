@@ -329,7 +329,7 @@
         </div>
         <div class="wrap-form-2">
             <div class="left">
-                <p>Số ca <br>nhiễm mới</p>
+                <p>Số ca mới<br>từng quận</p>
                 <input id="file-upload-2" name="input2-method" type="radio" class="file-upload"
                     onchange="switchInput2Method()" checked><label for="file-upload-2">Tải tệp</label>
                 <input id="user-input-2" name="input2-method" type="radio" class="user-input"
@@ -338,7 +338,7 @@
             </div>
             <div class="right">
                 <div id="daily-new">
-                    <form>
+                    <!-- <form>
                         <div class="group">
                             <div class="pair">
                                 <label for="date-new">Ngày</label>
@@ -414,7 +414,7 @@
                             <button type="submit">Gửi</button>
                         </div>
 
-                    </form>
+                    </form> -->
                 </div>
                 <div id="msg-form-2" class="msg-form">
                     <p>
@@ -424,7 +424,7 @@
                     <div class="header">
                         <p><i class="fa fa-cloud-upload fa-2x"></i><span><span>up</span>load</span></p>
                     </div>
-                    <form action='/BeCaked/upload-form-2' method='post'
+                    <form action='/upload-form-2' method='post'
                     enctype="multipart/form-data" class="form-group" id="file-form-2">
                         <div class="file-upload-input" >
                             <input name = 'file' type="file" id="file-input-2" onchange="read_file_2(this);"

@@ -395,7 +395,7 @@
   }
 
   levels = {{ levels|tojson }}
-  total = {{ total|tojson }}
+  form_2 = {{ form_2|tojson }}
   id_2r = {{ id_2r|tojson }}
  
   var quanhuyen = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
@@ -415,7 +415,7 @@
                                   text += '<div> Cấp độ dịch (từ ngày 1/11/2021): '+level+'</div>'
                                   text += '<div> Diện tích: '+parseInt(district.properties["dienTich"]).toLocaleString()+' ha</div>'
                                   text += '<div> Dân số: '+district.properties["danSoThuTe"].toLocaleString()+' người</div>'
-                                  text += '<div> Ca nhiễm mới trong ngày {{ today[:-6] }}: ' + total[id_2r[id_2]]['I']['real'].slice(-1)[0] + '</div>'
+                                  text += '<div> Ca nhiễm mới trong ngày {{ form_2["date"][:-6] }}: ' + form_2[id_2r[id_2]] + '</div>'
                                   layer.bindPopup(text).openPopup();
                                   layer.setStyle(mystyle(level).click);
                                 },

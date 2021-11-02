@@ -80,11 +80,15 @@ def upload_form_1():
 def upload_form_2():
     if request.method == 'POST':
         f = request.files['file']
-        df = pd.read_excel(f.read(), header = None)
+        df = pd.read_excel(f.read(), header = None).dropna(axis=1)
         try:
             data = process_form_2(df)
+            backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
+            backup_data_path = os.path.join(backup_data_dir,'form-2.json')
+            with open(backup_data_path,'w') as f:
+                json.dump(data,f)
             return make_response("", 200)
-        except:
+        except Exception as e:
             return make_response("", 400)
                 
 @app.route('/upload-form-3', methods = ['GET', 'POST'])
@@ -236,6 +240,8 @@ def home():
 
     with open(os.path.join(backup_data_dir,'form-1.json')) as f:
         form_1 = json.load(f)
+    with open(os.path.join(backup_data_dir,'form-2.json')) as f:
+        form_2 = json.load(f)
     with open(os.path.join(backup_data_dir,'form-3.json')) as f:
         form_3 = json.load(f)
 
@@ -258,6 +264,7 @@ def home():
                             # summary = summary,
                             levels = levels,
                             form_1 = form_1,
+                            form_2 = form_2,
                             form_3 = form_3,
                             id_2r=id_2r
                             )
