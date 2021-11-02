@@ -589,7 +589,12 @@
       }
       load_chart();
       centre = {{ centre|tojson }}
-      map.flyTo(centre[x],12)
+      if (x=='HCM'){
+        map.flyTo({ lat: 10.762622, lng: 106.660172 },10)
+      }
+      else{
+        map.flyTo(centre[x],12)
+      }
   }
 
   scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
