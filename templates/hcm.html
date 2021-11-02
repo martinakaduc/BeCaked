@@ -502,7 +502,7 @@
                     });
  
   quanhuyen.addTo(map)
-  quanhuyen_base.addTo(map)
+  // quanhuyen_base.addTo(map)
   map.on('zoomend', function() {
           var zoomlevel = map.getZoom();
               if (zoomlevel < 11){
@@ -521,7 +521,7 @@
                       map.addLayer(phuongxa)
                   }
               }
-              quanhuyen_base.bringToFront()
+              // quanhuyen_base.bringToFront()
           });
 </script>
 
