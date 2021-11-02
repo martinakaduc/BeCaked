@@ -409,7 +409,7 @@
                                   name_2= district.properties["diaDanh"]
 
                                   text = '<div style="font-weight: bold">'+name_2
-                                  text += '<div> Cấp độ dịch: '+level+'</div>'
+                                  text += '<div> Cấp độ dịch (từ ngày 1/11/2021): '+level+'</div>'
                                   text += '<div> Diện tích: '+parseInt(district.properties["dienTich"]).toLocaleString()+' ha</div>'
                                   text += '<div> Dân số: '+district.properties["danSoThuTe"].toLocaleString()+' người</div>'
                                   text += '<div> Ca nhiễm mới trong ngày {{ today[:-6] }}: ' + total[id_2r[id_2]]['V']['real'].slice(-1)[0] + '</div>'
@@ -454,8 +454,8 @@
                                         name_2 = phuong.properties["diaDanhHuy"]
 
                                         text = '<div style="font-weight: bold">'+name_3 + ' - ' + name_2+'</div>'
-                                        text += '<div> Cấp độ dịch của Phường/Xã: '+levels[id_3]+'</div>'
-                                        text += '<div> Cấp độ dịch của Quận/Huyện: '+levels[id_2]+'</div>'
+                                        text += '<div> Cấp độ dịch của Phường/Xã (từ ngày 1/11/2021): '+levels[id_3]+'</div>'
+                                        text += '<div> Cấp độ dịch của Quận/Huyện (từ ngày 1/11/2021): '+levels[id_2]+'</div>'
                                         text += '<div> Diện tích: '+parseInt(phuong.properties["dienTich"])+' ha</div>'
                                         text += '<div> Dân số: '+phuong.properties["danSoThucT"].toLocaleString()+' người</div>'
                                         layer.bindPopup(text).openPopup();
