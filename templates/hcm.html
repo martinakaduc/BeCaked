@@ -588,6 +588,8 @@
         $('.only-hcm').remove()
       }
       load_chart();
+      centre = {{ centre|tojson }}
+      map.flyTo(centre[x],12)
   }
 
   scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
