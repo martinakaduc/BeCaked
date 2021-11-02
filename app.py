@@ -258,7 +258,8 @@ def home():
                             # summary = summary,
                             levels = levels,
                             form_1 = form_1,
-                            form_3 = form_3
+                            form_3 = form_3,
+                            id_2r=id_2r
                             )
 
 @app.route("/predict", methods=["GET", "POST"])

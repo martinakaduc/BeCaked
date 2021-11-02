@@ -1,16 +1,16 @@
 "NAME_2","ID_2","level"
 "Quận 1",760,1
 "Quận 3",770,2
-"Quận 4",773,2
-"Quận 5",774,2
-"Quận 6",775,2
+"Quận 4",773,1
+"Quận 5",774,1
+"Quận 6",775,1
 "Quận 7",778,1
 "Quận 8",776,1
 "Quận 10",771,1
 "Quận 11",772,2
 "Quận 12",761,2
 "Huyện Bình Chánh",785,2
-"Quận Bình Tân",777,3
+"Quận Bình Tân",777,2
 "Quận Bình Thạnh",765,2
 "Huyện Cần Giờ",787,1
 "Huyện Củ Chi",783,1
@@ -19,5 +19,5 @@
 "Huyện Nhà Bè",786,2
 "Quận Phú Nhuận",768,2
 "Quận Tân Bình",766,1
-"Quận Tân Phú",767,2
+"Quận Tân Phú",767,1
 "Thành phố Thủ Đức",769,1

@@ -372,27 +372,30 @@
   
   var prevLayerClicked = null;
   var mystyle = function(level){ 
-    color = level == 1  ? { default: '#27ae60', click: '#2ecc71'}:
-            level == 2  ? { default: '#f39c12', click: '#feca57'}:
-            level == 3  ? { default: '#e74c3c', click: '#ff6b6b'}:
+    color = level == 1  ? { default: 'green', click: '#2ecc71'}:
+            level == 2  ? { default: 'yellow', click: '#feca57'}:
+            level == 3  ? { default: 'orange', click: '#f39c12'}:
+            level == 4  ? { default: 'red', click: '#ff6b6b'}:
                           '#7f8c8d';
     return {
       default: {
         "color": color.default,
-        "opacity": .3,
+        "opacity": .2,
         "fillOpacity": .35
       },
       click: {
         "color": color.click,
         "weight": 5,
-        "opacity": .3,
+        "opacity": .2,
         "fillOpacity": .5
       }}
   }
 
   levels = {{ levels|tojson }}
+  total = {{ total|tojson }}
+  id_2r = {{ id_2r|tojson }}
  
-  var quanhuyen = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
+  var quanhuyen = new L.GeoJSON.AJAX("{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
                       style: function(district) {
                           id_2 = district.properties["maDVHC"]
                           level = levels[id_2]
@@ -409,6 +412,7 @@
                                   text += '<div> Cấp độ dịch: '+level+'</div>'
                                   text += '<div> Diện tích: '+parseInt(district.properties["dienTich"]).toLocaleString()+' ha</div>'
                                   text += '<div> Dân số: '+district.properties["danSoThuTe"].toLocaleString()+' người</div>'
+                                  text += '<div> Ca nhiễm mới trong ngày {{ today[:-6] }}: ' + total[id_2r[id_2]]['V']['real'].slice(-1)[0] + '</div>'
                                   layer.bindPopup(text).openPopup();
                                 },
 
@@ -435,7 +439,7 @@
                           }
                     });
 
-  var phuongxa = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/phuongxa_2021.geojson') }}",{
+  var phuongxa = new L.GeoJSON.AJAX("{{ url_for('static', filename='data/phuongxa_2021.geojson') }}",{
                       style: function(phuong) {
                                 id_3 = phuong.properties["maDVHCXa"]
                                 level = levels[id_3]
