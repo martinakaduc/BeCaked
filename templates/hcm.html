@@ -346,7 +346,7 @@
 
   //HCMC HCMGIS map
   const hcmgis_map = new L.tileLayer('https://pcd.hcmgis.vn/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=hcm_map:hcm_map_all&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
-      attribution: "<a href='https://hcmgis.vn/' target='_blank'>HCMGIS</a>", opacity: 1, maxZoom: 20
+      attribution: "<a href='https://hcmgis.vn/' target='_blank'>HCMGIS</a>", opacity: 1, fillOpacity: 0, maxZoom: 20
   });
 
   //Việt Bản đồ
@@ -360,6 +360,9 @@
   const DGHC_THUDUC = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:DGHC_TD&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
       attribution: "<a href='https://donre.hochiminhcity.gov.vn/' target='_blank'>HCMC DONRE</a>", maxZoom: 20
   }); 
+  // var quanhuyen_base = new L.GeoJSON.AJAX("{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
+  //   style: {"color": "blue", "opacity": 1, "fillOpacity": 0, "interactive": false}})
+  var quanhuyen_base = hcmgis_map
 
   var map = new L.Map(
     document.getElementById('mapContainer'),
@@ -499,6 +502,7 @@
                     });
  
   quanhuyen.addTo(map)
+  quanhuyen_base.addTo(map)
   map.on('zoomend', function() {
           var zoomlevel = map.getZoom();
               if (zoomlevel < 11){
@@ -517,6 +521,7 @@
                       map.addLayer(phuongxa)
                   }
               }
+              quanhuyen_base.bringToFront()
           });
 </script>
 
