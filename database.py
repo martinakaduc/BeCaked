@@ -129,7 +129,7 @@ def get_daily_latest_statistics():
 if __name__ == '__main__':
     os.system("mkdir -p backup")
     try:
-        summary = get_daily_latest_statistics()
+        # summary = get_daily_latest_statistics()
 
         backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
         backup_summary_path = os.environ.get("BACKUP_SUMMARY_PATH", "./backup/backup_summary.json")
@@ -140,8 +140,8 @@ if __name__ == '__main__':
             path = os.path.join(backup_data_dir,district+'.json')
             with open(path,'w') as json_file:
                 json.dump(data,json_file)
-        with open(backup_summary_path,'w') as json_file:
-            json.dump(summary,json_file)
+        # with open(backup_summary_path,'w') as json_file:
+        #     json.dump(summary,json_file)
     except Exception as e:
         print(e)
         pass
