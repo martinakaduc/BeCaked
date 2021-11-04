@@ -326,7 +326,7 @@
 
   // Topographic map 2003 updated 2010
   const bddh2003 = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:BDDH&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
-      attribution: "<a href='http://www.donre.hochiminhcity.gov.vn' target='_blank'>HCMC DONRE</a>", maxZoom: 20
+    attribution: "<a href='http://www.donre.hochiminhcity.gov.vn' target='_blank'>HCMC DONRE</a>", maxZoom: 20
   });
 
   //HCMC SPOT 2008
@@ -346,12 +346,12 @@
 
   //HCMC HCMGIS map
   const hcmgis_map = new L.tileLayer('https://pcd.hcmgis.vn/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=hcm_map:hcm_map_all&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
-      attribution: "<a href='https://hcmgis.vn/' target='_blank'>HCMGIS</a>", opacity: 1, fillOpacity: 0, maxZoom: 20
+      attribution: "<a href='https://hcmgis.vn/' target='_blank'>HCMGIS</a>", opacity: 1, weight: .5, color: "yellow", fillOpacity: 0, maxZoom: 20
   });
 
   //Việt Bản đồ
   const vbd_map = new L.tileLayer('http://images.vietbando.com/ImageLoader/GetImage.ashx?Ver=2016&LayerIds=VBD&Level={z}&X={x}&Y={y}', {
-      attribution: "<a href='http://maps.vietbando.com//' target='_blank'>VIETBANDO CORP</a>", maxZoom: 20, opacity: .6
+      attribution: "<a href='http://maps.vietbando.com//' target='_blank'>VIETBANDO CORP</a>", maxZoom: 20, opacity: 1
   }); 
   // Link https://sqhkt-qlqh.tphcm.gov.vn/geoserver/gwc/demo
 
@@ -360,43 +360,58 @@
   const DGHC_THUDUC = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:DGHC_TD&tilematrixset=EPSG:900913&tilematrix=EPSG:900913:{z}&tilerow={y}&tilecol={x}&format=image%2Fpng', {
       attribution: "<a href='https://donre.hochiminhcity.gov.vn/' target='_blank'>HCMC DONRE</a>", maxZoom: 20
   }); 
-  // var quanhuyen_base = new L.GeoJSON.AJAX("{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
-  //   style: {"color": "blue", "opacity": 1, "fillOpacity": 0, "interactive": false}})
-  var quanhuyen_base = hcmgis_map
+
+  // const bddh2003 = new L.tileLayer('http://120.72.116.162/geoserver/gwc/service/wmts?service=wmts&request=GetTile&version=1.0.0&layer=tnmt:BDDH&tilematrixset=EPSG:90091...e%2Fpng', {
+  //   attribution: "<a href='http://www.donre.hochiminhcity.gov.vn' target='_blank'>HCMC DONRE</a>", maxZoom: 20, opacity: 1, fillOpacity: 1});
+
+  var quanhuyen_base = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
+    style: {"color": "blue", "opacity": 1, "weight": 1.75, "fillOpacity": 0, "interactive": false}})
+  var phuongxa_base = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/phuongxa_2021.geojson') }}",{
+    style: {"color": "#000", "weight": .5, "opacity": .5, "fillOpacity": 0, "interactive": false}})
+  // var quanhuyen_base = hcmgis_map
 
   var map = new L.Map(
     document.getElementById('mapContainer'),
     {
       center: { lat: 10.762622, lng: 106.660172 },
       zoom: 10,
+      minZoom: 10,
+      maxZoom: 17,
       layers: [vbd_map]
     }
   );
   
   var prevLayerClicked = null;
+  var phuongxa_focus = null;
+  var quanhuyen_focus = null;
   var mystyle = function(level){ 
     color = level == 1  ? { default: 'green', click: 'green'}:
             level == 2  ? { default: 'yellow', click: 'yellow'}:
             level == 3  ? { default: 'orange', click: 'orange'}:
-            level == 4  ? { default: 'red', click: 'red'}:
+            level == 4  ? { default: 'red', click: '#ff6b6b'}:
                           '#7f8c8d';
+    var zoomlevel = map.getZoom();
+    highlightFillOpacity = zoomlevel >= 14 ? .65 : .75
     return {
       default: {
         "color": color.default,
-        "opacity": .1,
-        "fillOpacity": .35
+        "opacity": 0,
+        "weight": 0,
+        "fillOpacity": .6
       },
       click: {
-        "color": color.click,
-        "weight": 5,
-        "opacity": .3,
-        "fillOpacity": .5
+        "fillColor": color.click,
+        "color": "red",
+        "weight": 1.75,
+        "opacity": 1,
+        "fillOpacity": highlightFillOpacity
       }}
   }
 
   levels = {{ levels|tojson }}
   form_2 = {{ form_2|tojson }}
   id_2r = {{ id_2r|tojson }}
+  centre = {{ centre|tojson }}
  
   var quanhuyen = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
                       style: function(district) {
@@ -407,19 +422,29 @@
                         onEachFeature: function (district, layer) {
                               layer.on({
                                 mouseover: function(e){
+                                  //hover: show popup, highlight area (increase opacity, fillOpacity)
                                   id_2 = district.properties["maDVHC"]
                                   level = levels[id_2]
                                   name_2= district.properties["diaDanh"]
 
                                   text = '<div style="font-weight: bold">'+name_2
-                                  text += '<div> Cấp độ dịch (từ ngày 1/11/2021): '+level+'</div>'
+                                  text += '<div> Cấp độ dịch: '+level+'</div>'
                                   text += '<div> Diện tích: '+parseInt(district.properties["dienTich"]).toLocaleString()+' ha</div>'
-                                  text += '<div> Dân số: '+district.properties["danSoThuTe"].toLocaleString()+' người</div>'
+                                  text += '<div> Dân số: '+parseInt(district.properties["danSoThuTe"]).toLocaleString()+' người</div>'
                                   text += '<div> Ca nhiễm mới trong ngày {{ form_2["date"][:-6] }}: ' + form_2[id_2r[id_2]] + '</div>'
-                                  layer.bindPopup(text).openPopup();
+                                  layer.bindPopup(text)
+                                  var popup = e.target.getPopup();
+                                  popup.setLatLng(e.latlng).openOn(map);
+                                  // .setLatLng(e.latlng).openPopup();
                                   layer.setStyle(mystyle(level).click);
                                 },
+                                'mousemove': function (e) {
+                                  e.target.closePopup();
+                                  var popup = e.target.getPopup();
+                                  popup.setLatLng(e.latlng).openOn(map);
+                                },
                                 mouseout: function(e){
+                                  //end hover: close popup
                                   id_2 = district.properties["maDVHC"]
                                   level = levels[id_2]
                                   layer.setStyle(mystyle(level).default);
@@ -427,23 +452,36 @@
                                 },
 
                                 click: function(e){
+                                  //click: focus it
                                   var id_2 = e.target.feature.properties["maDVHC"]
                                   var level = levels[id_2]
 
                                   if (prevLayerClicked !== null) {
-                                      // Reset style
                                     prevLayerClicked.setStyle(mystyle(prevLevel).default);
                                   }
-                                  map.fitBounds(e.target.getBounds());
-                                  var layer = e.target;
-                                  layer.setStyle(mystyle(level).click);
-                                  if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-                                    layer.bringToFront();
+
+                                  if ([787,785,783].includes(id_2)){
+                                    //CAN GIO, BINH CHANH, CU CHI too big :) -> zoom in
+                                    map.flyTo(centre[id_2r[id_2]],12)
                                   }
-                                  // info.update(layer.feature.properties.availability);
+                                  else{
+                                    map.fitBounds(e.target.getBounds());
+                                  }
+                                  
+                                  if (quanhuyen_focus !== null) {
+                                    map.removeLayer(quanhuyen_focus)
+                                  }
+                                  quanhuyen_focus = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
+                                    style: {"color": "red", "weight": 4, "opacity": 1, "fillOpacity": 0,  "interactive": false}, filter:filter_quan})
+                                  function filter_quan(quan){
+                                    if (quan.properties["maDVHC"] == id_2) return true
+                                    else return false
+                                  }
+                                  quanhuyen_focus.addTo(map)
+                                  quanhuyen_focus.bringToFront()
+                                  
                                   prevLayerClicked = layer;
                                   prevLevel = level;
-
                                 }
                                 });
                           }
@@ -453,26 +491,38 @@
                       style: function(phuong) {
                                 id_3 = phuong.properties["maDVHCXa"]
                                 level = levels[id_3]
-                                return  mystyle(level).default
+                                temp =  mystyle(level).default
+                                temp.opacity = 0.3
+                                return temp
                               },
                               onEachFeature: function (phuong, layer) {
                                     layer.on({
                                       mouseover: function(e){
+                                        // hover: show popup, highlight area
                                         id_3 = phuong.properties["maDVHCXa"]
-                                        level = levels[id_3]
                                         id_2 = phuong.properties["maDVHCHuye"]
+                                        level = levels[id_3]
                                         name_3 = phuong.properties["diaDanhXa"]
                                         name_2 = phuong.properties["diaDanhHuy"]
 
                                         text = '<div style="font-weight: bold">'+name_3 + ' - ' + name_2+'</div>'
-                                        text += '<div> Cấp độ dịch của Phường/Xã (từ ngày 1/11/2021): '+levels[id_3]+'</div>'
-                                        text += '<div> Cấp độ dịch của Quận/Huyện (từ ngày 1/11/2021): '+levels[id_2]+'</div>'
+                                        text += '<div> Cấp độ dịch của Phường/Xã: '+levels[id_3]+'</div>'
+                                        text += '<div> Cấp độ dịch của Quận/Huyện: '+levels[id_2]+'</div>'
                                         text += '<div> Diện tích: '+parseInt(phuong.properties["dienTich"])+' ha</div>'
-                                        text += '<div> Dân số: '+phuong.properties["danSoThucT"].toLocaleString()+' người</div>'
-                                        layer.bindPopup(text).openPopup();
+                                        text += '<div> Dân số: '+parseInt(phuong.properties["danSoThucT"]).toLocaleString()+' người</div>'
+                                        layer.bindPopup(text)
+                                        var popup = e.target.getPopup();
+                                        popup.setLatLng(e.latlng).openOn(map);
+                                        // .setLatLng(e.latlng).openPopup();
                                         layer.setStyle(mystyle(level).click);
                                       },
+                                      'mousemove': function (e) {
+                                        e.target.closePopup();
+                                        var popup = e.target.getPopup();
+                                        popup.setLatLng(e.latlng).openOn(map);
+                                      },
                                       mouseout: function(e){
+                                        // end hover: close popup
                                         id_3 = phuong.properties["maDVHCXa"]
                                         level = levels[id_3]
                                         layer.setStyle(mystyle(level).default);
@@ -480,6 +530,7 @@
                                       },
 
                                       click: function(e){
+                                        // click: focus it
                                         var id_3 = e.target.feature.properties["maDVHCXa"]
                                         var level = levels[id_3]
 
@@ -493,7 +544,25 @@
                                         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
                                           layer.bringToFront();
                                         }
-                                        // info.update(layer.feature.properties.availability);
+
+                                        if (map.hasLayer(phuongxa_focus)) {
+                                            map.removeLayer(phuongxa_focus);
+                                        }
+                                        if (map.hasLayer(quanhuyen_focus)) {
+                                            map.removeLayer(quanhuyen_focus);
+                                        }
+
+                                        if (phuongxa_focus !== null) {
+                                          map.removeLayer(phuongxa_focus)
+                                        }
+                                        phuongxa_focus = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/phuongxa_2021.geojson') }}",{
+                                          style: {"color": "red", "opacity": 1, "fillOpacity": 0, "interactive": false}, filter:filter_phuong})
+                                        function filter_phuong(phuong){
+                                          if (phuong.properties["maDVHCXa"] == id_3) return true
+                                          else return false
+                                        }
+                                        phuongxa_focus.addTo(map)
+
                                         prevLayerClicked = layer;
                                         prevLevel = level;
                                       }
@@ -501,27 +570,70 @@
                                 }
                     });
  
+  
   quanhuyen.addTo(map)
-  // quanhuyen_base.addTo(map)
   map.on('zoomend', function() {
           var zoomlevel = map.getZoom();
-              if (zoomlevel < 11){
+              if (zoomlevel < 11.5){
+                  if (!map.hasLayer(hcmgis_map) & zoomlevel > 10){
+                      map.addLayer(hcmgis_map)
+                  }
                   if (map.hasLayer(phuongxa)) {
                       map.removeLayer(phuongxa);
+                  }
+                  if (map.hasLayer(phuongxa_base)) {
+                      map.removeLayer(phuongxa_base);
                   } 
+                  if (map.hasLayer(phuongxa_focus)) {
+                      map.removeLayer(phuongxa_focus);
+                  }
+                  if (map.hasLayer(quanhuyen_focus)) {
+                      map.removeLayer(quanhuyen_focus);
+                  }
+                  if (map.hasLayer(quanhuyen_base) & zoomlevel == 10){
+                      map.removeLayer(quanhuyen_base)
+                      map.removeLayer(hcmgis_map)
+                  }
+
                   if (!map.hasLayer(quanhuyen)){
                       map.addLayer(quanhuyen)
                   }
+                  if (!map.hasLayer(quanhuyen_base) & zoomlevel > 10){
+                      map.addLayer(quanhuyen_base)
+                  }
+                  
+                  
+                if (map.hasLayer(quanhuyen_focus)) {
+                  quanhuyen_focus.bringToFront()
+                }
               }
-              if (zoomlevel >= 11){
+              if (zoomlevel >= 11.5){
+                if (!map.hasLayer(hcmgis_map) & zoomlevel > 10){
+                      map.addLayer(hcmgis_map)
+                }
                 if (map.hasLayer(quanhuyen)) {
                       map.removeLayer(quanhuyen);
                   } 
                 if (!map.hasLayer(phuongxa)){
                       map.addLayer(phuongxa)
+                      map.addLayer(phuongxa_base)
                   }
+                if (map.hasLayer(phuongxa_focus)) {
+                  phuongxa_focus.bringToFront()
+                } 
+                
+                if (!map.hasLayer(quanhuyen_base)){
+                      map.addLayer(quanhuyen_base)
+                }
+
+                if (map.hasLayer(quanhuyen_focus)) {
+                  quanhuyen_focus.bringToFront()
+                }
+                if (map.hasLayer(phuongxa_focus)) {
+                  phuongxa_focus.bringToFront()
+                }
               }
-              // quanhuyen_base.bringToFront()
+              console.log(zoomlevel)
           });
 </script>
 
