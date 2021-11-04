@@ -714,7 +714,7 @@
       }
   }
 
-  scenario = ($("#scenario").attr("value") == undefined) ? "best" : $("#scenario").attr("value");
+  scenario = ($("#scenario").attr("value") == undefined) ? "normal" : $("#scenario").attr("value");
   $.getJSON('/BeCaked/__load_data?district='+_district+'&&state=I&&scenario='+scenario, function(data) {
       my_chart_i = draw_chart('chart_i', data,days)
   });
