@@ -374,8 +374,8 @@
     document.getElementById('mapContainer'),
     {
       center: { lat: 10.762622, lng: 106.660172 },
-      zoom: 10,
-      minZoom: 10,
+      zoom: 8,
+      minZoom: 5,
       maxZoom: 17,
       layers: [vbd_map]
     }
@@ -412,6 +412,73 @@
   form_2 = {{ form_2|tojson }}
   id_2r = {{ id_2r|tojson }}
   centre = {{ centre|tojson }}
+
+  var tinh = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/vnm1.geojson') }}",{
+                      style: function(tinh) {
+                          id_1 = tinh.properties["ID_1"]
+                          level = levels[id_1]
+                          temp = mystyle(level).default
+                          temp.fillColor = temp.color
+                          temp.color = "blue"
+                          temp.weight = 2
+                          temp.opacity = .5
+                          return temp
+                        },
+                        onEachFeature: function (district, layer) {
+                              layer.on({
+                                mouseover: function(e){
+                                  //hover: show popup, highlight area (increase opacity, fillOpacity)
+                                  id_1 = district.properties["ID_1"]
+                                  level = levels[id_1]
+                                  name_1= district.properties["NAME_1"]
+
+                                  text = '<div style="font-weight: bold">'+name_1
+                                  text += '<div> Cấp độ dịch: '+level+'</div>'
+                                  // text += '<div> Diện tích: '+parseInt(district.properties["dienTich"]).toLocaleString()+' ha</div>'
+                                  // text += '<div> Dân số: '+parseInt(district.properties["danSoThuTe"]).toLocaleString()+' người</div>'
+                                  // text += '<div> Ca nhiễm mới trong ngày {{ form_2["date"][:-6] }}: ' + form_2[id_2r[id_2]] + '</div>'
+                                  layer.bindPopup(text)
+                                  var popup = e.target.getPopup();
+                                  popup.setLatLng(e.latlng).openOn(map);
+                                  // .setLatLng(e.latlng).openPopup();
+                                  layer.setStyle(mystyle(level).click);
+                                },
+                                'mousemove': function (e) {
+                                  e.target.closePopup();
+                                  var popup = e.target.getPopup();
+                                  popup.setLatLng(e.latlng).openOn(map);
+                                },
+                                mouseout: function(e){
+                                  //end hover: close popup
+                                  id_1 = district.properties["ID_1"]
+                                  level = levels[id_1]
+                                  temp = mystyle(level).default
+                                  temp.fillColor = temp.color
+                                  temp.color = "blue"
+                                  temp.weight = 2
+                                  temp.opacity = .5
+                                  layer.setStyle(temp);
+                                  layer.closePopup()
+                                },
+
+                                // click: function(e){
+                                //   //click: focus it
+                                //   var id_1 = e.target.feature.properties["ID_1"]
+                                //   var level = levels[id_1]
+
+                                //   if (prevLayerClicked !== null) {
+                                //     prevLayerClicked.setStyle(mystyle(prevLevel).default);
+                                //   }
+
+                                //   map.fitBounds(e.target.getBounds());
+                                  
+                                //   prevLayerClicked = layer;
+                                //   prevLevel = level;
+                                // }
+                                });
+                          }
+                    });
+ 
  
   var quanhuyen = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
                       style: function(district) {
@@ -571,7 +638,7 @@
                     });
  
   
-  quanhuyen.addTo(map)
+  tinh.addTo(map)
   map.on('zoomend', function() {
           var zoomlevel = map.getZoom();
               if (zoomlevel < 11.5){

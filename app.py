@@ -249,7 +249,9 @@ def home():
     level_3 = dict(zip(df['ID_3'],df['level']))
     df = pd.read_csv(os.path.join(backup_data_dir,'level_2.csv'),encoding='utf-8').dropna(axis=1)
     level_2 = dict(zip(df['ID_2'],df['level']))
-    levels = {**level_2,**level_3}
+    df = pd.read_csv(os.path.join(backup_data_dir,'level_1.csv'),encoding='utf-8').dropna(axis=1)
+    level_2 = dict(zip(df['ID_1'],df['level']))
+    levels = {**level_1,**level_2,**level_3}
 
     return render_template('hcm.html',
                             name = 'HCM',
