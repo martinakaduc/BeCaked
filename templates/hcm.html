@@ -722,6 +722,10 @@
             }
           }
           if (zoomlevel >= 11.5){
+            if (map.hasLayer(tinh)){
+                map.removeLayer(tinh)
+                map.flyTo([10.762622,106.660172], zoomlevel=10)
+            }
             if (!map.hasLayer(hcmgis_map) & zoomlevel > 10){
                   map.addLayer(hcmgis_map)
             }
