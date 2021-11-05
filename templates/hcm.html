@@ -641,156 +641,94 @@
   tinh.addTo(map)
   map.on('zoomend', function() {
           var zoomlevel = map.getZoom();
-              if (zoomlevel <= 8 & !map.hasLayer(tinh)){
-                tinh.addTo(map)  
+          if (zoomlevel <= 8 & !map.hasLayer(tinh)){
+            tinh.addTo(map)  
 
-                if (map.hasLayer(hcmgis_map)){
-                      map.removeLayer(hcmgis_map)
-                  }
-                if (map.hasLayer(phuongxa)) {
-                    map.removeLayer(phuongxa);
-                }
-                if (map.hasLayer(phuongxa_base)) {
-                    map.removeLayer(phuongxa_base);
-                } 
-                if (map.hasLayer(phuongxa_focus)) {
-                    map.removeLayer(phuongxa_focus);
-                }
-                if (map.hasLayer(quanhuyen_focus)) {
-                    map.removeLayer(quanhuyen_focus);
-                }
-                if (map.hasLayer(quanhuyen_base)){
-                    map.removeLayer(quanhuyen_base)
-                }
-                if (map.hasLayer(quanhuyen)){
-                    map.removeLayer(quanhuyen)
-                }
+            if (map.hasLayer(hcmgis_map)){
+                  map.removeLayer(hcmgis_map)
               }
-              if (zoomlevel < 11.5 & zoomlevel > 8){
-                  if (map.hasLayer(tinh)){
-                    map.removeLayer(tinh)
-                  }
-                  if (!map.hasLayer(hcmgis_map) & zoomlevel > 10){
-                      map.addLayer(hcmgis_map)
-                  }
-                  if (map.hasLayer(phuongxa)) {
-                      map.removeLayer(phuongxa);
-                  }
-                  if (map.hasLayer(phuongxa_base)) {
-                      map.removeLayer(phuongxa_base);
-                  } 
-                  if (map.hasLayer(phuongxa_focus)) {
-                      map.removeLayer(phuongxa_focus);
-                  }
-                  if (map.hasLayer(quanhuyen_focus)) {
-                      map.removeLayer(quanhuyen_focus);
-                  }
-                  if (map.hasLayer(quanhuyen_base) & zoomlevel == 10){
-                      map.removeLayer(quanhuyen_base)
-                      map.removeLayer(hcmgis_map)
-                  }
+            if (map.hasLayer(phuongxa)) {
+                map.removeLayer(phuongxa);
+            }
+            if (map.hasLayer(phuongxa_base)) {
+                map.removeLayer(phuongxa_base);
+            } 
+            if (map.hasLayer(phuongxa_focus)) {
+                map.removeLayer(phuongxa_focus);
+            }
+            if (map.hasLayer(quanhuyen_focus)) {
+                map.removeLayer(quanhuyen_focus);
+            }
+            if (map.hasLayer(quanhuyen_base)){
+                map.removeLayer(quanhuyen_base)
+            }
+            if (map.hasLayer(quanhuyen)){
+                map.removeLayer(quanhuyen)
+            }
+          }
+          if (zoomlevel < 11.5 & zoomlevel > 8){
+              if (map.hasLayer(tinh)){
+                map.removeLayer(tinh)
+              }
+              if (!map.hasLayer(hcmgis_map) & zoomlevel > 10){
+                  map.addLayer(hcmgis_map)
+              }
+              if (map.hasLayer(phuongxa)) {
+                  map.removeLayer(phuongxa);
+              }
+              if (map.hasLayer(phuongxa_base)) {
+                  map.removeLayer(phuongxa_base);
+              } 
+              if (map.hasLayer(phuongxa_focus)) {
+                  map.removeLayer(phuongxa_focus);
+              }
+              if (map.hasLayer(quanhuyen_focus)) {
+                  map.removeLayer(quanhuyen_focus);
+              }
+              if (map.hasLayer(quanhuyen_base) & zoomlevel == 10){
+                  map.removeLayer(quanhuyen_base)
+                  map.removeLayer(hcmgis_map)
+              }
 
-                  if (!map.hasLayer(quanhuyen)){
-                      map.addLayer(quanhuyen)
-                  }
-                  if (!map.hasLayer(quanhuyen_base) & zoomlevel > 10){
-                      map.addLayer(quanhuyen_base)
-                  }
-                  
-                  
-                if (map.hasLayer(quanhuyen_focus)) {
-                  quanhuyen_focus.bringToFront()
-                }
+              if (!map.hasLayer(quanhuyen)){
+                  map.addLayer(quanhuyen)
               }
-              if (zoomlevel >= 11.5){
-                if (!map.hasLayer(hcmgis_map) & zoomlevel > 10){
-                      map.addLayer(hcmgis_map)
-                }
-                if (map.hasLayer(quanhuyen)) {
-                      map.removeLayer(quanhuyen);
-                  } 
-                if (!map.hasLayer(phuongxa)){
-                      map.addLayer(phuongxa)
-                      map.addLayer(phuongxa_base)
-                  }
-                if (map.hasLayer(phuongxa_focus)) {
-                  phuongxa_focus.bringToFront()
-                } 
-                
-                if (!map.hasLayer(quanhuyen_base)){
-                      map.addLayer(quanhuyen_base)
-                }
+              if (!map.hasLayer(quanhuyen_base) & zoomlevel > 10){
+                  map.addLayer(quanhuyen_base)
+              }
+              
+              
+            if (map.hasLayer(quanhuyen_focus)) {
+              quanhuyen_focus.bringToFront()
+            }
+          }
+          if (zoomlevel >= 11.5){
+            if (!map.hasLayer(hcmgis_map) & zoomlevel > 10){
+                  map.addLayer(hcmgis_map)
+            }
+            if (map.hasLayer(quanhuyen)) {
+                  map.removeLayer(quanhuyen);
+              } 
+            if (!map.hasLayer(phuongxa)){
+                  map.addLayer(phuongxa)
+                  map.addLayer(phuongxa_base)
+              }
+            if (map.hasLayer(phuongxa_focus)) {
+              phuongxa_focus.bringToFront()
+            } 
+            
+            if (!map.hasLayer(quanhuyen_base)){
+                  map.addLayer(quanhuyen_base)
+            }
 
-                if (map.hasLayer(quanhuyen_focus)) {
-                  quanhuyen_focus.bringToFront()
-                }
-                if (map.hasLayer(phuongxa_focus)) {
-                  phuongxa_focus.bringToFront()
-                }
-              }
-              console.log(zoomlevel)
-          });
-          var zoomlevel = map.getZoom();
-              if (zoomlevel < 11.5){
-                  if (!map.hasLayer(hcmgis_map) & zoomlevel > 10){
-                      map.addLayer(hcmgis_map)
-                  }
-                  if (map.hasLayer(phuongxa)) {
-                      map.removeLayer(phuongxa);
-                  }
-                  if (map.hasLayer(phuongxa_base)) {
-                      map.removeLayer(phuongxa_base);
-                  } 
-                  if (map.hasLayer(phuongxa_focus)) {
-                      map.removeLayer(phuongxa_focus);
-                  }
-                  if (map.hasLayer(quanhuyen_focus)) {
-                      map.removeLayer(quanhuyen_focus);
-                  }
-                  if (map.hasLayer(quanhuyen_base) & zoomlevel == 10){
-                      map.removeLayer(quanhuyen_base)
-                      map.removeLayer(hcmgis_map)
-                  }
-
-                  if (!map.hasLayer(quanhuyen)){
-                      map.addLayer(quanhuyen)
-                  }
-                  if (!map.hasLayer(quanhuyen_base) & zoomlevel > 10){
-                      map.addLayer(quanhuyen_base)
-                  }
-                  
-                  
-                if (map.hasLayer(quanhuyen_focus)) {
-                  quanhuyen_focus.bringToFront()
-                }
-              }
-              if (zoomlevel >= 11.5){
-                if (!map.hasLayer(hcmgis_map) & zoomlevel > 10){
-                      map.addLayer(hcmgis_map)
-                }
-                if (map.hasLayer(quanhuyen)) {
-                      map.removeLayer(quanhuyen);
-                  } 
-                if (!map.hasLayer(phuongxa)){
-                      map.addLayer(phuongxa)
-                      map.addLayer(phuongxa_base)
-                  }
-                if (map.hasLayer(phuongxa_focus)) {
-                  phuongxa_focus.bringToFront()
-                } 
-                
-                if (!map.hasLayer(quanhuyen_base)){
-                      map.addLayer(quanhuyen_base)
-                }
-
-                if (map.hasLayer(quanhuyen_focus)) {
-                  quanhuyen_focus.bringToFront()
-                }
-                if (map.hasLayer(phuongxa_focus)) {
-                  phuongxa_focus.bringToFront()
-                }
-              }
-              console.log(zoomlevel)
+            if (map.hasLayer(quanhuyen_focus)) {
+              quanhuyen_focus.bringToFront()
+            }
+            if (map.hasLayer(phuongxa_focus)) {
+              phuongxa_focus.bringToFront()
+            }
+          }
+          console.log(zoomlevel)
           });
 </script>
 
