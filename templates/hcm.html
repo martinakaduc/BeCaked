@@ -454,7 +454,7 @@
 
                                   text = '<div style="font-weight: bold">'+name_1
                                   text += '<div> Cấp độ dịch: '+level+'</div>'
-                                  text += '<div> Ca nhiễm mới trong ngày {{ form_4["date"][:-6] }}: ' + form_4['data'][id_1.toString()] + '</div>'
+                                  text += '<div> Tổng ca nhiễm đến ngày {{ form_4["date"][:-6] }}: ' + form_4['data'][id_1.toString()] + '</div>'
                                   layer.bindPopup(text)
                                   var popup = e.target.getPopup();
                                   popup.setLatLng(e.latlng).openOn(map);
