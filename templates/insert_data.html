@@ -89,6 +89,27 @@
                 removeUpload();
             }
         }
+        function read_file_4(input) {
+            if (input.files && input.files[0]) {
+
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $("#wrap-file-4").css("box-shadow", "unset");
+                    $("#wrap-file-4 div.header").hide();
+                    $("#file-form-4 .file-upload-input").hide();
+                    $("#file-form-4 button").show();
+                    $("#wrap-file-4 .file-title-wrap").show();
+                    $("#msg-form-4 > p").html("")
+                    $('#wrap-file-4 .file-title').html(input.files[0].name);
+
+                };
+                reader.readAsDataURL(input.files[0]);
+
+            } else {
+                removeUpload();
+            }
+        }
         function remove_upload_1() {
             $("#wrap-file-1").css("box-shadow", " 0 0 5px rgba(0,0,0,.3)");
             $("#wrap-file-1 div.header").show();
@@ -113,25 +134,42 @@
             $("#wrap-file-3 .file-title-wrap").hide();
             $("#msg-form-3 > p").html("")
         }
+        function remove_upload_4() {
+            $("#wrap-file-4").css("box-shadow", " 0 0 5px rgba(0,0,0,.3)");
+            $("#wrap-file-4 div.header").show();
+            $("#file-form-4 .file-upload-input").show();
+            $("#file-form-4 button").hide();
+            $("#wrap-file-4 .file-title-wrap").hide();
+            $("#msg-form-4 > p").html("")
+        }
     
         function showForm() {
             if ($("#tab-1:checked").val() !== undefined) {
                 $(".wrap-form-2").hide()
                 $(".wrap-form-3").hide()
+                $(".wrap-form-4").hide()
                 $(".wrap-form-1").show()
             }
             else if ($("#tab-2:checked").val() !== undefined) {
                 $(".wrap-form-1").hide()
                 $(".wrap-form-3").hide()
+                $(".wrap-form-4").hide()
                 $(".wrap-form-2").show()
             }
             else if ($("#tab-3:checked").val() !== undefined) {
                 $(".wrap-form-1").hide()
                 $(".wrap-form-2").hide()
+                $(".wrap-form-4").hide()
                 $(".wrap-form-3").show()
             }
             else if ($("#tab-4:checked").val() !== undefined) {
-                window.location.href = "/BeCaked"
+                $(".wrap-form-1").hide()
+                $(".wrap-form-2").hide()
+                $(".wrap-form-3").hide()
+                $(".wrap-form-4").show()
+            }
+            else if ($("#tab-5:checked").val() !== undefined) {
+                window.location.href = "/"
             }
         }
         function switchInput1Method() {
@@ -164,6 +202,16 @@
                 $("#wrap-file-3").show()
             }
         }
+        function switchInput4Method() {
+            if ($("#user-input-4:checked").val() !== undefined) {
+                $("#wrap-file-4").hide()
+                $("#daily-treatment").show()
+            }
+            else if ($("#file-upload-4:checked").val() !== undefined) {
+                $("#daily-treatment").hide()
+                $("#wrap-file-4").show()
+            }
+        }
     </script>
 </head>
 
@@ -176,7 +224,9 @@
                 for="tab-2" class="tab">Mẫu 2</label>
             <input id="tab-3" name="tab" class="form-3" type="radio" value="form-3" onchange="showForm()"><label
                 for="tab-3" class="tab">Mẫu 3</label>
-            <input id="tab-4" name="tab" class="return-home" type="radio" onchange="showForm()"><label for="tab-4"
+                <input id="tab-4" name="tab" class="form-4" type="radio" value="form-4" onchange="showForm()"><label
+                for="tab-4" class="tab">Mẫu 4</label>
+            <input id="tab-5" name="tab" class="return-home" type="radio" onchange="showForm()"><label for="tab-5"
                 class="tab">Trang chủ</label>
         </div>
         <div class="wrap-form-1">
@@ -507,7 +557,58 @@
 
             </div>
         </div>
-
+        <div class="wrap-form-4">
+            <div class="left">
+                <p>Ca nhiễm <br> theo tỉnh</p>
+                <input id="file-upload-4" name="input4-method" type="radio" class="file-upload"
+                    onchange="switchInput4Method()" checked><label for="file-upload-4">Tải tệp</label>
+                <!-- <input id="user-input-4" name="input4-method" type="radio" class="user-input"
+                    onchange="switchInput4Method()"><label for="user-input-4">Nhập</label> -->
+        
+            </div>
+            <div class="right">
+                <div id="daily-treatment">
+        
+                </div>
+                <div id="msg-form-4" class="msg-form">
+                    <p>                               
+                    </p>
+                </div>
+                <div class="wrapper-file-upload" id="wrap-file-4">
+                    <div class="header">
+                        <p><i class="fa fa-cloud-upload fa-2x"></i><span><span>up</span>load</span></p>
+                    </div>
+                    <form action='/BeCaked/upload-form-4' method='post'
+                    enctype="multipart/form-data" class="form-group" id="file-form-4">
+                        <div class="file-upload-input">
+                            <input name = 'file' type="file" id="file-input-4" onchange="read_file_4(this);"
+                                accept=".xlsx">
+                            <label for="file-input-4">
+                                <i class="fa fa-file-text-o fa-3x"></i>
+                                <p>
+                                    <!-- <strong>Drag and drop</strong> files here<br> -->
+                                    <!-- or -->
+                                     <span>browse</span> to begin the upload
+                                </p>
+                            </label>
+                        </div>
+                        <div class="file-title-wrap">
+                            <div>
+                                <i class="fa fa-file-text-o fa-3x"><span class="file-title"></span></i>
+                            </div>
+                            <button type="submit" class="upload-file">Upload</button>
+                            <button type="button" onclick="remove_upload_4()" class="remove-file">Remove</button>
+                        </div>
+                    </form>
+                    <div class="template-format-file">
+                        <p><i>Template file: </i> <a
+                                href="/BeCaked{{ url_for('static', filename='template_files/template-form-4.xlsx') }}" download>
+                                here</a></p>
+                    </div>
+                </div>
+        
+            </div>
+        </div>
     </div>
     <script src = "/BeCaked/{{ url_for('static',filename='js/insert_data.js') }}"></script>
     

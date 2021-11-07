@@ -106,7 +106,22 @@ def upload_form_3():
         except Exception as e:
             print(e)
             return make_response("", 400)
-                
+
+@app.route('/upload-form-4', methods = ['GET', 'POST'])
+def upload_form_4():
+    if request.method == 'POST':
+        f = request.files['file']
+        df = pd.read_excel(f.read(), header = None)
+        try:
+            data = process_form_4(df)
+            backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
+            backup_data_path = os.path.join(backup_data_dir,'form-4.json')
+            with open(backup_data_path,'w') as f:
+                json.dump(data,f)
+            return make_response("", 200)
+        except Exception as e:
+            print(e)
+            return make_response("", 400)
 
 @app.route('/reload-db', methods=["POST"])
 def reload():
@@ -136,34 +151,6 @@ def old_home():
                             world_series=world_series,
                             world_series_predict=world_series_predict,
                             current_day=current_day)
-
-# @app.route("/", methods=["GET"])
-# @app.route("/<district>", methods=["GET"])
-# def home(district="hcm"):
-#     district = district.upper()
-#     district = district.replace('-',' ')
-    
-#     backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
-#     backup_data_path = os.path.join(backup_data_dir,district+'.json')
-#     backup_summary_path = os.environ.get("BACKUP_SUMMARY_PATH", "./backup/backup_summary.json")
-#     with open(backup_data_path) as json_file:
-#         data = json.load(json_file)
-#     with open(backup_summary_path) as json_file:
-#         summary = json.load(json_file)
-
-#     districts = ['BINH CHANH', 'BINH TAN', 'BINH THANH', 'CAN GIO', 'CU CHI', 'GO VAP', 'HCM', 'HOC MON', 'NHA BE', 'PHU NHUAN'] + [f'QUAN {i}' for i in [1, 3, 4, 5, 6, 7, 8, 10, 11, 12]] + ['TAN BINH', 'TAN PHU', 'THU DUC']
-#     districts.remove('HCM')
-#     districts.sort()
-#     districts.append('HCM')
-
-#     return render_template('home.html',
-#                             name = district,
-#                             today = data['_id'],
-#                             districts = districts,
-#                             summary = summary['data'],
-#                             data = data['data'],
-#                             num_cols = [6,3,1]
-#                             )
 
 @app.route('/__load_data')
 def load():
@@ -244,6 +231,8 @@ def home():
         form_2 = json.load(f)
     with open(os.path.join(backup_data_dir,'form-3.json')) as f:
         form_3 = json.load(f)
+    with open(os.path.join(backup_data_dir,'form-4.json')) as f:
+        form_4 = json.load(f)
 
     df = pd.read_csv(os.path.join(backup_data_dir,'level_3.csv'),encoding='utf-8').dropna(axis=1)
     level_3 = dict(zip(df['ID_3'],df['level']))
@@ -268,6 +257,7 @@ def home():
                             form_1 = form_1,
                             form_2 = form_2,
                             form_3 = form_3,
+                            form_4 = form_4,
                             id_2r=id_2r
                             )
 

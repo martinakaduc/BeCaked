@@ -46,6 +46,7 @@
 </div>
 
 <div class="container-fluid hcm-homepage">
+  <i class="fas fa-chevron-circle-down visible-sm btn fa-2x" style="position: fixed; right: 2vw; bottom: 2vw; z-index: 9999;" onclick="window.scrollBy(0, window.innerHeight);"></i>
   <div class="row" style="margin-top: 1em; margin-bottom: 1em;">
     <div class="col-lg-8 col-sm-12" align="left">
       <!-- left -->
@@ -201,13 +202,13 @@
 					</div>
 				  </div>
 				  <!-- Controls -->
-				  <a class="carousel-control-prev" href="#carousel-example-generic-captions" role="button" data-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					<span class="sr-only">Previous</span>
+				  <a class="carousel-control-prev hide-sm" href="#carousel-example-generic-captions" role="button" data-slide="prev">
+					<span class="carousel-control-prev-icon hide-sm" aria-hidden="true"></span>
+					<span class="sr-only hide-sm">Previous</span>
 				  </a>
-				  <a class="carousel-control-next" href="#carousel-example-generic-captions" role="button" data-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="sr-only">Next</span>
+				  <a class="carousel-control-next hide-sm" href="#carousel-example-generic-captions" role="button" data-slide="next">
+					<span class="carousel-control-next-icon hide-sm" aria-hidden="true"></span>
+					<span class="sr-only hide-sm">Next</span>
 				  </a>
 				</div> 
     </div>
@@ -216,7 +217,7 @@
       <div class="text-center" style="padding-bottom: .25em; font-size: 2em;">
         BỆNH VIỆN
       </div>
-      <table class="table table-hover table-responsive text-center" style="height: calc(100vh - 116px - 1em -  6em - 2em); overflow-y: scroll;">
+      <table class="table table-hover table-responsive text-center">
         <tr style="position: sticky; top: 0; z-index: 1; background-color: #7f8c8d;">
           <th>Phân loại</th>
           <th>Trong ngày</th>
@@ -452,9 +453,7 @@
 
                                   text = '<div style="font-weight: bold">'+name_1
                                   text += '<div> Cấp độ dịch: '+level+'</div>'
-                                  // text += '<div> Diện tích: '+parseInt(district.properties["dienTich"]).toLocaleString()+' ha</div>'
-                                  // text += '<div> Dân số: '+parseInt(district.properties["danSoThuTe"]).toLocaleString()+' người</div>'
-                                  // text += '<div> Ca nhiễm mới trong ngày {{ form_2["date"][:-6] }}: ' + form_2[id_2r[id_2]] + '</div>'
+                                  text += '<div> Ca nhiễm mới trong ngày {{ form_4["date"][:-6] }}: ' + form_4['data'][id_1.toString()] + '</div>'
                                   layer.bindPopup(text)
                                   var popup = e.target.getPopup();
                                   popup.setLatLng(e.latlng).openOn(map);
@@ -545,8 +544,8 @@
                                     prevLayerClicked.setStyle(mystyle(prevLevel).default);
                                   }
 
-                                  if ([787,785,783].includes(id_2)){
-                                    //CAN GIO, BINH CHANH, CU CHI too big :) -> zoom in
+                                  if ([787,785,783,769].includes(id_2)){
+                                    //CAN GIO, BINH CHANH, CU CHI, THU DUC too big :) -> zoom in
                                     map.flyTo(centre[id_2r[id_2]],12)
                                   }
                                   else{

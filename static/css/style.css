@@ -3,6 +3,10 @@
   padding: 0px;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* *:not(.center-summary *, .H_ib_body *){
   color: #fff;
 } */
@@ -67,8 +71,12 @@
 .forcast-charts{
   border-radius: 20px;
   background-color: #fff;
-  height: calc(100vh - 116px - 1em -  5em);
+  height: calc(100vh - 56px - 5em);
   overflow: hidden;
+}
+.right-table{
+  height: calc(100vh - 56px); 
+  overflow-y: scroll;
 }
 .forcast-charts h5{
   margin: 1em;
@@ -131,6 +139,13 @@
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) { 
+  .forcast-charts{
+    height: calc(100vh - 116px - 1em -  5em);
+  }
+  .right-table{
+    height: calc(100vh - 116px - 1em -  6em - 2em); 
+    overflow-y: scroll;
+  }
   .nav-item{
     width: max-content;
   }

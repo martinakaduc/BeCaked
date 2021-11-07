@@ -44,3 +44,15 @@ def process_form_3(df):
     data = df.fillna(0).values[2:, 1:].astype(int).tolist()
     result['data'] = data
     return result
+def process_form_4(df):
+    assert df.shape == (65, 3)
+    result = {}
+    today = df.loc[0][1]
+    today = today.replace(hour=18)
+    today = today.strftime('%b %d, %Y %H:%M')
+    result['date'] = today
+    k = df.values[2:,1]
+    v = df.values[2:,2]
+    data = {x:y for x,y in zip(k,v)}
+    result['data'] = data
+    return result

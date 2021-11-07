@@ -65,4 +65,26 @@ $(document).ready(function(){
             }
         });
     })
+    $("#file-form-4").submit(function(e){
+        e.preventDefault();
+        var formData = new FormData($(this)[0]);
+        $.ajax({
+            url: '/BeCaked/upload-form-4',
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            enctype: 'multipart/form-data',
+            processData: false,
+            success: function (response) {
+                remove_upload_3();
+                $("#msg-form-4 > p").html('<i class="fa fas fa-check-circle" style = "color: green; font-size: 60px;"></i><br><p style = "color: green; margin-top: 20px;">Xử lý thành công</p>')
+            },
+            error: function (e){
+                remove_upload_3();
+                $("#msg-form-4 > p").html('<i class="fa fas fa-exclamation-circle" style = "color: red; font-size: 60px;"></i><br><p style = "color: red; margin-top: 20px;">Tệp bị lỗi</p>')
+            }
+        });
+    })
 })
