@@ -454,7 +454,8 @@
 
                                   text = '<div style="font-weight: bold">'+name_1
                                   text += '<div> Cấp độ dịch: '+level+'</div>'
-                                  text += '<div> Tổng ca nhiễm đến ngày {{ form_4["date"][:-6] }}: ' + parseInt(form_4['data'][id_1.toString()]).toLocaleString() + '</div>'
+                                  text += '<div> Ca nhiễm mới trong ngày {{ form_4["date"][:-6] }}: ' + parseInt(form_4['data'][id_1.toString()][0]).toLocaleString() + '</div>'
+                                  text += '<div> Tổng ca nhiễm: ' + parseInt(form_4['data'][id_1.toString()][1]).toLocaleString() + '</div>'
                                   layer.bindPopup(text)
                                   var popup = e.target.getPopup();
                                   popup.setLatLng(e.latlng).openOn(map);
@@ -516,7 +517,8 @@
                                   text += '<div> Cấp độ dịch: '+level+'</div>'
                                   text += '<div> Diện tích: '+parseInt(district.properties["dienTich"]).toLocaleString()+' ha</div>'
                                   text += '<div> Dân số: '+parseInt(district.properties["danSoThuTe"]).toLocaleString()+' người</div>'
-                                  text += '<div> Ca nhiễm mới trong ngày {{ form_2["date"][:-6] }}: ' + form_2[id_2r[id_2]] + '</div>'
+                                  text += '<div> Ca nhiễm mới trong ngày {{ form_2["date"][:-6] }}: ' + parseInt(form_2[id_2r[id_2]][1]).toLocaleString() + '</div>'
+                                  text += '<div> Ca nhiễm tích luỹ từ 27/4/2021: ' + parseInt(form_2[id_2r[id_2]][0]).toLocaleString() + '</div>'
                                   layer.bindPopup(text)
                                   var popup = e.target.getPopup();
                                   popup.setLatLng(e.latlng).openOn(map);

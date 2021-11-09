@@ -64,7 +64,7 @@ def insert_data(username):
 def upload_form_1():
     if request.method == 'POST':
         f = request.files['file']
-        df = pd.read_excel(f.read(), header = None)
+        df = pd.read_excel(f.read(), header = None).dropna(how='any',thresh=5,axis=1)
         try:
             data = process_form_1(df)
             backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
@@ -80,7 +80,7 @@ def upload_form_1():
 def upload_form_2():
     if request.method == 'POST':
         f = request.files['file']
-        df = pd.read_excel(f.read(), header = None).dropna(axis=1)
+        df = pd.read_excel(f.read(), header = None).dropna(how='any',thresh=5,axis=1)
         try:
             data = process_form_2(df)
             backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
@@ -95,7 +95,7 @@ def upload_form_2():
 def upload_form_3():
     if request.method == 'POST':
         f = request.files['file']
-        df = pd.read_excel(f.read(), header = None)
+        df = pd.read_excel(f.read(), header = None).dropna(how='any',thresh=5,axis=1)
         try:
             data = process_form_3(df)
             backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
@@ -111,7 +111,7 @@ def upload_form_3():
 def upload_form_4():
     if request.method == 'POST':
         f = request.files['file']
-        df = pd.read_excel(f.read(), header = None)
+        df = pd.read_excel(f.read(), header = None).dropna(how='any',thresh=5,axis=1)
         try:
             data = process_form_4(df)
             backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
