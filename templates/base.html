@@ -24,6 +24,16 @@
 
   <link rel="shortcut icon" href="/BeCaked{{ url_for('favicon') }}" type="image/x-icon">
   <link rel="icon" href="/BeCaked{{ url_for('favicon') }}" type="image/x-icon">
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4ZJ5QY44JZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4ZJ5QY44JZ');
+  </script>
   {% block head %}{% endblock %}
 </head>
 
