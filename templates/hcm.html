@@ -452,7 +452,7 @@
                                   level = levels[id_1]
                                   name_1= district.properties["NAME_1"]
 
-                                  text = '<div style="font-weight: bold">'+name_1
+                                  text = '<div style="font-weight: bold; font-size: 1.5em">'+name_1+"</div>"
                                   text += '<div> Cấp độ dịch: '+level+'</div>'
                                   text += '<div> Ca nhiễm mới trong ngày {{ form_4["date"][:-6] }}: ' + parseInt(form_4['data'][id_1.toString()][0]).toLocaleString() + '</div>'
                                   text += '<div> Tổng ca nhiễm: ' + parseInt(form_4['data'][id_1.toString()][1]).toLocaleString() + '</div>'
@@ -513,7 +513,7 @@
                                   level = levels[id_2]
                                   name_2= district.properties["diaDanh"]
 
-                                  text = '<div style="font-weight: bold">'+name_2
+                                  text = '<div style="font-weight: bold; font-size: 1.5em">'+name_2+"</div>"
                                   text += '<div> Cấp độ dịch: '+level+'</div>'
                                   text += '<div> Diện tích: '+parseInt(district.properties["dienTich"]).toLocaleString()+' ha</div>'
                                   text += '<div> Dân số: '+parseInt(district.properties["danSoThuTe"]).toLocaleString()+' người</div>'
@@ -592,7 +592,7 @@
                                         name_3 = phuong.properties["diaDanhXa"]
                                         name_2 = phuong.properties["diaDanhHuy"]
 
-                                        text = '<div style="font-weight: bold">'+name_3 + ' - ' + name_2+'</div>'
+                                        text = '<div style="font-weight: bold; font-size: 1.5em">'+name_3 + ' - ' + name_2+'</div>'
                                         text += '<div> Cấp độ dịch của Phường/Xã: '+levels[id_3]+'</div>'
                                         text += '<div> Cấp độ dịch của Quận/Huyện: '+levels[id_2]+'</div>'
                                         text += '<div> Diện tích: '+parseInt(phuong.properties["dienTich"])+' ha</div>'
