@@ -129,6 +129,7 @@ def reload():
         token = request.json['token']
         if check(token):
             os.system('python3 database.py')
+            os.system('python3 crawl_byt.py')
             return "done"
         else:
             return "invalid token"
@@ -234,14 +235,25 @@ def home():
     with open(os.path.join(backup_data_dir,'form-4.json')) as f:
         form_4 = json.load(f)
 
-    df = pd.read_csv(os.path.join(backup_data_dir,'level_3.csv'),encoding='utf-8').dropna(axis=1)
-    level_3 = dict(zip(df['ID_3'],df['level']))
-    df = pd.read_csv(os.path.join(backup_data_dir,'level_2.csv'),encoding='utf-8').dropna(axis=1)
-    level_2 = dict(zip(df['ID_2'],df['level']))
-    df = pd.read_csv(os.path.join(backup_data_dir,'level_1.csv'),encoding='utf-8').dropna(axis=1)
-    level_1 = dict(zip(df['ID_1'],df['level']))
-    levels = {**level_1,**level_2,**level_3}
+    df = pd.read_csv(os.path.join(backup_data_dir,'level_3.csv'),encoding='utf-8')#.dropna(axis=1)
+    id_2,id_3 = df['ID_2'],df['ID_3']
+    id = ['79'+str(x).zfill(3)+str(y).zfill(5) for x,y in zip(id_2,id_3)]
+    level_3 = dict(zip(id,zip(df['level'],[df['date'][0]]*len(df))))
 
+    df = pd.read_csv(os.path.join(backup_data_dir,'level_2.csv'),encoding='utf-8')#.dropna(axis=1)
+    id_2 = df['ID_2']
+    id = ['79'+str(x).zfill(3)+'00000' for x in id_2]
+    level_2 = dict(zip(id,zip(df['level'],[df['date'][0]]*len(df))))
+
+    df = pd.read_csv(os.path.join(backup_data_dir,'level_1.csv'),encoding='utf-8').dropna(axis=1)
+    # level_1 = dict(zip(df['ID_1'],df['level']))
+    # levels = {**level_1,**level_2,**level_3}
+    id_1_to_code = dict(zip(df['ID_1'],df['Code']))
+    with open(os.path.join(backup_data_dir,'byt/levels.json')) as f:
+        levels = json.load(f)
+
+    levels.update(level_2)
+    levels.update(level_3)
     return render_template('hcm.html',
                             name = 'HCM',
                             today = today,
@@ -258,6 +270,7 @@ def home():
                             form_2 = form_2,
                             form_3 = form_3,
                             form_4 = form_4,
+                            id_1_to_code = id_1_to_code,
                             id_2r=id_2r
                             )
 

@@ -1,23 +1,23 @@
-NAME_2,ID_2,level
-Quận 1,760,1
-Quận 3,770,2
-Quận 4,773,1
-Quận 5,774,2
-Quận 6,775,1
-Quận 7,778,1
-Quận 8,776,1
-Quận 10,771,2
-Quận 11,772,1
-Quận 12,761,2
-Huyện Bình Chánh,785,1
-Quận Bình Tân,777,2
-Quận Bình Thạnh,765,1
-Huyện Cần Giờ,787,2
-Huyện Củ Chi,783,1
-Quận Gò Vấp,764,2
-Huyện Hóc Môn,784,2
-Huyện Nhà Bè,786,2
-Quận Phú Nhuận,768,2
-Quận Tân Bình,766,1
-Quận Tân Phú,767,1
-Thành phố Thủ Đức,769,2
+NAME_2,ID_2,level,date
+Quận 1,760,1,"22/11/2021"
+Quận 3,770,2,
+Quận 4,773,1,
+Quận 5,774,2,
+Quận 6,775,1,
+Quận 7,778,1,
+Quận 8,776,1,
+Quận 10,771,2,
+Quận 11,772,1,
+Quận 12,761,2,
+Huyện Bình Chánh,785,1,
+Quận Bình Tân,777,2,
+Quận Bình Thạnh,765,1,
+Huyện Cần Giờ,787,2,
+Huyện Củ Chi,783,1,
+Quận Gò Vấp,764,2,
+Huyện Hóc Môn,784,2,
+Huyện Nhà Bè,786,2,
+Quận Phú Nhuận,768,2,
+Quận Tân Bình,766,1,
+Quận Tân Phú,767,1,
+Thành phố Thủ Đức,769,2,

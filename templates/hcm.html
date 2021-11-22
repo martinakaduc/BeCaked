@@ -29,8 +29,8 @@
 <script>
   // Chart.register(zoomPlugin);
 </script>
-<script src="/BeCaked{{ url_for('static', filename='js/draw_maps.js') }}"></script>
-<script src="/BeCaked{{ url_for('static', filename='js/draw.js') }}"></script>
+<script src="/BeCaked/BeCaked{{ url_for('static', filename='js/draw_maps.js') }}"></script>
+<script src="/BeCaked/BeCaked{{ url_for('static', filename='js/draw.js') }}"></script>
 {% endblock %}
 {% block content %}
 
@@ -384,22 +384,6 @@
     }
   );
 
-  L.Control.textbox = L.Control.extend({
-		onAdd: function(map) {
-			
-		var text = L.DomUtil.create('div');
-		text.id = "info_text";
-		text.innerHTML = "<div style='font-style: italic; font-size: 90%; color: #000; border: solid 1px black; background-color: #bdc3c7; padding: .1em; width: max-content'><div>Ngày cập nhật dữ liệu cấp độ dịch tỉnh thành: 1/11/2021</div><div>Ngày cập nhật dữ liệu cấp độ dịch TP.HCM: 22/11/2021</div></div>"
-		return text;
-		},
-
-		onRemove: function(map) {
-			// Nothing to do here
-		}
-	});
-	L.control.textbox = function(opts) { return new L.Control.textbox(opts);}
-	L.control.textbox({ position: 'bottomleft' }).addTo(map);
-  
   var prevLayerClicked = null;
   var phuongxa_focus = null;
   var quanhuyen_focus = null;
@@ -431,12 +415,13 @@
   form_2 = {{ form_2|tojson }}
   form_4 = {{ form_4|tojson }}
   id_2r = {{ id_2r|tojson }}
+  id_1_to_code = {{ id_1_to_code|tojson }}
   centre = {{ centre|tojson }}
 
   var tinh = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/vnm1.geojson') }}",{
                       style: function(tinh) {
                           id_1 = tinh.properties["ID_1"]
-                          level = levels[id_1]
+                          level = levels[id_1_to_code[id_1]+"00000000"][0]
                           temp = mystyle(level).default
                           temp.fillColor = temp.color
                           temp.color = "blue"
@@ -449,11 +434,12 @@
                                 mouseover: function(e){
                                   //hover: show popup, highlight area (increase opacity, fillOpacity)
                                   id_1 = district.properties["ID_1"]
-                                  level = levels[id_1]
+                                  level = levels[id_1_to_code[id_1]+"00000000"][0]
                                   name_1= district.properties["NAME_1"]
 
                                   text = '<div style="font-weight: bold; font-size: 1.5em">'+name_1+"</div>"
                                   text += '<div> Cấp độ dịch: '+level+'</div>'
+                                  text += '<div> Ngày cập nhật cấp độ dịch: '+levels[id_1_to_code[id_1]+"00000000"][1]+'</div>'
                                   text += '<div> Ca nhiễm mới trong ngày {{ form_4["date"][:-6] }}: ' + parseInt(form_4['data'][id_1.toString()][0]).toLocaleString() + '</div>'
                                   text += '<div> Tổng ca nhiễm: ' + parseInt(form_4['data'][id_1.toString()][1]).toLocaleString() + '</div>'
                                   layer.bindPopup(text)
@@ -470,7 +456,7 @@
                                 mouseout: function(e){
                                   //end hover: close popup
                                   id_1 = district.properties["ID_1"]
-                                  level = levels[id_1]
+                                  level = levels[id_1_to_code[id_1]+"00000000"][0]
                                   temp = mystyle(level).default
                                   temp.fillColor = temp.color
                                   temp.color = "blue"
@@ -502,7 +488,7 @@
   var quanhuyen = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/quanhuyen_2021.geojson') }}",{
                       style: function(district) {
                           id_2 = district.properties["maDVHC"]
-                          level = levels[id_2]
+                          level = levels["79"+id_2+"00000"][0]
                           return  mystyle(level).default
                         },
                         onEachFeature: function (district, layer) {
@@ -510,11 +496,12 @@
                                 mouseover: function(e){
                                   //hover: show popup, highlight area (increase opacity, fillOpacity)
                                   id_2 = district.properties["maDVHC"]
-                                  level = levels[id_2]
+                                  level = levels["79"+id_2+"00000"][0]
                                   name_2= district.properties["diaDanh"]
 
                                   text = '<div style="font-weight: bold; font-size: 1.5em">'+name_2+"</div>"
                                   text += '<div> Cấp độ dịch: '+level+'</div>'
+                                  text += '<div> Ngày cập nhật cấp độ dịch: '+levels["79"+id_2+"00000"][1]+'</div>'
                                   text += '<div> Diện tích: '+parseInt(district.properties["dienTich"]).toLocaleString()+' ha</div>'
                                   text += '<div> Dân số: '+parseInt(district.properties["danSoThuTe"]).toLocaleString()+' người</div>'
                                   text += '<div> Ca nhiễm mới trong ngày {{ form_2["date"][:-6] }}: ' + parseInt(form_2[id_2r[id_2]][0]).toLocaleString() + '</div>'
@@ -533,7 +520,7 @@
                                 mouseout: function(e){
                                   //end hover: close popup
                                   id_2 = district.properties["maDVHC"]
-                                  level = levels[id_2]
+                                  level = levels["79"+id_2+"00000"][0]
                                   layer.setStyle(mystyle(level).default);
                                   layer.closePopup()
                                 },
@@ -541,7 +528,7 @@
                                 click: function(e){
                                   //click: focus it
                                   var id_2 = e.target.feature.properties["maDVHC"]
-                                  var level = levels[id_2]
+                                  var level = levels["79"+id_2+"00000"][0]
 
                                   if (prevLayerClicked !== null) {
                                     prevLayerClicked.setStyle(mystyle(prevLevel).default);
@@ -577,7 +564,8 @@
   var phuongxa = new L.GeoJSON.AJAX("/BeCaked{{ url_for('static', filename='data/phuongxa_2021.geojson') }}",{
                       style: function(phuong) {
                                 id_3 = phuong.properties["maDVHCXa"]
-                                level = levels[id_3]
+                                id_2 = phuong.properties["maDVHCHuye"]
+                                level = levels["79"+String(id_2)+String(id_3).padStart(5,"0")][0]
                                 temp =  mystyle(level).default
                                 temp.opacity = 0.3
                                 return temp
@@ -588,14 +576,15 @@
                                         // hover: show popup, highlight area
                                         id_3 = phuong.properties["maDVHCXa"]
                                         id_2 = phuong.properties["maDVHCHuye"]
-                                        level = levels[id_3]
+                                        level = levels["79"+String(id_2)+String(id_3).padStart(5,"0")][0]
                                         name_3 = phuong.properties["diaDanhXa"]
                                         name_2 = phuong.properties["diaDanhHuy"]
 
                                         text = '<div style="font-weight: bold; font-size: 1.5em">'+name_3 + ' - ' + name_2+'</div>'
-                                        text += '<div> Cấp độ dịch của Phường/Xã: '+levels[id_3]+'</div>'
-                                        text += '<div> Cấp độ dịch của Quận/Huyện: '+levels[id_2]+'</div>'
-                                        text += '<div> Diện tích: '+parseInt(phuong.properties["dienTich"])+' ha</div>'
+                                        text += '<div> Cấp độ dịch của Phường/Xã: '+level+'</div>'
+                                        text += '<div> Cấp độ dịch của Quận/Huyện: '+levels["79"+id_2+"00000"][0]+'</div>'
+                                        text += '<div> Ngày cập nhật cấp độ dịch: '+levels["79"+String(id_2)+String(id_3).padStart(5,"0")][1]+'</div>'
+                                        text += '<div> Diện tích: '+parseInt(phuong.properties["dienTich"]).toLocaleString()+' ha</div>'
                                         text += '<div> Dân số: '+parseInt(phuong.properties["danSoThucT"]).toLocaleString()+' người</div>'
                                         layer.bindPopup(text)
                                         var popup = e.target.getPopup();
@@ -611,7 +600,8 @@
                                       mouseout: function(e){
                                         // end hover: close popup
                                         id_3 = phuong.properties["maDVHCXa"]
-                                        level = levels[id_3]
+                                        id_2 = phuong.properties["maDVHCHuye"]
+                                        level = levels["79"+String(id_2)+String(id_3).padStart(5,"0")][0]
                                         layer.setStyle(mystyle(level).default);
                                         layer.closePopup()
                                       },
@@ -619,7 +609,8 @@
                                       click: function(e){
                                         // click: focus it
                                         var id_3 = e.target.feature.properties["maDVHCXa"]
-                                        var level = levels[id_3]
+                                        var id_2 = phuong.properties["maDVHCHuye"]
+                                        var level = levels["79"+String(id_2)+String(id_3).padStart(5,"0")][0]
 
                                         if (prevLayerClicked !== null) {
                                             // Reset style
