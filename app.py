@@ -129,7 +129,7 @@ def reload():
         token = request.json['token']
         if check(token):
             os.system('python3 database.py')
-            os.system('python3 crawl_byt.py')
+            os.system('python3 crawl_byt.py > crawler_log.txt')
             return "done"
         else:
             return "invalid token"

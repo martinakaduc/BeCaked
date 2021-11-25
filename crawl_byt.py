@@ -52,5 +52,10 @@ def process_byt_all(dirpath):
 
 
 if __name__ == '__main__':
+    print("Start crawling...")
+    start = datetime.now()
     backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
     crawl_byt(to_dir=os.path.join(backup_data_dir,'byt'))
+    time.sleep(5)
+    total = datetime.now()-start
+    print("Crawl successful. Total time: {}".format(total))
