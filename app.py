@@ -126,16 +126,20 @@ def upload_form_4():
 @app.route('/reload-db', methods=["POST"])
 def reload():
     try:
-        token = request.json['token']
+        try:
+            token = request.json['token']
+        except:
+            token = request.form['token']
+
         if check(token):
             os.system('python3 database.py')
             os.system('python3 crawl_byt.py > crawler_log.txt')
             return "done"
         else:
-            return "invalid token"
+            return "invalid token", 401
     except Exception as e:
         print(e)
-        return str(e)
+        return str(e), 402
 
 @app.route("/hello", methods=["GET"])
 @app.route('/hello/<name>', methods=["GET"])
