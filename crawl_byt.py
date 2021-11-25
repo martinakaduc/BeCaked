@@ -16,13 +16,14 @@ def crawl_byt_by_id(id):
     iter = 1
     while 1:
         try:
-            print('ID={}'.format(id))
+            print('ID={}...'.format(id),end='\t')
             response = requests.post(url, json = payload, headers = headers, timeout=10, verify=False)
+            print("Successful.")
             break
         except Exception as e:
             print(e)
             iter += 1
-            print("{}: {} time".format(id,iter))
+            print("Retry {}: {} time".format(id,iter))
     enc = json.loads(response.text)["result"]["data"]
     dec = base64.b64decode(enc)
     return dec
@@ -52,8 +53,9 @@ def process_byt_all(dirpath):
 
 
 if __name__ == '__main__':
-    print("Start crawling...")
+    print("Start crawling...",end='\t')
     start = datetime.now()
+    print(start)
     backup_data_dir = os.environ.get("BACKUP_DATA_PATH", "./backup/")
     crawl_byt(to_dir=os.path.join(backup_data_dir,'byt'))
     time.sleep(5)
