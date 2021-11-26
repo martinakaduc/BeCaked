@@ -53,7 +53,7 @@ def process_form_4(df):
     assert df.shape == (65, 4)
     result = {}
     today = df.loc[0][1]
-    today = datetime.strptime(today,'%d/%m/%Y')
+    # today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
     today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
