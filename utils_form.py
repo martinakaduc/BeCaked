@@ -5,7 +5,7 @@ def process_form_1(df):
     today = df.loc[0][1]
     today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
-    today = today.strftime('%b %d, %Y %H:%M')
+    today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
     pcr, rapid_test = df.loc[1, 1].split('+')
     result['new-infections'] = {'pcr': int(pcr), 'rapid-test': int(rapid_test)}
@@ -32,7 +32,7 @@ def process_form_2(df):
     today = df.loc[0][1]
     today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
-    today = today.strftime('%b %d, %Y %H:%M')
+    today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
     districts = ['THU DUC'] + ['QUAN ' + str(i) for i in [1, 3, 4, 5, 6, 7, 8, 10, 11, 12]] +['BINH THANH', 'BINH TAN', 'PHU NHUAN', 'TAN BINH', 'TAN PHU', 'GO VAP', 'CU CHI', 'CAN GIO', 'BINH CHANH', 'HOC MON', 'NHA BE']
     for i, district in enumerate(districts):
@@ -44,7 +44,7 @@ def process_form_3(df):
     today = df.loc[0][1]
     today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
-    today = today.strftime('%b %d, %Y %H:%M')
+    today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
     data = df.fillna(0).values[2:, 1:].astype(int).tolist()
     result['data'] = data
@@ -55,7 +55,7 @@ def process_form_4(df):
     today = df.loc[0][1]
     today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
-    today = today.strftime('%b %d, %Y %H:%M')
+    today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
     k = df.values[2:,1]
     v_1 = df.values[2:,2]
