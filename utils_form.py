@@ -3,7 +3,7 @@ def process_form_1(df):
     assert df.shape == (11, 2)
     result = {}
     today = df.loc[0][1]
-    today = datetime.strptime(today,'%d/%m/%Y')
+    # today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
     today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
@@ -30,7 +30,7 @@ def process_form_2(df):
     assert df.shape == (24, 3)
     result = {}
     today = df.loc[0][1]
-    today = datetime.strptime(today,'%d/%m/%Y')
+    # today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
     today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
@@ -42,7 +42,7 @@ def process_form_3(df):
     assert df.shape == (18, 4)
     result = {}
     today = df.loc[0][1]
-    today = datetime.strptime(today,'%d/%m/%Y')
+    # today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
     today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
