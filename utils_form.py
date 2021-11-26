@@ -14,9 +14,10 @@ def process_form_1(df):
     result['total-recovered'] = {'hospital': int(h), 'quarantine': int(q)}
     h, q = df.loc[5, 1].split('+')
     result['treatment'] = {'new-hospital': int(h), 'current': int(q)}
-    a, b, c = df.loc[6, 1].split('+')
+    a, b, c, d = df.loc[6, 1].split('+')
     result['critical'] = {'invasive-ventilation': int(a), 'emo': int(b)}
     result['death'] = int(c)
+    result['death_provinces'] = int(d)
     result['F0'] = {'home': df.loc[7, 1], 'quarantine': df.loc[8, 1]}
     a, b = df.loc[9, 1].split('+')
     result['new-vaccine'] = {'first-dose': int(a), 'second-dose': int(b)}

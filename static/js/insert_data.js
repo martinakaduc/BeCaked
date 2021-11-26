@@ -17,7 +17,7 @@ $(document).ready(function(){
             },
             error: function (e){
                 remove_upload_1();
-                $("#msg-form-1 > p").html('<i class="fa fas fa-exclamation-circle" style = "color: red; font-size: 60px;"></i><br><p style = "color: red; margin-top: 20px;">Tệp bị lỗi</p>')
+                $("#msg-form-1 > p").html('<i class="fa fas fa-exclamation-circle" style = "color: red; font-size: 60px;"></i><br><div style = "color: red; margin-top: 20px;">Tệp bị lỗi</div><div style = "margin-top: 20px;">Từ ngày 26/11 có thêm số liệu ca tử vong từ bệnh viện tỉnh</div>')
             }
         });
     })
