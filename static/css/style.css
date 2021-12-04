@@ -58,7 +58,7 @@ html {
 .info-popup{
   display: none; 
   position:absolute; 
-  top: -1em; 
+  top: 1em; 
   border: 1px solid; 
   border-radius: 20px; 
   background-color: #fff;

@@ -1,19 +1,17 @@
-from datetime import datetime
 def process_form_1(df):
     assert df.shape == (11, 2)
     result = {}
     today = df.loc[0][1]
-    # today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
     today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
     pcr, rapid_test = df.loc[1, 1].split('+')
     result['new-infections'] = {'pcr': int(pcr), 'rapid-test': int(rapid_test)}
     result['total-cases'] = df.loc[2, 1]
-    h, q = df.loc[3, 1].split('+')
-    result['recovered'] = {'hospital': int(h), 'quarantine': int(q)}
-    h, q = df.loc[4, 1].split('+')
-    result['total-recovered'] = {'hospital': int(h), 'quarantine': int(q)}
+    h, q, home = df.loc[3, 1].split('+')
+    result['recovered'] = {'hospital': int(h), 'quarantine': int(q), 'home': int(home)}
+    h, q, home = df.loc[4, 1].split('+')
+    result['total-recovered'] = {'hospital': int(h), 'quarantine': int(q), 'home': int(home)}
     h, q = df.loc[5, 1].split('+')
     result['treatment'] = {'new-hospital': int(h), 'current': int(q)}
     a, b, c, d = df.loc[6, 1].split('+')
@@ -30,7 +28,6 @@ def process_form_2(df):
     assert df.shape == (24, 3)
     result = {}
     today = df.loc[0][1]
-    # today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
     today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
@@ -42,7 +39,6 @@ def process_form_3(df):
     assert df.shape == (18, 4)
     result = {}
     today = df.loc[0][1]
-    # today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
     today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today
@@ -53,7 +49,6 @@ def process_form_4(df):
     assert df.shape == (65, 4)
     result = {}
     today = df.loc[0][1]
-    # today = datetime.strptime(today,'%d/%m/%Y')
     today = today.replace(hour=18)
     today = today.strftime('%d %b %Y %H:%M')
     result['date'] = today

@@ -86,6 +86,18 @@
               Hôm nay có {{ "{:,}".format(form_1['recovered']['quarantine']) }} ca mới, tổng đợt 4 có {{ "{:,}".format(form_1['total-recovered']['quarantine']) }} ca
             </div>
           </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">F0 TẠI NHÀ + F0 KCL</div>
+            <div class="num-1" style="margin-top: .5em;">{{ "{:,} + {:,}".format(form_1['F0']['home'],form_1['F0']['quarantine']) }}</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#hpnha-popup').show()" onmouseout="$('#hpnha-popup').hide()">
+            <div class="txt-1">Hồi phục tại nhà</div>
+            <div class="num-1">{{ "{:,}".format(form_1['total-recovered']['home']) }}</div>
+            <div class="num-2">+{{ "{:,}".format(form_1['recovered']['home']) }}</div>
+            <div class="info-popup" id="hpnha-popup">
+              Hôm nay có {{ "{:,}".format(form_1['recovered']['home']) }} ca mới, tổng đợt 4 có {{ "{:,}".format(form_1['total-recovered']['home']) }} ca
+            </div>
+          </div>
           <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#dieutri-popup').show()" onmouseout="$('#dieutri-popup').hide()">
             <div class="txt-1">ĐIỀU TRỊ</div>
             <div class="num-1">{{ "{:,}".format(form_1['treatment']['current']) }}</div>
@@ -117,14 +129,6 @@
             <div class="info-popup" id="mui2-popup">
               Hôm nay tiêm được {{ "{:,}".format(form_1['new-vaccine']['second-dose']) }} mũi mới, tổng cộng đã tiêm {{ "{:,}".format(form_1['total-vaccine']['second-dose']) }} mũi
             </div>
-          </div>
-          <div class="col-lg-6 col-sm-12 text-center">
-            <div class="txt-1">F0 TẠI NHÀ</div>
-            <div class="num-1">{{ "{:,}".format(form_1['F0']['home']) }}</div>
-          </div>
-          <div class="col-lg-6 col-sm-12 text-center">
-            <div class="txt-1">F0 KCL</div>
-            <div class="num-1">{{ "{:,}".format(form_1['F0']['quarantine']) }}</div>    
           </div>
           <div class="col-lg-6 col-sm-12 text-center">
             <div class="txt-1">THỞ MÁY XÂM LẤN</div>
