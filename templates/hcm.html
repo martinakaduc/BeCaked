@@ -193,7 +193,7 @@
 					  <canvas id="chart_i"></canvas>
 					</div>
 					<div class="carousel-item forcast-charts">
-            <h5 style="color:#19191a">DỰ BÁO SỐ CA HỒI PHỤC HÀNG NGÀY</h5>
+            <h5 style="color:#19191a">DỰ BÁO SỐ CA XUẤT VIỆN HÀNG NGÀY</h5>
 					  <canvas id="chart_r"></canvas>
 					</div>
 					<div class="carousel-item forcast-charts">
@@ -446,6 +446,8 @@
                                   text += '<div> Ngày cập nhật cấp độ dịch: '+levels[id_1_to_code[id_1]+"00000000"][1]+'</div>'
                                   text += '<div> Ca nhiễm mới trong ngày {{ form_4["date"][:-6] }}: ' + parseInt(form_4['data'][id_1.toString()][0]).toLocaleString() + '</div>'
                                   text += '<div> Tổng ca nhiễm: ' + parseInt(form_4['data'][id_1.toString()][1]).toLocaleString() + '</div>'
+                                  text += '<div> Ca tử vong mới trong ngày {{ form_4["date"][:-6] }}: ' + parseInt(form_4['data'][id_1.toString()][2]).toLocaleString() + '</div>'
+                                  text += '<div> Tổng ca tử vong: ' + parseInt(form_4['data'][id_1.toString()][3]).toLocaleString() + '</div>'
                                   layer.bindPopup(text)
                                   var popup = e.target.getPopup();
                                   popup.setLatLng(e.latlng).openOn(map);

@@ -46,7 +46,7 @@ def process_form_3(df):
     result['data'] = data
     return result
 def process_form_4(df):
-    assert df.shape == (65, 4)
+    assert df.shape == (65, 6)
     result = {}
     today = df.loc[0][1]
     today = today.replace(hour=18)
@@ -55,6 +55,8 @@ def process_form_4(df):
     k = df.values[2:,1]
     v_1 = df.values[2:,2]
     v_2 = df.values[2:,3]
-    data = {x:(y,z) for x,y,z in zip(k,v_1,v_2)}
+    v_3 = df.values[2:,4]
+    v_4 = df.values[2:,5]
+    data = {x:(y,z,t,q) for x,y,z,t,q in zip(k,v_1,v_2,v_3,v_4)}
     result['data'] = data
     return result
