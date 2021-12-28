@@ -19,10 +19,10 @@ def process_form_1(df):
     result['death'] = int(c)
     result['death_provinces'] = int(d)
     result['F0'] = {'home': df.loc[7, 1], 'quarantine': df.loc[8, 1]}
-    a, b = df.loc[9, 1].split('+')
-    result['new-vaccine'] = {'first-dose': int(a), 'second-dose': int(b)}
-    a, b = df.loc[10, 1].split('+')
-    result['total-vaccine'] = {'first-dose': int(a), 'second-dose': int(b)}
+    a, b, c = df.loc[9, 1].split('+')
+    result['new-vaccine'] = {'first-dose': int(a), 'second-dose': int(b), 'third-dose': int(c)}
+    a, b, c = df.loc[10, 1].split('+')
+    result['total-vaccine'] = {'first-dose': int(a), 'second-dose': int(b), 'third-dose': int(c)}
     return result
 def process_form_2(df):
     assert df.shape == (24, 3)

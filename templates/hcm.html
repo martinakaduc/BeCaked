@@ -70,6 +70,14 @@
             <div class="txt-2">(ĐỢT 4)</div>
             <div class="num-1">{{ "{:,}".format(form_1['total-cases']) }}</div>
           </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">F0 TẠI NHÀ</div>
+            <div class="num-1" style="margin-top: .5em;">{{ "{:,}".format(form_1['F0']['home']) }}</div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center">
+            <div class="txt-1">F0 KCL</div>
+            <div class="num-1" style="margin-top: .5em;">{{ "{:,}".format(form_1['F0']['quarantine']) }}</div>
+          </div>
           <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#xuatvien-popup').show()" onmouseout="$('#xuatvien-popup').hide()">
             <div class="txt-1">XUẤT VIỆN</div>
             <div class="num-1">{{ "{:,}".format(form_1['total-recovered']['hospital']) }}</div>
@@ -85,10 +93,6 @@
             <div class="info-popup" id="kcl-popup">
               Hôm nay có {{ "{:,}".format(form_1['recovered']['quarantine']) }} ca mới, tổng đợt 4 có {{ "{:,}".format(form_1['total-recovered']['quarantine']) }} ca
             </div>
-          </div>
-          <div class="col-lg-6 col-sm-12 text-center">
-            <div class="txt-1">F0 TẠI NHÀ + F0 KCL</div>
-            <div class="num-1" style="margin-top: .5em;">{{ "{:,} + {:,}".format(form_1['F0']['home'],form_1['F0']['quarantine']) }}</div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#hpnha-popup').show()" onmouseout="$('#hpnha-popup').hide()">
             <div class="txt-1">Hồi phục tại nhà</div>
@@ -128,6 +132,14 @@
             <div class="num-2">+{{ "{:,}".format(form_1['new-vaccine']['second-dose']) }}</div>
             <div class="info-popup" id="mui2-popup">
               Hôm nay tiêm được {{ "{:,}".format(form_1['new-vaccine']['second-dose']) }} mũi mới, tổng cộng đã tiêm {{ "{:,}".format(form_1['total-vaccine']['second-dose']) }} mũi
+            </div>
+          </div>
+          <div class="col-lg-6 col-sm-12 text-center" onmouseover="$('#mui3-popup').show()" onmouseout="$('#mui3-popup').hide()">
+            <div class="txt-1">MŨI 3</div>
+            <div class="num-1">{{ "{:,}".format(form_1['total-vaccine']['third-dose']) }}</div>
+            <div class="num-2">+{{ "{:,}".format(form_1['new-vaccine']['third-dose']) }}</div>
+            <div class="info-popup" id="mui2-popup">
+              Hôm nay tiêm được {{ "{:,}".format(form_1['new-vaccine']['third-dose']) }} mũi mới, tổng cộng đã tiêm {{ "{:,}".format(form_1['total-vaccine']['third-dose']) }} mũi
             </div>
           </div>
           <div class="col-lg-6 col-sm-12 text-center">
