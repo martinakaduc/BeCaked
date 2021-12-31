@@ -41,7 +41,8 @@ def process_byt_one(filepath):
     k = df.iloc[:,0].tolist()
     v = df.iloc[:,1].tolist()
     v = [int(x[-1]) for x in v]
-    return {x:(y,note) for x,y in zip(k,v)}
+    id = str(k[0]).zfill(10)[:2]
+    return {id:{str(x).zfill(10):(y,note) for x,y in zip(k,v)}}
 
 def process_byt_all(dirpath):
     result = {}
