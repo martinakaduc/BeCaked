@@ -712,9 +712,14 @@
                                     temp.weight = 2
                                     temp.opacity = .5
                                     prevLayerClicked.setStyle(temp);
-                                    if (map.hasLayer(hcmgis_map)) map.removeLayer(hcmgis_map)
-                                    if (map.hasLayer(quanhuyen)) map.removeLayer(quanhuyen)
+                                    // xóa phường xã
                                     if (map.hasLayer(phuongxa)) map.removeLayer(phuongxa)
+                                    if (map.hasLayer(phuongxa_focus)) map.removeLayer(phuongxa_focus)
+
+                                    // xóa quận huyện
+                                    if (map.hasLayer(quanhuyen)) map.removeLayer(quanhuyen)
+                                    if (map.hasLayer(quanhuyen_focus)) map.removeLayer(quanhuyen_focus)
+                                    if (map.hasLayer(hcmgis_map)) map.removeLayer(hcmgis_map)
                                   }
 
                                   map.fitBounds(e.target.getBounds());
