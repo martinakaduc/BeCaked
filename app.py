@@ -256,8 +256,8 @@ def home():
     with open(os.path.join(backup_data_dir,'byt/levels.json')) as f:
         levels = json.load(f)
 
-    levels.update(level_2)
-    levels.update(level_3)
+    levels['79'].update(level_2)
+    levels['79'].update(level_3)
     return render_template('hcm.html',
                             name = 'HCM',
                             today = today,
