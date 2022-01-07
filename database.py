@@ -44,7 +44,6 @@ def decode_auth_token(secret_key, auth_token):
         return False, 'invalid token'
 
 def is_valid_account(username, password):
-    return password == 'e6cc515c1c1b967746c6e516579febb8dad25ae807e8df2337b70aba7e9ddf20', ''
     uri = json.load(open('config.json'))['mongodb_read_uri']
     client = MongoClient(uri)
     db = client['auth']
