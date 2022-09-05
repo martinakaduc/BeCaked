@@ -4,7 +4,7 @@ Flask==1.1.2
 MarkupSafe==2.0.1
 matplotlib==3.3.2
 tensorflow-cpu==2.4.1
-keras==2.6.0
+keras==2.4.3
 pymongo==3.12.0
 scikit_learn==1.0
-statsmodels==0.13.0
+statsmodels==0.11.1

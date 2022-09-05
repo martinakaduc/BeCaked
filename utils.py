@@ -298,6 +298,7 @@ def get_all_compare(data, ml_model, start, end, step=1, day_lag=10):
     predict_data = get_predict_result(ml_model, data, start, end=end, step=step, day_lag=day_lag)
     get_compare_metric(data, predict_data, start, end)
 
+
     print("****** ARIMA ******")
     predict_data = predict_arima(data, start, end, step=step)
     get_compare_metric(data, predict_data, start, end)
@@ -325,6 +326,7 @@ def get_all_compare(data, ml_model, start, end, step=1, day_lag=10):
     print("****** Gradient Boosting Regressor ******")
     predict_data = predict_gbr(data, start, end, step=step, day_lag=day_lag)
     get_compare_metric(data, predict_data, start, end)
+
 
 def predict_arima(data, start, end, step):
     if step > (end-start): return []
@@ -460,6 +462,7 @@ def predict_svr(data, start, end, step, day_lag):
 
             for day in range(ste, ste+step):
                 next_day = SVR_model.predict([tem_predict[day-day_lag:day]])
+                next_day = next_day.reshape(-1, 1)
                 next_day = sc_y.inverse_transform(next_day)
                 tem_predict = np.append(tem_predict, next_day)
 
