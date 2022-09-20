@@ -569,3 +569,31 @@ def predict_gbr(data, start, end, step, day_lag):
         predict_data.append(np.array(res) / np.array(list_div))
 
     return np.append(data[:,:start], predict_data, axis=1)
+
+def get_prediction_result(ml_model, data, start, end=None, step=31, day_lag=10):
+    predict_data = data[:,:start]
+    if end == None: end = data.shape[1]
+
+    confirmed = [0 for _ in range(end-start)]
+    recovered = [0 for _ in range(end-start)]
+    deceased = [0 for _ in range(end-start)]
+    list_div = [0 for _ in range(end-start)]
+
+    for ste in range(start, end-step+1):
+        tem_predict = data[:,:ste]
+
+        for day in range(ste, ste+step):
+            next_day = ml_model.predict([tem_predict[0][day-day_lag:day], tem_predict[1][day-day_lag:day], tem_predict[2][day-day_lag:day]])[0][-1]
+            next_day[1] += next_day[2] + next_day[3]
+            tem_predict = np.append(tem_predict, next_day[1:].reshape((-1, 1)), axis=1)
+
+            confirmed[day-start] += next_day[1]
+            recovered[day-start] += next_day[2]
+            deceased[day-start] += next_day[3]
+            list_div[day-start] += 1
+
+    confirmed = np.array(confirmed) / np.array(list_div)
+    recovered = np.array(recovered) / np.array(list_div)
+    deceased = np.array(deceased) / np.array(list_div)
+
+    return  {"confirmed":confirmed, "recovered":recovered, "deceased":deceased}
