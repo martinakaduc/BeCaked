@@ -16,7 +16,7 @@ python prediction.py
 ### (optional) Run MLflow’s Tracking UI to view  the registered model  
 
 ```
-run mlflow ui --backend-store-uri sqlite:///mlruns.db
+mlflow ui --backend-store-uri sqlite:///mlruns.db
 
 ```
 
@@ -37,7 +37,7 @@ PATH : http://127.0.0.1:2000/invocations
 
 HEADERS: Content-Type: application/json
 
-BODY:[{"start_date":161,"end_date":192}]]
+BODY:[{"start_date":161,"end_date":192}]
 
 
 

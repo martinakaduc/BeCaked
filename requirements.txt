@@ -1,7 +1,7 @@
 numpy==1.19.2
 pandas==1.1.2
-Flask==1.1.2
-MarkupSafe==2.0.1
+Flask==2.2.2
+MarkupSafe==2.1.1
 matplotlib==3.3.2
 tensorflow-cpu==2.4.1
 keras==2.4.3

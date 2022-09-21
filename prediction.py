@@ -19,7 +19,7 @@ class PredictionModel():
             mlflow.sklearn.save_model( wrapper.BecakedWrapper(), "becaked-model" )    
             
             # add model signature (defines the schema of a model’s inputs and outputs)
-            becaked_inputs = pd.DataFrame([[161,192]], columns=["start_date","end_date"])
+            becaked_inputs = pd.DataFrame([["2022/09/01","2022/10/01"]], columns=["start_date","end_date"])
            
             results= wrapper.BecakedWrapper().get_predict_result(161 , 192)
             signature = infer_signature(becaked_inputs,results)
